@@ -13,7 +13,7 @@ routerClient.index(app);
 
 //set mongoose
 const mongoose = require('./config/database.config');
-mongoose();
+mongoose.connect();
 
 // set stactic file
 app.use(express.static('public'));
