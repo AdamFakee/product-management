@@ -14,6 +14,7 @@ routerClient.index(app);
 //set mongoose
 const mongoose = require('./config/database.config');
 mongoose();
+
 // set stactic file
 app.use(express.static('public'));
 
