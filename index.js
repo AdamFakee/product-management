@@ -11,8 +11,12 @@ app.set('view engine', 'pug');
 const routerClient = require("./router/client/index.router");
 routerClient.index(app);
 
+//set mongoose
+const mongoose = require('./config/database.config');
+mongoose();
 // set stactic file
 app.use(express.static('public'));
+
 app.listen(port, () => {
     console.log(`running ${port}`);
 })
