@@ -3,6 +3,10 @@ const app = express();
 require('dotenv').config();
 const port = process.env.PORT;
 
+// set link admin
+const systemConfig = require("./config/system");
+
+
 // set pug
 app.set('views', './views');
 app.set('view engine', 'pug');
