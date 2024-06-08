@@ -1,3 +1,3 @@
 module.exports = (req, res) => {
-    res.render('admin/pages/product');
+    res.render('admin/pages/products/index');
 }
