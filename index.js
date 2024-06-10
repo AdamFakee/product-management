@@ -5,7 +5,7 @@ const port = process.env.PORT;
 
 // set link admin
 const systemConfig = require("./config/system");
-
+app.locals.prefixAdmin = systemConfig.prefixAdmin;  // set local varialble "admin"
 
 // set pug
 app.set('views', './views');
