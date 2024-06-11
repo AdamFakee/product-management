@@ -16,7 +16,7 @@ module.exports = async (req, res) => {
         const regex = new RegExp(req.query.keyword, "i");  // tìm kiếm tương đối, nghĩa là chỉ cần giống 1 phần nội dung của title => vẫn kiếm đc
                                                           // kiếm iphone 9 nhưng nhập iphone vẫn kiếm được ra mấy máy có title = iphone
         find.title = regex;
-        keyword = req.query.keyword;
+        keyword=req.query.keyword;
     }
     // end tính năng tìm kiếm
 

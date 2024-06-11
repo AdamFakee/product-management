@@ -24,3 +24,22 @@ if(buttonStatus.length > 0) {
     }
 }
 
+// end tính năng lọc
+
+
+// tính năng tìm kiếm
+let formSeach = document.querySelector('[form-search]');  // lấy form
+if(formSeach){
+    let url = new URL(window.location.href);
+    formSeach.addEventListener('submit', (event) => {
+        event.preventDefault();   // sau khi submit thì k cho load lại web
+                                // ngăn chặn tính năng mặc định của submit form
+        const keyword = event.target.elements.keyword.value;
+        if(keyword){
+            url.searchParams.set("keyword", keyword);
+        } else {
+            url.searchParams.delete('keyword');
+        }
+        window.location.href = url.href;
+    })
+}
