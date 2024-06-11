@@ -17,7 +17,7 @@ if(buttonStatus.length > 0) {
     // end button status
 
     // them active mac dinh
-    const statusCurrent = url.searchParams.get("status") || "";
+    const statusCurrent = url.searchParams.get("status") || "";   // lay value cua key status
     const buttonCurrent = document.querySelector(`[button-status="${statusCurrent}"]`);
     if(buttonCurrent){
         buttonCurrent.classList.add('active');
