@@ -8,7 +8,8 @@ if(buttonStatus.length > 0) {
             if(status){
                 url.searchParams.set("status", status);  // them vao link cap name=value
             } else {
-                url.searchParams.delete('status'); // xoa 
+                url.searchParams.delete('status'); // xóa để cập nhật lại link còn nếu k xóa thì khi người dùng k nhập gì
+                                                    // => reload nhưng vẫn giữ nguyên link cũ => sai logic dù k lỗi
             }
             window.location.href = url.href;
         })
@@ -38,7 +39,7 @@ if(formSeach){
         if(keyword){
             url.searchParams.set("keyword", keyword);
         } else {
-            url.searchParams.delete('keyword');
+            url.searchParams.delete('keyword');  // k xóa thì link cũ k cập nhật, dù k lỗi gì nhưng sai logic thông thường
         }
         window.location.href = url.href;
     })

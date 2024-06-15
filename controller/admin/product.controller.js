@@ -1,4 +1,8 @@
+
+// [GET] admin/product
+
 const products = require('../../models/product.model');
+
 module.exports = async (req, res) => {
     
     // tính năng lọc
@@ -10,13 +14,28 @@ module.exports = async (req, res) => {
     }
     // end tính năng lọc
 
+    const filterStatus = [
+        {
+            status : "",
+            label : 'tất cả'
+        },
+        {
+            status : "active",
+            label : 'hoạt động'
+        },
+        {
+            status : "inactive",
+            label : 'dừng hoạt động'
+        }
+    ]
+
     // tính năng tìm kiếm 
-    let keyword = "";
+    let keyword = '';
     if(req.query.keyword) {
         const regex = new RegExp(req.query.keyword, "i");  // tìm kiếm tương đối, nghĩa là chỉ cần giống 1 phần nội dung của title => vẫn kiếm đc
                                                           // kiếm iphone 9 nhưng nhập iphone vẫn kiếm được ra mấy máy có title = iphone
         find.title = regex;
-        keyword=req.query.keyword;
+        keyword = req.query.keyword;
     }
     // end tính năng tìm kiếm
 
@@ -24,6 +43,7 @@ module.exports = async (req, res) => {
     res.render('admin/pages/products/index', {
         pageTitle : "trang san pham",
         productList: productList,
-        keyword : keyword    // để khi kiếm thì đề xuất mấy cái mình đã từng kiếm trước đó rồi
+        keyword : keyword,    // để khi kiếm thì đề xuất mấy cái mình đã từng kiếm trước đó rồi
+        filterStatus : filterStatus,
     });
 }

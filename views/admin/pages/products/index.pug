@@ -1,5 +1,5 @@
 extends ../../layouts/default.pug
-
+include ../../mixins/button-status.pug
 block main
   h1(class="mb-4") Quản lý sản phẩm
 
@@ -8,18 +8,7 @@ block main
     .card-body
       .row
         .col-6
-          button(
-            class="btn btn-sm ml-1 btn-outline-success"
-            button-status=""
-          ) Tất cả
-          button(
-            class="btn btn-sm ml-1 btn-outline-success"
-            button-status="active"
-          ) Hoạt động
-          button(
-            class="btn btn-sm ml-1 btn-outline-success"
-            button-status="inactive"
-          ) Dừng hoạt động
+          +button-status(filterStatus)
         .col-6
           form(form-search='')
             .input-group
@@ -28,7 +17,9 @@ block main
                 placeholder="Nhập từ khóa"
                 name="keyword"
                 class="form-control"
-                value=keyword               
+                value = keyword
+                  
+                             
               )
               .input-group-append
                 button(
