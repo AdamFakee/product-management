@@ -26,8 +26,8 @@ block main
       
       
       - for (var i = 1; i <= pagination.totalPage; i++)
-        li(class="page-item")
-          button(class="page-link") #{i}
+        li(class=("page-item " + (pagination.currentPage == i ? 'active' : "")))
+          button(class="page-link" button-pagination=i ) #{i}
 
       //- li(class="page-item")
       //-   button(class="page-link") Kế tiếp
