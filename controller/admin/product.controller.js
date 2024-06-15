@@ -2,6 +2,7 @@
 // [GET] admin/product
 
 const products = require('../../models/product.model');
+const paginationHelper =  require('../../helpers/pagination.helper');
 
 module.exports = async (req, res) => {
     
@@ -39,23 +40,16 @@ module.exports = async (req, res) => {
     }
     // end tính năng tìm kiếm
 
-    // phân trang
-    const countProduct = await products.countDocuments(find);
-    const pagination = {
-        limitProduct : 4,
-        currentPage :  1,
-        totalPage : Math.ceil(countProduct/4),
-    };
-    if(req.query.page) {
-        pagination.currentPage = parseInt(req.query.page);
-    }
-    pagination.skipProduct = (pagination.currentPage-1) * pagination.limitProduct;
+    // phan trang
+    const pagination = await paginationHelper(req, find); // dùng await để đợi async, đại khái là async ở đầu hàm thôi
+    // end phân trang
 
     const productList = await products
         .find(find)
         .limit(pagination.limitProduct)
         .skip(pagination.skipProduct);
-    // end phân trang
+    
+
 
     
     res.render('admin/pages/products/index', {
