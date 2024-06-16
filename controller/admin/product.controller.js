@@ -4,7 +4,7 @@
 const products = require('../../models/product.model');
 const paginationHelper =  require('../../helpers/pagination.helper');
 
-module.exports = async (req, res) => {
+module.exports.index = async (req, res) => {
     
     // tính năng lọc
     const find = {};
@@ -59,4 +59,15 @@ module.exports = async (req, res) => {
         filterStatus : filterStatus,
         pagination : pagination,
     });
+}
+
+
+// [GET] /admin/products/change-status/:statusChange/:id
+module.exports.changeStatus = async (req, res) => {
+    const {statusChange, id} = req.params;
+    await products.updateOne(
+        {_id : id},
+        {status : statusChange}
+    );
+    res.redirect('back');
 }

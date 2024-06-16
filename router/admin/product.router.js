@@ -1,5 +1,6 @@
 const constroller = require('../../controller/admin/product.controller');
 const express = require("express");
 const router = express.Router();
-router.get('/', constroller);
+router.get('/', constroller.index);
+router.get('/change-status/:statusChange/:id', constroller.changeStatus);
 module.exports = router;
