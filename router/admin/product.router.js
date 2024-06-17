@@ -2,5 +2,5 @@ const constroller = require('../../controller/admin/product.controller');
 const express = require("express");
 const router = express.Router();
 router.get('/', constroller.index);
-router.get('/change-status/:statusChange/:id', constroller.changeStatus);
+router.patch('/change-status/:statusChange/:id', constroller.changeStatus);
 module.exports = router;

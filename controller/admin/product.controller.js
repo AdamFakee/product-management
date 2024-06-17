@@ -63,11 +63,18 @@ module.exports.index = async (req, res) => {
 
 
 // [GET] /admin/products/change-status/:statusChange/:id
+
+// tính nănng thay đổi trạng thái sản phẩm - phương thức patch
+
 module.exports.changeStatus = async (req, res) => {
     const {statusChange, id} = req.params;
     await products.updateOne(
         {_id : id},
         {status : statusChange}
     );
-    res.redirect('back');
+    res.json({
+        code : 200
+    });
 }
+
+// end thay đổi trang thái sản phẩm

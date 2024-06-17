@@ -60,3 +60,25 @@ if(buttonPagination.length > 0){
     })
 }
 // end tính năng phân trang
+
+// tính năng thay đổi trạng thái sản phầm - phương thức patch
+const listButtonStatusChange = document.querySelectorAll('[button-status-change]');
+if(listButtonStatusChange.length > 0) {
+    listButtonStatusChange.forEach(button => {
+        button.addEventListener("click", () => {
+            const link = button.getAttribute('link');     
+            fetch(link, {  // vô link => produc.router => product.controller => data = 200 => reload
+                method: "PATCH",  // thống nhất phương thức
+                headers: {
+                  "Content-Type": "application/json",
+                },
+              })
+                .then(res => res.json())
+                .then(data => {
+                    if(data.code == 200){
+                        window.location.reload();
+                    }
+                })
+        })
+    })
+}
