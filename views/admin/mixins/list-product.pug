@@ -1,6 +1,8 @@
 mixin list-product(productList)
     thead
         tr
+        th
+          input(name="checkAll" type="checkbox")
         th STT
         th Hình ảnh
         th Tiêu đề
@@ -11,6 +13,8 @@ mixin list-product(productList)
         tbody
           each item, index in productList
             tr 
+              td 
+                input(name="checkItem" type="checkbox")
               td #{index+1}
               td
                 img(

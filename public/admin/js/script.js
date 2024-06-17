@@ -82,3 +82,32 @@ if(listButtonStatusChange.length > 0) {
         })
     })
 }
+
+
+// check item
+const checkAll = document.querySelector("[name='checkAll']");
+if(checkAll){
+
+    // check all
+    const listCheckItem = document.querySelectorAll("[name='checkItem']");
+    checkAll.addEventListener('click', () => {
+        listCheckItem.forEach(check => {
+            check.checked = checkAll.checked;
+        })
+    })
+    // end check all
+
+    // check item
+    
+    listCheckItem.forEach(check => {
+        check.addEventListener('click', () => {
+            const countCheckItemChecked = document.querySelectorAll("[name='checkItem']:checked");
+            if(countCheckItemChecked.length == listCheckItem.length){
+                checkAll.checked = true;
+            } else {
+                checkAll.checked = false;
+            }
+        })
+    })
+}
+// end check item
