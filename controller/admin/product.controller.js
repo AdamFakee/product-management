@@ -62,7 +62,7 @@ module.exports.index = async (req, res) => {
 }
 
 
-// [GET] /admin/products/change-status/:statusChange/:id
+// [PATCH] /admin/products/change-status/:statusChange/:id
 
 // tính nănng thay đổi trạng thái sản phẩm - phương thức patch
 
@@ -78,3 +78,10 @@ module.exports.changeStatus = async (req, res) => {
 }
 
 // end thay đổi trang thái sản phẩm
+
+// [PATCH] /admin/products/change-multi-status
+module.exports.changeMultiStatus =  (req, res) => {
+    res.json({
+        code : 200
+    })
+}

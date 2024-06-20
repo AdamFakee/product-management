@@ -14,7 +14,7 @@ mixin list-product(productList)
           each item, index in productList
             tr 
               td 
-                input(name="checkItem" type="checkbox")
+                input(name="checkItem" type="checkbox" id = item.id)
               td #{index+1}
               td
                 img(

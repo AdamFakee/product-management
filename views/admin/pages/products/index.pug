@@ -16,6 +16,20 @@ block main
           +search(keyword)
 
   .card.mb-3
+    .card-header Hành động
+    .card-body
+      div(class="input-group" box-actions)
+        select(class="custom-select")
+          option(value='') Chọn hành động...
+          option(value='active') Hoạt động
+          option(value='inactive') Dừng hoạt động
+        .input-group-append
+          button(
+            class="btn btn-outline-secondary"
+            type='button'
+          ) Áp dụng
+
+  .card.mb-3
     .card-header Danh sách
     .card-body
       table.table.table-hover.table-sm

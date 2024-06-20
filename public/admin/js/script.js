@@ -84,6 +84,8 @@ if(listButtonStatusChange.length > 0) {
 }
 
 
+// tính năng thay đổi trạng thái nhiều sản phẩm
+
 // check item
 const checkAll = document.querySelector("[name='checkAll']");
 if(checkAll){
@@ -111,3 +113,39 @@ if(checkAll){
     })
 }
 // end check item
+
+//
+const boxAction = document.querySelector('[box-actions]');
+if(boxAction){
+    const button = boxAction.querySelector('button');
+    button.addEventListener('click', () => {
+        const select = boxAction.querySelector('select');
+        const status = select.value;
+        const listInputChecked = document.querySelectorAll("[name='checkItem']:checked"); // nút đã chọn
+        const ids = [];
+        listInputChecked.forEach(checkBox => {
+            ids.push(checkBox.id);
+        })
+        if(status && ids.length > 0){
+            const dataChangeMulti  = {
+                status : status,
+                ids : ids
+            }
+            
+            fetch("/admin/products/change-multi-status", {
+                method : "PATCH",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(dataChangeMulti),
+            })
+                .then(res => res.json())
+                .then(data => {
+                    console.log(data)
+                })
+        }
+    })
+}
+//
+
+// end tính năng thay đổi trạng thái nhiều sản phẩm
