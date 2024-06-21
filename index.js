@@ -2,6 +2,13 @@ const express = require('express');
 const app = express();
 require('dotenv').config();
 const port = process.env.PORT;
+var bodyParser = require('body-parser');
+
+
+// set body - parser
+app.use(bodyParser.json())
+
+
 
 // set link admin
 const systemConfig = require("./config/system");

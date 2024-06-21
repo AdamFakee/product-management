@@ -141,8 +141,12 @@ if(boxAction){
             })
                 .then(res => res.json())
                 .then(data => {
-                    console.log(data)
+                    if(data.code == 200){
+                        window.location.reload();
+                    }
                 })
+        } else {
+            alert("ap dung va chon sp")
         }
     })
 }

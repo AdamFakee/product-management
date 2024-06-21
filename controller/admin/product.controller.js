@@ -80,7 +80,14 @@ module.exports.changeStatus = async (req, res) => {
 // end thay đổi trang thái sản phẩm
 
 // [PATCH] /admin/products/change-multi-status
-module.exports.changeMultiStatus =  (req, res) => {
+module.exports.changeMultiStatus = async (req, res) => {
+    const {status, ids} = req.body;
+    await products.updateMany({
+        _id : ids
+    },
+    {
+        status : status
+    })
     res.json({
         code : 200
     })
