@@ -154,3 +154,64 @@ if(boxAction){
 // end đổi trạng thái
 
 // end tính năng thay đổi trạng thái nhiều sản phẩm
+
+// xóa mềm 1 sản phẩm
+const listButtonDelete = document.querySelectorAll('[button-delete]');
+if(listButtonDelete.length > 0){
+    listButtonDelete.forEach(button => {
+        button.addEventListener('click', () => {
+            const link = button.getAttribute('button-delete');
+            fetch(link, {
+                method : "DELETE",
+            })
+                .then(res => res.json())
+                .then(data => {
+                    if(data.code == 200){
+                        window.location.reload();
+                    }
+                })
+        })
+    })
+}
+// end xóa mềm 1 sản phẩm
+
+// khôi phục sản phẩm 
+const listRestoreButton = document.querySelectorAll('[button-restore]')
+if(listRestoreButton.length){
+    listRestoreButton.forEach(button => {
+        button.addEventListener('click', () => {
+            const link = button.getAttribute('button-restore');
+            console.log(link)
+            fetch(link, {
+                method : "PATCH",
+            })
+                .then(res => res.json())
+                .then(data => {
+                    if(data.code == 200){
+                        window.location.reload();
+                    }
+                })
+        })
+    })
+}
+// end khôi phục sản phẩm
+
+// xóa vĩnh viễn 
+const listDeletePermanentlyButton = document.querySelectorAll('[button-delete-permanently]');
+if(listDeletePermanentlyButton.length){
+    listDeletePermanentlyButton.forEach(button => {
+        button.addEventListener('click', () => {
+            const link = button.getAttribute('button-delete-permanently');
+            fetch(link, {
+                method : 'DELETE',
+            })
+                .then(res => res.json())
+                .then(data => {
+                    if(data.code == 200){
+                        window.location.reload();
+                    }
+                })
+        })
+    })
+}
+// end xóa vĩnh viễn

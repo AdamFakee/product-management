@@ -7,7 +7,9 @@ const paginationHelper =  require('../../helpers/pagination.helper');
 module.exports.index = async (req, res) => {
     
     // tính năng lọc
-    const find = {};
+    const find = {
+        deleted : false,
+    };
     if(req.query.status){
         find.status = req.query.status;
     };
@@ -90,5 +92,19 @@ module.exports.changeMultiStatus = async (req, res) => {
     })
     res.json({
         code : 200
+    })
+}
+
+// [DELETE] /admin/products/delete-item/:id
+module.exports.deleteItem = async (req, res) => {
+    const id = req.params.id;
+    await products.updateOne({
+        _id : id
+    },{
+        deleted : true,
+    }
+    )
+    res.json({
+        code : 200,
     })
 }
