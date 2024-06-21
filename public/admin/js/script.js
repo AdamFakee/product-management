@@ -114,10 +114,11 @@ if(checkAll){
 }
 // end check item
 
-//
+// đổi trạng thái 
 const boxAction = document.querySelector('[box-actions]');
 if(boxAction){
     const button = boxAction.querySelector('button');
+    const link = boxAction.getAttribute('box-actions');
     button.addEventListener('click', () => {
         const select = boxAction.querySelector('select');
         const status = select.value;
@@ -132,7 +133,7 @@ if(boxAction){
                 ids : ids
             }
             
-            fetch("/admin/products/change-multi-status", {
+            fetch(link, {
                 method : "PATCH",
                 headers: {
                     "Content-Type": "application/json",
@@ -150,6 +151,6 @@ if(boxAction){
         }
     })
 }
-//
+// end đổi trạng thái
 
 // end tính năng thay đổi trạng thái nhiều sản phẩm
