@@ -6,6 +6,16 @@ block main
     .card.mb-3
         .card-header Danh sách
         .card-body
+            div(class="input-group" box-actions=`/${prefixAdmin}/products/change-multi-status`)
+                select(class="custom-select")
+                    option(value='restore') khôi phục toàn bộ
+                    option(value='delete') xóa tất cả
+                .input-group-append
+                    button(
+                        class="btn btn-outline-secondary"
+                        type='button'
+                    ) Áp dụng
+        .card-body
         table.table.table-hover.table-sm
             thead
                 tr

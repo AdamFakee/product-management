@@ -24,7 +24,7 @@ module.exports.restoreItem = async (req, res) => {
     })
 }
 
-// [PATCH]  admin/trash/delete-permanently
+// [DELETE]  admin/trash/delete-permanently
 module.exports.deleteItem = async (req, res) => {
     const id = req.params.id;
     await products.deleteOne({_id : id});

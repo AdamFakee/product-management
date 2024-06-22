@@ -84,15 +84,53 @@ module.exports.changeStatus = async (req, res) => {
 // [PATCH] /admin/products/change-multi-status
 module.exports.changeMultiStatus = async (req, res) => {
     const {status, ids} = req.body;
-    await products.updateMany({
-        _id : ids
-    },
-    {
-        status : status
-    })
-    res.json({
-        code : 200
-    })
+    switch (status) {
+        case "active":
+        case "inactive":
+            await products.updateMany({
+                _id : ids
+            },
+            {
+                status : status
+            })
+            res.json({
+                code : 200
+            })
+            break;
+        case 'deleteItem':
+            await products.updateMany({
+                _id : ids
+            },
+            {
+                deleted : true
+            })
+            res.json({
+                code : 200
+            })
+            break;
+        case 'restore':
+            await products.updateMany({
+                _id : ids
+            },
+            {
+                deleted : false
+            })
+            res.json({
+                code : 200
+            })
+            break;
+        case 'delete':
+            await products.deleteMany({
+                _id : ids
+            });
+            res.json({
+                code : 200
+            })
+            break;
+        default:
+            console.log('box-action is not running');
+    }
+   
 }
 
 // [DELETE] /admin/products/delete-item/:id
