@@ -45,9 +45,7 @@ module.exports.index = async (req, res) => {
     const pagination = await paginationHelper(req, find); // dùng await để đợi async, đại khái là async ở đầu hàm thôi
     // end phân trang
 
-    // show alert
-    req.flash('success', 'thanh cong');
-    // end show alert
+   
     const productList = await products
         .find(find)
         .limit(pagination.limitProduct)
@@ -76,6 +74,9 @@ module.exports.changeStatus = async (req, res) => {
         {_id : id},
         {status : statusChange}
     );
+    // show alert
+    req.flash('success', 'thanh cong');
+    // end show alert
     res.json({
         code : 200
     });
@@ -94,7 +95,10 @@ module.exports.changeMultiStatus = async (req, res) => {
             },
             {
                 status : status
-            })
+            });
+            // show alert
+            req.flash('success', 'thanh cong');
+            // end show alert
             res.json({
                 code : 200
             })
@@ -105,7 +109,10 @@ module.exports.changeMultiStatus = async (req, res) => {
             },
             {
                 deleted : true
-            })
+            });
+            // show alert
+            req.flash('success', 'thanh cong');
+            // end show alert
             res.json({
                 code : 200
             })
@@ -116,7 +123,10 @@ module.exports.changeMultiStatus = async (req, res) => {
             },
             {
                 deleted : false
-            })
+            });
+            // show alert
+            req.flash('success', 'thanh cong');
+            // end show alert
             res.json({
                 code : 200
             })
@@ -125,6 +135,9 @@ module.exports.changeMultiStatus = async (req, res) => {
             await products.deleteMany({
                 _id : ids
             });
+            // show alert
+            req.flash('success', 'thanh cong');
+            // end show alert
             res.json({
                 code : 200
             })
@@ -143,7 +156,10 @@ module.exports.deleteItem = async (req, res) => {
     },{
         deleted : true,
     }
-    )
+    );
+    // show alert
+    req.flash('success', 'thanh cong');
+    // end show alert
     res.json({
         code : 200,
     })
