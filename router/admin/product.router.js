@@ -5,4 +5,6 @@ router.get('/', constroller.index);
 router.patch('/change-status/:statusChange/:id', constroller.changeStatus);
 router.patch('/change-multi-status', constroller.changeMultiStatus);
 router.delete('/delete-item/:id', constroller.deleteItem);
+router.get('/create', constroller.create);
+router.post('/create', constroller.createPost);
 module.exports = router;

@@ -13,8 +13,8 @@ app.use(session({ cookie: { maxAge: 60000 }}));
 app.use(flash());
 
 // set body - parser
-app.use(bodyParser.json())
-
+app.use(bodyParser.json())  // use for json
+app.use(bodyParser.urlencoded({ extended: false })) // use for form
 
 
 // set link admin

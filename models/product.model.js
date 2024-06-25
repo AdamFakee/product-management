@@ -8,6 +8,9 @@ const dataAlign = mongoose.model('product', {
     thumbnail: String,
     status: String,
     position: Number,
-    deleted: Boolean
+    deleted: {
+        type: Boolean,
+        default: false
+      },
 }, 'products');
 module.exports = dataAlign;
