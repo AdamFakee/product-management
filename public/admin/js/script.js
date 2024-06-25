@@ -38,6 +38,7 @@ if(formSeach){
         const keyword = event.target.elements.keyword.value;
         if(keyword){
             url.searchParams.set("keyword", keyword);
+            
         } else {
             url.searchParams.delete('keyword');  // k xóa thì link cũ k cập nhật, dù k lỗi gì nhưng sai logic thông thường
         }
@@ -66,6 +67,7 @@ const listButtonStatusChange = document.querySelectorAll('[button-status-change]
 if(listButtonStatusChange.length > 0) {
     listButtonStatusChange.forEach(button => {
         button.addEventListener("click", () => {
+            
             const link = button.getAttribute('link');     
             fetch(link, {  // vô link => produc.router => product.controller => data = 200 => reload
                 method: "PATCH",  // thống nhất phương thức
@@ -77,6 +79,7 @@ if(listButtonStatusChange.length > 0) {
                 .then(data => {
                     if(data.code == 200){
                         window.location.reload();
+                        
                     }
                 })
         })
@@ -215,3 +218,15 @@ if(listDeletePermanentlyButton.length){
     })
 }
 // end xóa vĩnh viễn
+
+// show alert
+const alert = document.querySelector('[show-alert]');
+const time = alert.getAttribute('show-alert') || 3000;
+console.log(alert);
+console.log(time)
+if(alert){
+    setTimeout(() => {
+        alert.classList.add('hidden');
+    }, time);
+}
+// end show alert

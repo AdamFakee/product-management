@@ -5,6 +5,12 @@ include ../../mixins/list-product.pug
 include ../../mixins/pagination.pug
 include ../../mixins/box-action.pug
 block main
+
+  if(messages.success)
+     div(
+      class="alert alert-success show-alert"
+      show-alert="3000"
+    ) #{messages.success}
   h1(class="mb-4") Quản lý sản phẩm
 
   .card.mb-3
@@ -24,6 +30,11 @@ block main
   .card.mb-3
     .card-header Danh sách
     .card-body
+      div(class="text-right mb-2")
+        a(
+          href=`/${prefixAdmin}/products/create`
+          class="btn btn-outline-success"
+        ) + Thêm mới
       table.table.table-hover.table-sm
         +list-product(productList)
   +pagination(pagination)

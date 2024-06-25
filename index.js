@@ -3,7 +3,14 @@ const app = express();
 require('dotenv').config();
 const port = process.env.PORT;
 var bodyParser = require('body-parser');
+var flash = require('express-flash');
 
+// set express-flash : show alert
+var session = require('express-session')
+var cookieParser = require('cookie-parser')
+app.use(cookieParser('keyboard cat'));
+app.use(session({ cookie: { maxAge: 60000 }}));
+app.use(flash());
 
 // set body - parser
 app.use(bodyParser.json())

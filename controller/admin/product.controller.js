@@ -1,5 +1,5 @@
 
-// [GET] admin/product
+// [GET] admin/products
 
 const products = require('../../models/product.model');
 const paginationHelper =  require('../../helpers/pagination.helper');
@@ -46,6 +46,9 @@ module.exports.index = async (req, res) => {
     const pagination = await paginationHelper(req, find); // dùng await để đợi async, đại khái là async ở đầu hàm thôi
     // end phân trang
 
+    // show alert
+    req.flash('success', 'thanh cong');
+    // end show alert
     const productList = await products
         .find(find)
         .limit(pagination.limitProduct)
