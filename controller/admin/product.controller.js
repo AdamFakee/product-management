@@ -51,8 +51,6 @@ module.exports.index = async (req, res) => {
         .limit(pagination.limitProduct)
         .skip(pagination.skipProduct);
     
-
-
     
     res.render('admin/pages/products/index', {
         pageTitle : "trang san pham",
