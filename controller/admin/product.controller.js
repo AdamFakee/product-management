@@ -2,7 +2,6 @@
 const systemConfig = require('../../config/system');
 const products = require('../../models/product.model');
 const paginationHelper =  require('../../helpers/pagination.helper');
-
 module.exports.index = async (req, res) => {
     
     // tính năng lọc
@@ -171,6 +170,10 @@ module.exports.create = async (req, res) => {
 }
 // [POST]  /admin/products/create
 module.exports.createPost = async (req, res) => {
+    
+    if(req.file.path){
+        req.body.thumbnail = `/uploads/${req.file.filename}`;
+    }
     req.body.price = parseInt(req.body.price);
     req.body.stock = parseInt(req.body.stock);
     req.body.discountPercentage = parseInt(req.body.discountPercentage);
