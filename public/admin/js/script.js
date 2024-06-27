@@ -221,12 +221,26 @@ if(listDeletePermanentlyButton.length){
 
 // show alert
 const alert = document.querySelector('[show-alert]');
-const time = alert.getAttribute('show-alert') || 3000;
-console.log(alert);
-console.log(time)
 if(alert){
+    const time = alert.getAttribute('show-alert') || 3000;
     setTimeout(() => {
         alert.classList.add('hidden');
     }, time);
 }
 // end show alert
+
+// preview image
+const uploadImage = document.querySelector('[upload-image]');
+if(uploadImage) {
+    const input = uploadImage.querySelector('[upload-image-input]');
+    const imagePreview = uploadImage.querySelector('[upload-image-preview]');
+    input.addEventListener('change', () => {   
+        const file = input.files[0];
+        console.log(file)
+        if(file){
+            imagePreview.src = URL.createObjectURL(file);
+            imagePreview.classList.remove('hidden');
+        }
+    })
+}
+// end preview imgae

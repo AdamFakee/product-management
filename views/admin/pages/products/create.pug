@@ -55,15 +55,17 @@ block main
         value="0"
         min="0"
       )
-    div(class="form-group")
+    div(class="form-group" upload-image)
       label(for="thumbnail") Ảnh
       input(
         type="file"
-        class="form-control"
+        class="form-control-flie"
         id="thumbnail"
         name="thumbnail"
-        accept="image/*"  
+        accept="image/*"
+        upload-image-input  
       )
+      <img class="image-preview hidden" src="#" alt="your image" upload-image-preview/>
     div(class="form-group")
       label(for="position") Vị trí
       input(
