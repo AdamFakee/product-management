@@ -5,5 +5,5 @@ module.exports.createPost = async (req, res, next) => {
       return;
     }
   
-    next();
+    next();  // hàm next để chạy sang controller tiếp theo
   }

@@ -164,6 +164,7 @@ module.exports.deleteItem = async (req, res) => {
 
 // [GET]  /admin/products/create
 module.exports.create = async (req, res) => {
+    console.log('ahaah')
     res.render('admin/pages/products/create', {
         pageTitle: "Thêm mới sản phẩm"
       });
