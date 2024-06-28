@@ -170,7 +170,6 @@ module.exports.create = async (req, res) => {
 }
 // [POST]  /admin/products/create
 module.exports.createPost = async (req, res) => {
-    
     if(req.file.path){
         req.body.thumbnail = `/uploads/${req.file.filename}`;
     }
