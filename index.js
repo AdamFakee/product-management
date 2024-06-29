@@ -2,8 +2,14 @@ const express = require('express');
 const app = express();
 require('dotenv').config();
 const port = process.env.PORT;
+
+// set bodyParser
 var bodyParser = require('body-parser');
 var flash = require('express-flash');
+
+// set method-overide
+var methodOverride = require('method-override')
+app.use(methodOverride('_method'))
 
 // set express-flash : show alert
 var session = require('express-session')

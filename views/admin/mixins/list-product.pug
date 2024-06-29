@@ -39,5 +39,8 @@ mixin list-product(productList, button_1, button_2)
                   button-status-change
                   ) Dừng hoạt động
             td
-              button(class="btn btn-warning btn-sm") sửa
+              a(
+                href=`/${prefixAdmin}/products/edit/${item.id}`
+                class="btn btn-warning btn-sm"
+                ) sửa
               button(class="btn btn-danger btn-sm ml-1" button-delete = `/${prefixAdmin}/products/delete-item/${item.id}`  ) xóa
