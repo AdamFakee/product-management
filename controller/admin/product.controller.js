@@ -182,7 +182,7 @@ module.exports.createPost = async (req, res) => {
     } else {
         req.body.position = countProduct + 1;
     }
-
+    console.log(req.body)
     const newProduct = new products(req.body);
     // newProduct.save().then(() => console.log('meow'));  // .then(function) tương tự :  await newProduct.save() + try catch
     await newProduct.save()
@@ -217,7 +217,6 @@ module.exports.editPatch = async (req, res) => {
         _id : id,
         deleted : false,
     }, req.body)
-    req.flash('success', 'update thanh cong');
-    res.redirect('back')
-    // res.redirect(`/${systemConfig.prefixAdmin}/products`);
+    req.flash('success', 'update thanh cong');  // do cái flash ở default nên khi back về chỗ nào cũng có thông báo :))
+    res.redirect(`/${systemConfig.prefixAdmin}/products`);
 }

@@ -10,3 +10,23 @@ module.exports.index = async (req, res) => {
   });
 }
 
+// [GET] /products/:slug
+module.exports.detail = async (req, res) => {
+  const slug = req.params.slug;
+
+  const product = await products.findOne({
+    slug: slug,
+    deleted: false,
+    status: "active"
+  });
+  console.log(product)
+
+  if(product) {
+    res.render("client/pages/products/detail", {
+      pageTitle: "Chi tiết sản phẩm",
+      product: product
+    });
+  } else {
+    res.redirect("/");
+  }
+}
