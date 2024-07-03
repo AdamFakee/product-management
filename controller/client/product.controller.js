@@ -19,7 +19,6 @@ module.exports.detail = async (req, res) => {
     deleted: false,
     status: "active"
   });
-  console.log(product)
 
   if(product) {
     res.render("client/pages/products/detail", {

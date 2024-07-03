@@ -28,8 +28,8 @@ const systemConfig = require("./config/system");
 app.locals.prefixAdmin = systemConfig.prefixAdmin;  // set local varialble "admin"
 
 // set pug
-app.set('views', './views');
-app.set('view engine', 'pug');
+app.set('views', `${__dirname}/views`); // biến dirname : trên onl sẽ k bt đứng tại thư mục nào nên cần truy vấn từ thư mực gốc
+app.set('view engine', 'pug'); // nhưng cũng k bt thư mục gốc là cái nào => biến dirname là thư mục gốc
 
 // set router
 const routerAdmin = require("./router/admin/index.router");
@@ -42,7 +42,7 @@ const mongoose = require('./config/database.config');
 mongoose.connect();
 
 // set stactic file
-app.use(express.static('public'));
+app.use(express.static(`${__dirname}/public`));
 
 app.listen(port, () => {
     console.log(`running ${port}`);
