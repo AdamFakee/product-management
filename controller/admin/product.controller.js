@@ -1,3 +1,4 @@
+
 // [GET] admin/products
 const systemConfig = require('../../config/system');
 const products = require('../../models/product.model');
