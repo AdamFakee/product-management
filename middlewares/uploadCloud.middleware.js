@@ -27,13 +27,11 @@ module.exports.uploadSingle = (req, res, next) => {
         const uploadToCloudinary = async (buffer) => {
           const result = await streamUpload(buffer);
           req.body[req.file.fieldname] = result.url;
-          console.log(result)
           next();
         }
     
         uploadToCloudinary(req.file.buffer);
       } else {
        next();
-       console.log('1')
       }
 }

@@ -192,32 +192,41 @@ module.exports.createPost = async (req, res) => {
 
 // [GET] /admin/products/edit/:id
 module.exports.edit = async (req, res) => {
-    const id = req.params.id;
-    const product = await products.findOne({
+    try {
+        const id = req.params.id;
+        const product = await products.findOne({
         _id : id,
         deleted : false,
-    })
+        })
     res.render('admin/pages/products/edit.pug', {
         pageTitle : 'trang chinh sua san pham',
         product : product,
     })
+    } catch (error) {
+        res.redirect('back')
+    }
 }
 
 // [PATCH] /admin/products/edit/:id
 module.exports.editPatch = async (req, res) => {
-    const id = req.params.id;
-    if(req.file){
-        req.body.thumbnail = `/uploads/${req.file.filename}`;
+    try {
+        const id = req.params.id;
+        if(req.file){
+            req.body.thumbnail = `/uploads/${req.file.filename}`;
+        }
+        req.body.price = parseInt(req.body.price);
+        req.body.discountPercentage = parseInt(req.body.discountPercentage);
+        req.body.stock = parseInt(req.body.stock);
+        req.body.position = parseInt(req.body.position);
+        
+        await products.updateOne({
+            _id : id,
+            deleted : false,
+        }, req.body)
+        req.flash('success', 'update thanh cong');  // do cái flash ở default nên khi back về chỗ nào cũng có thông báo :))
+        res.redirect(`/${systemConfig.prefixAdmin}/products`);
+    } catch (error) {
+        req.flash('error', 'id k hop le');
+        res.redirect('/admin/products');
     }
-    req.body.price = parseInt(req.body.price);
-    req.body.discountPercentage = parseInt(req.body.discountPercentage);
-    req.body.stock = parseInt(req.body.stock);
-    req.body.position = parseInt(req.body.position);
-    
-    await products.updateOne({
-        _id : id,
-        deleted : false,
-    }, req.body)
-    req.flash('success', 'update thanh cong');  // do cái flash ở default nên khi back về chỗ nào cũng có thông báo :))
-    res.redirect(`/${systemConfig.prefixAdmin}/products`);
 }
