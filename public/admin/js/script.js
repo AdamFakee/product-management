@@ -244,3 +244,39 @@ if(uploadImage) {
     })
 }
 // end preview imgae
+
+// sap xep theo nhieu tieu chi
+const sort = document.querySelector('[sort]');
+if(sort){
+    const sortSelect = sort.querySelector('[sort-select]');
+    const url = new URL(window.location.href);
+    sortSelect.addEventListener('change', () => {
+        const [sortKey, sortValue] = sortSelect.value.split('-');
+        if(sortKey && sortValue){
+            url.searchParams.set('sortKey', sortKey);
+            url.searchParams.set('sortValue', sortValue);
+        }
+        window.location.href = url.href;
+    })
+    // Thêm selected mặc định cho option
+    const defaultSortKey = url.searchParams.get("sortKey");
+    const defaultSortValue = url.searchParams.get("sortValue");
+
+    if(defaultSortKey && defaultSortValue) {
+        const optionSelected = select.querySelector(`option[value="${defaultSortKey}-${defaultSortValue}"]`);
+        optionSelected.selected = true;
+        // optionSelected.setAttribute("selected", true);
+    }
+
+    // Tính năng clear
+    const buttonClear = sort.querySelector("[sort-clear]");
+    if(buttonClear) {
+        buttonClear.addEventListener("click", () => {
+        url.searchParams.delete("sortKey");
+        url.searchParams.delete("sortValue");
+
+        window.location.href = url.href;
+        })
+    }
+}
+// end sap xep theo nhieu tieu chi

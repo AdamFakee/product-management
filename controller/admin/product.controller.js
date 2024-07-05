@@ -45,12 +45,20 @@ module.exports.index = async (req, res) => {
     const pagination = await paginationHelper(req, find); // dùng await để đợi async, đại khái là async ở đầu hàm thôi
     // end phân trang
 
+    // sap xep
+    const sort = {};
+    if(req.query.sortValue && req.query.sortKey){
+        sort[req.query.sortKey]=req.query.sortValue;
+    } else {
+        sort['position'] = 'desc';
+    }
+    // end sap xep
    
     const productList = await products
         .find(find)
         .limit(pagination.limitProduct)
-        .skip(pagination.skipProduct);
-    
+        .skip(pagination.skipProduct)
+        .sort(sort);
     
     res.render('admin/pages/products/index', {
         pageTitle : "trang san pham",
