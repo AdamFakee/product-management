@@ -59,7 +59,7 @@ module.exports.index = async (req, res) => {
         .limit(pagination.limitProduct)
         .skip(pagination.skipProduct)
         .sort(sort);
-    
+
     res.render('admin/pages/products/index', {
         pageTitle : "trang san pham",
         productList: productList,
@@ -179,7 +179,7 @@ module.exports.create = async (req, res) => {
 }
 // [POST]  /admin/products/create
 module.exports.createPost = async (req, res) => {
-    if(req.file.path){
+    if(req.file){
         req.body.thumbnail = `/uploads/${req.file.filename}`;
     }
     req.body.price = parseInt(req.body.price);
@@ -195,6 +195,8 @@ module.exports.createPost = async (req, res) => {
     const newProduct = new products(req.body);
     // newProduct.save().then(() => console.log('meow'));  // .then(function) tương tự :  await newProduct.save() + try catch
     await newProduct.save()
+
+
     res.redirect(`/${systemConfig.prefixAdmin}/products`)
 }
 

@@ -4,7 +4,10 @@ const slug = require('mongoose-slug-updater');
 mongoose.plugin(slug);
 const productSchema = new mongoose.Schema({
   title: String,
-  description: String,
+  description: {
+    type:String,
+    default:''
+  },
   price: Number,
   discountPercentage: Number,
   stock: Number,
