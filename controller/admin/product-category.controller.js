@@ -2,16 +2,24 @@ const ProductCategory = require("../../models/product-category.model");
 const systemConfig = require("../../config/system");
 
 // [GET] /admin/products-category
-module.exports.index = (req, res) => {
+module.exports.index = async (req, res) => {
+  const records = await ProductCategory.find({
+    deleted : false,
+  });
+
   res.render("admin/pages/products-category/index", {
-    pageTitle: "Danh mục sản phẩm"
+    pageTitle: "Danh mục sản phẩm",
+    records : records
   });
 }
 
 // [GET] /admin/products-category/create
-module.exports.create = (req, res) => {
+module.exports.create = async (req, res) => {
+  const categories = await ProductCategory.find({
+    deleted: false
+  });
   res.render("admin/pages/products-category/create", {
-    pageTitle: "Thêm mới danh mục sản phẩm"
+    pageTitle: "Thêm mới danh mục sản phẩm",    categories: categories
   });
 }
 

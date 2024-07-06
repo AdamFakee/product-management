@@ -7,6 +7,7 @@ block main
     action=`/${prefixAdmin}/products-category/create`
     method="POST"
     enctype="multipart/form-data"
+    form-category
   )
     div(class="form-group")
       label(for="title") Tiêu đề
@@ -19,12 +20,15 @@ block main
       )
     div(class="form-group")
       label(for="parent_id") Danh mục cha
-      input(
-        type="text"
+      select(
         class="form-control"
         id="parent_id"
         name="parent_id"
       )
+        option(value="") -- Chọn danh mục cha --
+        if(categories)
+          each item in categories
+            option(value=item.id) #{item.title}
     div(class="form-group")
       label(for="desc") Mô tả
       textarea(
