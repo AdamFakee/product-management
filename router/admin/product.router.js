@@ -19,5 +19,5 @@ router.post('/create', upload.single('thumbnail'), // các bước upload ảnh 
  // phương thức post chỉ chạy khi submit form => validate : back => quay lại router với phương thức get
 
 router.get('/edit/:id', constroller.edit);
-router.patch('/edit/:id', upload.single('thumbnail'), constroller.editPatch);
+router.patch('/edit/:id', upload.single('thumbnail'),uploadCloud.uploadSingle,validate.createPost, constroller.editPatch);
 module.exports = router;

@@ -1,4 +1,4 @@
-const createTree =  (records, parent_id = '') => {   // phân cấp danh mục
+const createTree =  (records, parent_id = '', id) => {   // phân cấp danh mục
     const tree = [];
       for (const element of records) {
         if(element.parent_id == parent_id){

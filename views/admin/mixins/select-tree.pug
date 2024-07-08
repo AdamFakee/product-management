@@ -1,0 +1,12 @@
+mixin select-tree(categories,parent_id='', level=2)   
+    if(categories)
+        each item in categories
+            - const prefix = Array(level).join('--')
+            option(
+                value=item.id 
+                selected=(item.id == parent_id ? true : false)
+                ) #{prefix} #{item.title} 
+            if(item.child)
+                +select-tree(item.child, parent_id, level+1)
+                
+//- hiển thị cây danh mục 
