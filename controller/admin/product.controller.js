@@ -1,8 +1,12 @@
 
-// [GET] admin/products
+
 const systemConfig = require('../../config/system');
 const products = require('../../models/product.model');
+const productCategory = require('../../models/product-category.model');
 const paginationHelper =  require('../../helpers/pagination.helper');
+const createTree =  require('../../helpers/createTree.helper');
+
+// [GET] admin/products
 module.exports.index = async (req, res) => {
     
     // tính năng lọc
@@ -173,15 +177,15 @@ module.exports.deleteItem = async (req, res) => {
 
 // [GET]  /admin/products/create
 module.exports.create = async (req, res) => {
+    const records = await productCategory.find({deleted:false});
+    const newCategories = createTree(records);
     res.render('admin/pages/products/create', {
-        pageTitle: "Thêm mới sản phẩm"
+        pageTitle: "Thêm mới sản phẩm",
+        categories : newCategories
       });
 }
 // [POST]  /admin/products/create
 module.exports.createPost = async (req, res) => {
-    if(req.file){
-        req.body.thumbnail = `/uploads/${req.file.filename}`;
-    }
     req.body.price = parseInt(req.body.price);
     req.body.stock = parseInt(req.body.stock);
     req.body.discountPercentage = parseInt(req.body.discountPercentage);
@@ -191,8 +195,8 @@ module.exports.createPost = async (req, res) => {
     } else {
         req.body.position = countProduct + 1;
     }
-    console.log(req.body)
     const newProduct = new products(req.body);
+    
     // newProduct.save().then(() => console.log('meow'));  // .then(function) tương tự :  await newProduct.save() + try catch
     await newProduct.save()
 
@@ -208,10 +212,13 @@ module.exports.edit = async (req, res) => {
         _id : id,
         deleted : false,
         })
-    res.render('admin/pages/products/edit.pug', {
-        pageTitle : 'trang chinh sua san pham',
-        product : product,
-    })
+        const records = await productCategory.find({deleted:false});
+        const newCategories = createTree(records);
+        res.render('admin/pages/products/edit.pug', {
+            pageTitle : 'trang chinh sua san pham',
+            product : product,
+            categories : newCategories,
+        })
     } catch (error) {
         res.redirect('back')
     }
@@ -221,9 +228,6 @@ module.exports.edit = async (req, res) => {
 module.exports.editPatch = async (req, res) => {
     try {
         const id = req.params.id;
-        if(req.file){
-            req.body.thumbnail = `/uploads/${req.file.filename}`;
-        }
 
         req.body.price = parseInt(req.body.price);
         req.body.discountPercentage = parseInt(req.body.discountPercentage);
@@ -235,7 +239,7 @@ module.exports.editPatch = async (req, res) => {
             deleted : false,
         }, req.body)
         req.flash('success', 'update thanh cong');  // do cái flash ở default nên khi back về chỗ nào cũng có thông báo :))
-        res.redirect(`/${systemConfig.prefixAdmin}/products`);
+        res.redirect(`back`);
     } catch (error) {
         req.flash('error', 'id k hop le');
         res.redirect('/admin/products');

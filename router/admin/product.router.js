@@ -1,7 +1,6 @@
 const constroller = require('../../controller/admin/product.controller');
 const express = require("express");
 const multer  = require('multer');
-const storageMulterHelper = require('../../helpers/storageMulter.helper');
 const upload = multer();
 const uploadCloud = require('../../middlewares/admin/uploadCloud.middleware');
 const router = express.Router();

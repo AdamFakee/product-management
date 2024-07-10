@@ -33,7 +33,6 @@ module.exports.createPost = async (req, res) => {
     const countCagegory = await ProductCategory.countDocuments({});
     req.body.position = countCagegory + 1;
   }
-
   const newCategory = new ProductCategory(req.body);
   await newCategory.save();
 
@@ -72,9 +71,6 @@ module.exports.editPatch = async (req, res) => {
     } else {
       const count = await ProductCategory.countDocuments({});
       req.body.position = count + 1;
-    }
-    if(req.file){
-      req.body.thumbnail = `/uploads/${req.file.filename}`;
     }
     await ProductCategory.updateOne({
       _id : req.params.id,
