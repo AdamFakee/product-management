@@ -31,6 +31,11 @@ app.locals.prefixAdmin = systemConfig.prefixAdmin;  // set local varialble "admi
 app.set('views', `${__dirname}/views`); // biến dirname : trên onl sẽ k bt đứng tại thư mục nào nên cần truy vấn từ thư mực gốc
 app.set('view engine', 'pug'); // nhưng cũng k bt thư mục gốc là cái nào => biến dirname là thư mục gốc
 
+// set tinyMCE
+const path = require('path');
+app.use('/tinymce', express.static(path.join(__dirname, 'node_modules', 'tinymce')));
+
+
 // set router
 const routerAdmin = require("./router/admin/index.router");
 const routerClient = require("./router/client/index.router");
@@ -40,6 +45,8 @@ routerAdmin.index(app);
 //set mongoose
 const mongoose = require('./config/database.config');
 mongoose.connect();
+
+
 
 // set stactic file
 app.use(express.static(`${__dirname}/public`));
