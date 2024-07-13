@@ -35,6 +35,7 @@ block main
                 type="checkbox" 
                 data-id=item.id 
                 data-name="products-category_view"
+                checked=(item.permissions.includes("products-category_view"))
               )
         tr
           td Thêm mới
@@ -44,6 +45,7 @@ block main
                 type="checkbox" 
                 data-id=item.id
                 data-name="products-category_create"
+                checked=(item.permissions.includes("products-category_create"))
               )
         tr
           td Chỉnh sửa
@@ -53,6 +55,7 @@ block main
                 type="checkbox" 
                 data-id=item.id
                 data-name="products-category_edit"
+                checked=(item.permissions.includes("products-category_edit"))
               )
         tr
           td Xóa
@@ -62,4 +65,5 @@ block main
                 type="checkbox" 
                 data-id=item.id
                 data-name="products-category_delete"
+                checked=(item.permissions.includes("products-category_delete"))
               )

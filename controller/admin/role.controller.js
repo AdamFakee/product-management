@@ -60,7 +60,6 @@ module.exports.permissions = async (req, res) => {
     const records = await Role.find({
         deleted : false,
     });
-
     res.render('admin/pages/roles/permission.pug', {
         pageTitle : 'Phân quyền',
         records : records
