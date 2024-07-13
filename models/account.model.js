@@ -5,7 +5,10 @@ const accounts = new mongoose.Schema({
   fullName : String,
   email : String,
   phone : Number,
-  password : String,
+  password : {
+    type : String,
+    default : '',
+  },
   token : String,
   avatar : String, 
   role_id : String,   // các quyền được cấp ở chỗ phân quyền

@@ -69,7 +69,14 @@ module.exports.permissions = async (req, res) => {
 
 // [PATCH] admin/roles/permissions
 module.exports.permissionsPatch = async (req, res) => {
-    console.log(req.body);
+    for (const role of req.body) {
+        await Role.updateOne({
+          _id: role.id,
+          deleted: false
+        }, {
+          permissions: role.permissions
+        });
+      }
     res.json({
         code : 200
     })
