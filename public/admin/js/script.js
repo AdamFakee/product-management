@@ -280,3 +280,44 @@ if(sort){
     }
 }
 // end sap xep theo nhieu tieu chi
+
+
+// permission
+const tablePermissions = document.querySelector("[table-permissions]");
+if(tablePermissions){
+    const buttonSubmit = document.querySelector('[button-submit]');
+    buttonSubmit.addEventListener('click', () => {
+        const listPermissions = tablePermissions.querySelectorAll('[role-id]');
+        const roles = [];
+        listPermissions.forEach(permission => {
+            const id = permission.getAttribute('role-id');
+            const listInputChecked  = tablePermissions.querySelectorAll(`input[data-id="${id}"]:checked`);
+            
+            const role = {
+                id : id,
+                permissions : [],
+            }
+            listInputChecked.forEach( checked => {
+                const dataName = checked.getAttribute('data-name')
+                role.permissions.push(dataName);
+            });
+            roles.push(role);
+        });
+
+        const link = buttonSubmit.getAttribute('button-submit');
+        fetch(link, {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+                },
+            body : JSON.stringify(roles)
+        })
+            .then(res => res.json())
+            .then(data => {
+                if(data.code == 200){
+                    console.log('ok');
+                }
+            })
+    })
+}
+// end permission
