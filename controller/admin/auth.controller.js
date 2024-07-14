@@ -13,21 +13,54 @@ module.exports.login = (req, res) => {
 module.exports.loginPost = async (req, res) => {
     const password = md5(req.body.password);
     const email = req.body.email;
-    const login = await Accounts.findOne({
-        password : password,
+    const account = await Accounts.findOne({
         email : email,
         deleted : false,
     });
-    if(!login){
-        req.flash('error', 'tài khoản hoặc mật khẩu sai');
-        res.redirect('back');
+    if(!account) {
+        req.flash("error", "Email không tồn tại trong hệ thống!");
+        res.redirect("back");
         return;
     }
-    if(login.status === 'inactive'){
-        req.flash('error', 'tài khoản đang bị khóa');
-        res.redirect('back');
+
+    // đăng nhập quá 5 lần => bị khóa acc tạm thời
+    if(account.countLogin >= 5){
+        await Accounts.updateOne({
+            email : email,
+            deleted : false,
+        }, {
+            status : false,
+        });
+        req.flash("error", "Tài khoản đã bị khóa!");
+        res.redirect("back");
         return;
     }
-    res.cookie("token", Accounts.token);
+    if(md5(password) != account.password) {
+        // sai pass => tăng countLogin
+        await Accounts.updateOne({
+            email : email,
+            deleted : false,
+        }, {
+            countLogin : account.countLogin + 1
+        });
+        console.log(account.countLogin)
+        req.flash("error", `Sai mật khẩu! Còn ${5 - account.countLogin} lần nhập`);
+        res.redirect("back");
+        return;
+    }
+    // đúng tài khoản => reset countLogin
+    await Accounts.updateOne({
+        email : email,
+        deleted : false,
+    }, {
+        countLogin : 0,
+    });
+
+    if(account.status != "active") {
+        req.flash("error", "Tài khoản đang bị khóa!");
+        res.redirect("back");
+        return;
+    }
+    res.cookie("token", account.token);
     res.redirect(`/${systemConfig.prefixAdmin}/dashboard`);
 }

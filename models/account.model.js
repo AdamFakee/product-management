@@ -16,7 +16,8 @@ const accounts = new mongoose.Schema({
   deleted : {
     type : Boolean,
     default : false,
-  }
+  },
+  countLogin : Number, // đếm số lần đăng nhập sai trong 1 lượt đăng nhập, quá 5 => status == inactive   else => về 1
 }, {
   timestamps : true,
 });

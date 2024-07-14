@@ -35,6 +35,7 @@ module.exports.create = async (req, res) => {
 
 // [POST] admin/accounts/create
 module.exports.createPost = async ( req, res) => {
+    req.body.countLogin = 0;
     req.body.password = md5(req.body.password);
     req.body.token = generateHelper.generateRandomString(30);
     const newAccount = new Accounts(req.body);
