@@ -1,4 +1,5 @@
 const Role = require('../../models/role.model');
+const Accounts = require('../../models/account.model');
 const systemConfig = require('../../config/system.js');
 
 // [GET] admin/roles
@@ -78,5 +79,29 @@ module.exports.permissionsPatch = async (req, res) => {
       }
     res.json({
         code : 200
+    })
+}
+
+// [DELETE] admin/roles/delete-role/:id
+module.exports.deleteRole = async (req, res) => {
+
+    // xóa (mềm) quyền
+    await Role.updateOne({
+        _id : req.params.id,
+        deleted : false,
+    }, {
+        deleted : true,
+    });
+
+    // xóa (mềm) các account có quyền này
+    await Accounts.updateMany({
+        role_id : req.params.id,
+        deleted : false
+    }, {
+        deleted : true,
+    })
+
+    res.json({
+        code : 200,
     })
 }

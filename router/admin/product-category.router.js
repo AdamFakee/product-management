@@ -28,4 +28,9 @@ router.patch(
   validate.createPost,
   controller.editPatch,
 )
+
+router.delete('/delete-item/:id', controller.deleteItem);
+
+router.patch('/change-status/:status/:id', controller.changeStatus);
+
 module.exports = router;

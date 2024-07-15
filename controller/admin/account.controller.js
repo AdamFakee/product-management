@@ -2,6 +2,7 @@ const Accounts = require('../../models/account.model');
 const Roles = require('../../models/role.model');
 const generateHelper = require('../../helpers/generate.helper');
 const md5 = require('md5');
+const { model } = require('mongoose');
 
 
 
@@ -78,4 +79,32 @@ module.exports.editPatch = async (req, res) => {
     req.flash("success", "Cập nhật thành công!");
 
     res.redirect("back");
+}
+
+// [DELETE] admin/accounts/delete-account/:id
+module.exports.deleteAccount = async (req, res) => {
+    await Accounts.updateOne({
+        _id : req.params.id,
+        deleted : false,
+    }, {
+        deleted : true,
+    });
+
+    res.json({
+        code : 200
+    })
+}
+
+// [PATCH] admin/accounts/change-status/:status/:id
+module.exports.changeStatusAccount = async (req, res) => {
+    await Accounts.updateOne({
+        _id : req.params.id,
+        deleted : false,
+    }, {
+        status : req.params.status,
+    });
+
+    res.json({
+        code : 200
+    })
 }

@@ -42,15 +42,17 @@ block main
               td #{item.email}
               td
                 if (item.status === "active")
-                  a(
-                    href="javascript:;"
+                  button(
+                    link=`/${prefixAdmin}/accounts/change-status/inactive/${item.id}`
                     class="badge badge-success"
+                    button-status-change
                     data-status="active"
                   ) Hoạt động
                 else
-                  a(
-                    href="javascript:;"
+                  button(
+                    link=`/${prefixAdmin}/accounts/change-status/active/${item.id}`
                     class="badge badge-danger"
+                    button-status-change
                     data-status="inactive"
                   ) Dừng hoạt động
               td
@@ -64,4 +66,5 @@ block main
                 ) Sửa
                 button(
                   class="btn btn-danger btn-sm ml-1"
+                  button-delete = `/${prefixAdmin}/accounts/delete-account/${item.id}`
                 ) Xóa

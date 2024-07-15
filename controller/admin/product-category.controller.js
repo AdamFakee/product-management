@@ -80,3 +80,31 @@ module.exports.editPatch = async (req, res) => {
     res.redirect('/admin/products-category')
   }
 }
+
+// [DELETE] admin/product-category/delete-item/:id
+module.exports.deleteItem = async (req, res) => {
+  await ProductCategory.updateOne({
+    _id : req.params.id,
+    deleted : false,
+  }, {
+    deleted : true,
+  })
+  
+  res.json({
+    code : 200,
+  })
+}
+
+// [PATCH] admin/product-category/change-status/:status/:id
+module.exports.changeStatus = async (req, res) => {
+  const {status, id} = req.params;
+  await ProductCategory.updateOne({
+    _id : id,
+    deleted : false,
+  }, {
+    status : status,
+  });
+  res.json({
+    code : 200
+  })
+}

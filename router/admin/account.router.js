@@ -28,4 +28,7 @@ router.patch(
 );
 
 
+router.delete('/delete-account/:id', controller.deleteAccount);
+router.patch('/change-status/:status/:id', controller.changeStatusAccount)
+
 module.exports = router;
