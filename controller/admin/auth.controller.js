@@ -11,7 +11,7 @@ module.exports.login = (req, res) => {
 
 // [POST] admin/auth/login
 module.exports.loginPost = async (req, res) => {
-    const password = md5(req.body.password);
+    const password = req.body.password;
     const email = req.body.email;
     const account = await Accounts.findOne({
         email : email,
@@ -43,7 +43,6 @@ module.exports.loginPost = async (req, res) => {
         }, {
             countLogin : account.countLogin + 1
         });
-        console.log(account.countLogin)
         req.flash("error", `Sai mật khẩu! Còn ${5 - account.countLogin} lần nhập`);
         res.redirect("back");
         return;

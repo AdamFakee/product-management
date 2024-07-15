@@ -27,7 +27,9 @@ module.exports.index = async (req, res) => {
 
 // [GET] admin/accounts/create 
 module.exports.create = async (req, res) => {
-    const roles = await Roles.find({}).select('title');
+    const roles = await Roles.find({
+        deleted : false,
+    }).select('title');
     res.render('admin/pages/accounts/create.pug', {
         pageTitle : 'Thêm mới tài khoản',
         roles : roles

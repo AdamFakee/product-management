@@ -6,13 +6,38 @@ const roleRouter = require("./role.router");
 const accountRouter = require('./account.router');
 const authRouter = require('./auth.router');
 const systemConfig = require("../../config/system");
+const authMiddleware = require('../../middlewares/admin/auth.middleware');
 module.exports.index = (app) => {
     const path = `/${systemConfig.prefixAdmin}`;
-    app.use(path +'/dashboard', dashboardRouter);
-    app.use(path +'/products', productRouter);
-    app.use(`${path}/products-category`, productsCategoryRoute);
-    app.use(path +'/trash', trashRouter);
-    app.use(path +'/roles', roleRouter);
-    app.use(path +'/accounts', accountRouter);
+    app.use(
+        path +'/dashboard',
+        authMiddleware.requireAuth,
+        dashboardRouter
+    );
+    app.use(
+        path +'/products',
+        authMiddleware.requireAuth,
+        productRouter
+    );
+    app.use(
+        `${path}/products-category`, 
+        authMiddleware.requireAuth,
+        productsCategoryRoute
+    );
+    app.use(
+        path +'/trash',
+        authMiddleware.requireAuth, 
+        trashRouter
+    );
+    app.use(
+        path +'/roles',
+        authMiddleware.requireAuth, 
+        roleRouter
+    );
+    app.use(
+        path +'/accounts',
+        authMiddleware.requireAuth, 
+        accountRouter
+    );
     app.use(path +'/auth', authRouter);
 }
