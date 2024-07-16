@@ -79,7 +79,6 @@ if(listButtonStatusChange.length > 0) {
                 .then(data => {
                     if(data.code == 200){
                         window.location.reload();
-                        
                     }
                 })
         })

@@ -6,13 +6,14 @@ block main
   .card.mb-3
     .card-header Danh sách
     .card-body
-      .row
-        .col-8
-        .col-4.text-right
-          a(
-            href=`/${prefixAdmin}/accounts/create`
-            class="btn btn-outline-success"
-          ) + Thêm mới
+      if(role.permissions.includes('account_create'))
+        .row
+          .col-8
+          .col-4.text-right
+            a(
+              href=`/${prefixAdmin}/accounts/create`
+              class="btn btn-outline-success"
+            ) + Thêm mới
       table(
         class="table table-hover table-sm"
       )
@@ -60,11 +61,13 @@ block main
                   class="btn btn-secondary btn-sm"
                   href=`/${prefixAdmin}/accounts/detail/${item.id}`
                 ) Chi tiết
-                a(
-                  class="btn btn-warning btn-sm ml-1"
-                  href=`/${prefixAdmin}/accounts/edit/${item.id}`
-                ) Sửa
-                button(
-                  class="btn btn-danger btn-sm ml-1"
-                  button-delete = `/${prefixAdmin}/accounts/delete-account/${item.id}`
-                ) Xóa
+                if(role.permissions.includes('account_edit'))
+                  a(
+                    class="btn btn-warning btn-sm ml-1"
+                    href=`/${prefixAdmin}/accounts/edit/${item.id}`
+                  ) Sửa
+                if(role.permissions.includes('account_delete'))
+                  button(
+                    class="btn btn-danger btn-sm ml-1"
+                    button-delete = `/${prefixAdmin}/accounts/delete-account/${item.id}`
+                  ) Xóa

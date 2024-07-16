@@ -5,15 +5,16 @@ include ../../mixins/pagination.pug
 block main 
     .card.mb-3
         .card-header Danh sách
-        .card-body
-            div(class="input-group" box-actions=`/${prefixAdmin}/products/change-multi-status`)
-                select(class="custom-select")
-                    option(value='restore') khôi phục
-                    option(value='delete') xóa vĩnh viễn
-                .input-group-append
-                    button(
-                        class="btn btn-outline-secondary"
-                        type='button'
+        if(role.permissions.includes('trash_delete'))
+            .card-body
+                div(class="input-group" box-actions=`/${prefixAdmin}/products/change-multi-status`)
+                    select(class="custom-select")
+                        option(value='restore') khôi phục
+                        option(value='delete') xóa vĩnh viễn
+                    .input-group-append
+                        button(
+                            class="btn btn-outline-secondary"
+                            type='button'
                     ) Áp dụng
         .card-body
         table.table.table-hover.table-sm
@@ -57,7 +58,19 @@ block main
                                     button-status-change
                                     ) Dừng hoạt động
                             td
-                                button(class="btn btn-warning btn-sm" button-restore = `/${prefixAdmin}/trash/restore-item/${item.id}`) khôi phục
-                                button(class="btn btn-danger btn-sm ml-1" button-delete-permanently = `/${prefixAdmin}/trash/delete-permanently/${item.id}`  ) xóa vĩnh viễn
+                                a(
+                                    class="btn btn-secondary btn-sm"
+                                    href=`/${prefixAdmin}/products/detail/${item.id}`
+                                    ) Chi tiết
+                                if(role.permissions.includes('trash_edit'))
+                                    button(
+                                        class="btn btn-warning btn-sm" 
+                                        button-restore = `/${prefixAdmin}/trash/restore-item/${item.id}`
+                                        ) khôi phục
+                                if(role.permissions.includes('trash_delete'))
+                                    button(
+                                        class="btn btn-danger btn-sm ml-1" 
+                                        button-delete-permanently = `/${prefixAdmin}/trash/delete-permanently/${item.id}`  
+                                        ) xóa vĩnh viễn
     if(pagination.totalPage > 1) 
         +pagination(pagination)

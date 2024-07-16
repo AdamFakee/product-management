@@ -5,72 +5,77 @@ const products = require('../../models/product.model');
 const productCategory = require('../../models/product-category.model');
 const paginationHelper =  require('../../helpers/pagination.helper');
 const createTree =  require('../../helpers/createTree.helper');
+const Role = require('../../models/role.model');
 
 // [GET] admin/products
 module.exports.index = async (req, res) => {
-    
-    // tính năng lọc
-    const find = {
-        deleted : false,
-    };
-    if(req.query.status){
-        find.status = req.query.status;
-    };
-    // end tính năng lọc
+    if(res.locals.role.permissions.includes('product_view')){
+        // tính năng lọc
+        const find = {
+            deleted : false,
+        };
+        if(req.query.status){
+            find.status = req.query.status;
+        };
+        // end tính năng lọc
 
-    // mảng thông tin của button-status
-    const filterStatus = [
-        {
-            status : "",
-            label : 'tất cả'
-        },
-        {
-            status : "active",
-            label : 'hoạt động'
-        },
-        {
-            status : "inactive",
-            label : 'dừng hoạt động'
+        // mảng thông tin của button-status
+        const filterStatus = [
+            {
+                status : "",
+                label : 'tất cả'
+            },
+            {
+                status : "active",
+                label : 'hoạt động'
+            },
+            {
+                status : "inactive",
+                label : 'dừng hoạt động'
+            }
+        ]
+        // end mảng thông tin của button-status
+
+        // tính năng tìm kiếm 
+        let keyword = '';
+        if(req.query.keyword) {
+            const regex = new RegExp(req.query.keyword, "i");  // tìm kiếm tương đối, nghĩa là chỉ cần giống 1 phần nội dung của title => vẫn kiếm đc
+                                                            // kiếm iphone 9 nhưng nhập iphone vẫn kiếm được ra mấy máy có title = iphone
+            find.title = regex;
+            keyword = req.query.keyword;
         }
-    ]
-    // end mảng thông tin của button-status
-    
-    // tính năng tìm kiếm 
-    let keyword = '';
-    if(req.query.keyword) {
-        const regex = new RegExp(req.query.keyword, "i");  // tìm kiếm tương đối, nghĩa là chỉ cần giống 1 phần nội dung của title => vẫn kiếm đc
-                                                          // kiếm iphone 9 nhưng nhập iphone vẫn kiếm được ra mấy máy có title = iphone
-        find.title = regex;
-        keyword = req.query.keyword;
-    }
-    // end tính năng tìm kiếm
+        // end tính năng tìm kiếm
 
-    // phan trang
-    const pagination = await paginationHelper(req, find); // dùng await để đợi async, đại khái là async ở đầu hàm thôi
-    // end phân trang
+        // phan trang
+        const pagination = await paginationHelper(req, find); // dùng await để đợi async, đại khái là async ở đầu hàm thôi
+        // end phân trang
 
-    // sap xep
-    const sort = {};
-    if(req.query.sortValue && req.query.sortKey){
-        sort[req.query.sortKey]=req.query.sortValue;
+        // sap xep
+        const sort = {};
+        if(req.query.sortValue && req.query.sortKey){
+            sort[req.query.sortKey]=req.query.sortValue;
+        } else {
+            sort['position'] = 'desc';
+        }
+        // end sap xep
+
+        const productList = await products
+            .find(find)
+            .limit(pagination.limitProduct)
+            .skip(pagination.skipProduct)
+            .sort(sort);
+
+        res.render('admin/pages/products/index', {
+            pageTitle : "trang san pham",
+            productList: productList,
+            keyword : keyword,    // để khi kiếm thì đề xuất mấy cái mình đã từng kiếm trước đó rồi
+            filterStatus : filterStatus,
+            pagination : pagination,
+        });
     } else {
-        sort['position'] = 'desc';
+        res.redirect(`/${systemConfig.prefixAdmin}/auth/login`)
     }
-    // end sap xep
-   
-    const productList = await products
-        .find(find)
-        .limit(pagination.limitProduct)
-        .skip(pagination.skipProduct)
-        .sort(sort);
-
-    res.render('admin/pages/products/index', {
-        pageTitle : "trang san pham",
-        productList: productList,
-        keyword : keyword,    // để khi kiếm thì đề xuất mấy cái mình đã từng kiếm trước đó rồi
-        filterStatus : filterStatus,
-        pagination : pagination,
-    });
+    
 }
 
 
@@ -79,169 +84,211 @@ module.exports.index = async (req, res) => {
 // tính nănng thay đổi trạng thái sản phẩm - phương thức patch
 
 module.exports.changeStatus = async (req, res) => {
-    const {statusChange, id} = req.params;
-    await products.updateOne(
-        {_id : id},
-        {status : statusChange}
-    );
-    // show alert
-    req.flash('success', 'thanh cong');
-    // end show alert
-    res.json({
-        code : 200
-    });
+    if(res.locals.role.permissions.includes('product_edit')){
+        const {statusChange, id} = req.params;
+        await products.updateOne(
+            {_id : id},
+            {status : statusChange}
+        );
+        // show alert
+        req.flash('success', 'thanh cong');
+        // end show alert
+        res.json({
+            code : 200
+        });
+    } else {
+        res.json({
+            code : 300 // k có quyền
+        })
+    }
+    
 }
 
 // end thay đổi trang thái sản phẩm
 
 // [PATCH] /admin/products/change-multi-status
 module.exports.changeMultiStatus = async (req, res) => {
-    const {status, ids} = req.body;
-    switch (status) {
-        case "active":
-        case "inactive":
-            await products.updateMany({
-                _id : ids
-            },
-            {
-                status : status
-            });
-            // show alert
-            req.flash('success', 'thanh cong');
-            // end show alert
-            res.json({
-                code : 200
-            })
-            break;
-        case 'deleteItem':
-            await products.updateMany({
-                _id : ids
-            },
-            {
-                deleted : true
-            });
-            // show alert
-            req.flash('success', 'thanh cong');
-            // end show alert
-            res.json({
-                code : 200
-            })
-            break;
-        case 'restore':
-            await products.updateMany({
-                _id : ids
-            },
-            {
-                deleted : false
-            });
-            // show alert
-            req.flash('success', 'thanh cong');
-            // end show alert
-            res.json({
-                code : 200
-            })
-            break;
-        case 'delete':
-            await products.deleteMany({
-                _id : ids
-            });
-            // show alert
-            req.flash('success', 'thanh cong');
-            // end show alert
-            res.json({
-                code : 200
-            })
-            break;
-        default:
-            console.log('box-action is not running');
+    if(res.locals.role.permissions.includes('product_edit')){
+        const {status, ids} = req.body;
+        switch (status) {
+            case "active":
+            case "inactive":
+                await products.updateMany({
+                    _id : ids
+                },
+                {
+                    status : status
+                });
+                // show alert
+                req.flash('success', 'thanh cong');
+                // end show alert
+                res.json({
+                    code : 200
+                })
+                break;
+            case 'deleteItem':
+                await products.updateMany({
+                    _id : ids
+                },
+                {
+                    deleted : true
+                });
+                // show alert
+                req.flash('success', 'thanh cong');
+                // end show alert
+                res.json({
+                    code : 200
+                })
+                break;
+            case 'restore':
+                await products.updateMany({
+                    _id : ids
+                },
+                {
+                    deleted : false
+                });
+                // show alert
+                req.flash('success', 'thanh cong');
+                // end show alert
+                res.json({
+                    code : 200
+                })
+                break;
+            case 'delete':
+                await products.deleteMany({
+                    _id : ids
+                });
+                // show alert
+                req.flash('success', 'thanh cong');
+                // end show alert
+                res.json({
+                    code : 200
+                })
+                break;
+            default:
+                console.log('box-action is not running');
+        }
+    } else {
+        res.json({
+            code : 300 
+        })
     }
+    
    
 }
 
 // [DELETE] /admin/products/delete-item/:id
 module.exports.deleteItem = async (req, res) => {
-    const id = req.params.id;
-    await products.updateOne({
-        _id : id
-    },{
-        deleted : true,
+    if(res.locals.role.permissions.includes('product_delete')){
+        const id = req.params.id;
+        await products.updateOne({
+            _id : id
+        },{
+            deleted : true,
+        }
+        );
+        // show alert
+        req.flash('success', 'thanh cong');
+        // end show alert
+        res.json({
+            code : 200,
+        })
+    } else {
+        req.flash('error', 'tài khoản k được cấp quyền');
+        res.json({
+            code : 300 // k có quyền
+        });
     }
-    );
-    // show alert
-    req.flash('success', 'thanh cong');
-    // end show alert
-    res.json({
-        code : 200,
-    })
+    
 }
 
 // [GET]  /admin/products/create
 module.exports.create = async (req, res) => {
-    const records = await productCategory.find({deleted:false});
-    const newCategories = createTree(records);
-    res.render('admin/pages/products/create', {
-        pageTitle: "Thêm mới sản phẩm",
-        categories : newCategories
-      });
+    if(res.locals.role.permissions.includes('product_create')){
+        const records = await productCategory.find({deleted:false});
+        const newCategories = createTree(records);
+        res.render('admin/pages/products/create', {
+            pageTitle: "Thêm mới sản phẩm",
+            categories : newCategories
+          });
+    } else {
+        res.redirect(`/${systemConfig.prefixAdmin}/auth/login`)
+    }
+    
 }
 // [POST]  /admin/products/create
 module.exports.createPost = async (req, res) => {
-    req.body.price = parseInt(req.body.price);
-    req.body.stock = parseInt(req.body.stock);
-    req.body.discountPercentage = parseInt(req.body.discountPercentage);
-    const countProduct = await products.countDocuments({});
-    if(req.body.position){
-        req.body.position = parseInt(req.body.position);
-    } else {
-        req.body.position = countProduct + 1;
-    }
-    const newProduct = new products(req.body);
+    if(res.locals.role.permissions.includes('product_create')){
+        req.body.price = parseInt(req.body.price);
+        req.body.stock = parseInt(req.body.stock);
+        req.body.discountPercentage = parseInt(req.body.discountPercentage);
+        const countProduct = await products.countDocuments({});
+        if(req.body.position){
+            req.body.position = parseInt(req.body.position);
+        } else {
+            req.body.position = countProduct + 1;
+        }
+        const newProduct = new products(req.body);
+        
+        // newProduct.save().then(() => console.log('meow'));  // .then(function) tương tự :  await newProduct.save() + try catch
+        await newProduct.save()
     
-    // newProduct.save().then(() => console.log('meow'));  // .then(function) tương tự :  await newProduct.save() + try catch
-    await newProduct.save()
-
-
-    res.redirect(`/${systemConfig.prefixAdmin}/products`)
+    
+        res.redirect(`/${systemConfig.prefixAdmin}/products`)
+    } else {
+        res.redirect(`/${systemConfig.prefixAdmin}/auth/login`)
+    }
+    
 }
 
 // [GET] /admin/products/edit/:id
 module.exports.edit = async (req, res) => {
-    try {
-        const id = req.params.id;
-        const product = await products.findOne({
-        _id : id,
-        deleted : false,
-        })
-        const records = await productCategory.find({deleted:false});
-        const newCategories = createTree(records);
-        res.render('admin/pages/products/edit.pug', {
-            pageTitle : 'trang chinh sua san pham',
-            product : product,
-            categories : newCategories,
-        })
-    } catch (error) {
-        res.redirect('back')
+    if(res.locals.role.permissions.includes('product_edit')){
+        try {
+            const id = req.params.id;
+            const product = await products.findOne({
+            _id : id,
+            deleted : false,
+            })
+            const records = await productCategory.find({deleted:false});
+            const newCategories = createTree(records);
+            res.render('admin/pages/products/edit.pug', {
+                pageTitle : 'trang chinh sua san pham',
+                product : product,
+                categories : newCategories,
+            })
+        } catch (error) {
+            res.redirect('back')
+        }
+    } else {
+        res.redirect(`/${systemConfig.prefixAdmin}/auth/login`)
     }
+    
 }
 
 // [PATCH] /admin/products/edit/:id
 module.exports.editPatch = async (req, res) => {
-    try {
-        const id = req.params.id;
-
-        req.body.price = parseInt(req.body.price);
-        req.body.discountPercentage = parseInt(req.body.discountPercentage);
-        req.body.stock = parseInt(req.body.stock);
-        req.body.position = parseInt(req.body.position);
-        
-        await products.updateOne({
-            _id : id,
-            deleted : false,
-        }, req.body)
-        req.flash('success', 'update thanh cong');  // do cái flash ở default nên khi back về chỗ nào cũng có thông báo :))
-        res.redirect(`back`);
-    } catch (error) {
-        req.flash('error', 'id k hop le');
-        res.redirect('/admin/products');
+    if(res.locals.role.permissions.includes('product_edit')){
+        try {
+            const id = req.params.id;
+    
+            req.body.price = parseInt(req.body.price);
+            req.body.discountPercentage = parseInt(req.body.discountPercentage);
+            req.body.stock = parseInt(req.body.stock);
+            req.body.position = parseInt(req.body.position);
+            
+            await products.updateOne({
+                _id : id,
+                deleted : false,
+            }, req.body)
+            req.flash('success', 'update thanh cong');  // do cái flash ở default nên khi back về chỗ nào cũng có thông báo :))
+            res.redirect(`back`);
+        } catch (error) {
+            req.flash('error', 'id k hop le');
+            res.redirect('/admin/products');
+        }
+    } else {
+        res.redirect(`/${systemConfig.prefixAdmin}/auth/login`)
     }
+    
 }

@@ -15,11 +15,11 @@ block main
           +button-status(filterStatus)
         .col-6
           +search(keyword)
-
-  .card.mb-3
-    .card-header Hành động
-    .card-body
-      +box-action(`/${prefixAdmin}/products/change-multi-status`)
+  if(role.permissions.includes('product-delete'))  
+    .card.mb-3
+      .card-header Hành động
+      .card-body
+        +box-action(`/${prefixAdmin}/products/change-multi-status`)
 
   .card.mb-3
     .card-header Sắp xếp
@@ -46,11 +46,12 @@ block main
   .card.mb-3
     .card-header Danh sách
     .card-body
-      div(class="text-right mb-2")
-        a(
-          href=`/${prefixAdmin}/products/create`
-          class="btn btn-outline-success"
-        ) + Thêm mới
+      if(role.permissions.includes("product_create"))
+        div(class="text-right mb-2")
+          a(
+            href=`/${prefixAdmin}/products/create`
+            class="btn btn-outline-success"
+          ) + Thêm mới
       table.table.table-hover.table-sm
         +list-product(productList)
   +pagination(pagination)
