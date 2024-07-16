@@ -1,5 +1,5 @@
 extends ../../layouts/default.pug
-
+include ../../mixins/rolePermision
 block main
   h1(class="mb-4") #{pageTitle}
 
@@ -24,46 +24,8 @@ block main
               role-id=item.id
             ) #{item.title}
       tbody
-        tr
-          td(colspan="4")
-            b Danh mục sản phẩm
-        tr
-          td Xem
-          each item in records
-            td(class="text-center")
-              input(
-                type="checkbox" 
-                data-id=item.id 
-                data-name="products-category_view"
-                checked=(item.permissions.includes("products-category_view"))
-              )
-        tr
-          td Thêm mới
-          each item in records
-            td(class="text-center")
-              input(
-                type="checkbox" 
-                data-id=item.id
-                data-name="products-category_create"
-                checked=(item.permissions.includes("products-category_create"))
-              )
-        tr
-          td Chỉnh sửa
-          each item in records
-            td(class="text-center")
-              input(
-                type="checkbox" 
-                data-id=item.id
-                data-name="products-category_edit"
-                checked=(item.permissions.includes("products-category_edit"))
-              )
-        tr
-          td Xóa
-          each item in records
-            td(class="text-center")
-              input(
-                type="checkbox" 
-                data-id=item.id
-                data-name="products-category_delete"
-                checked=(item.permissions.includes("products-category_delete"))
-              )
+        +role-permision(records, 'danh mục sản phẩm', 'product-category')
+        +role-permision(records, 'phân quyền', 'role')
+        +role-permision(records, 'tài khoản', 'account')
+        +role-permision(records, 'sản phẩm', 'product')
+        +role-permision(records, 'thùng rác', 'trash')

@@ -1,0 +1,47 @@
+//- [GET] admin/roles/permissions
+//- hàm show các tính năng của từng phần
+
+mixin role-permision(roles, roleName, featureName) 
+    tr
+        td(colspan="4")
+            b #{roleName}
+    tr
+        td Xem
+        each item in records
+            td(class="text-center")
+                input(
+                    type="checkbox" 
+                    data-id=item.id 
+                    data-name=`${featureName}_view`
+                    checked=(item.permissions.includes(`${featureName}_view`))
+                )
+    tr
+        td Thêm mới
+        each item in records
+            td(class="text-center")
+                input(
+                    type="checkbox" 
+                    data-id=item.id
+                    data-name=`${featureName}_create`
+                    checked=(item.permissions.includes(`${featureName}_create`))
+                )
+    tr
+        td Chỉnh sửa
+        each item in records
+            td(class="text-center")
+                input(
+                    type="checkbox" 
+                    data-id=item.id
+                    data-name=`${featureName}_edit`
+                    checked=(item.permissions.includes(`${featureName}_edit`))
+                )
+    tr
+        td Xóa
+        each item in records
+            td(class="text-center")
+                input(
+                    type="checkbox" 
+                    data-id=item.id
+                    data-name=`${featureName}_delete`
+                    checked=(item.permissions.includes(`${featureName}_delete`))
+                )

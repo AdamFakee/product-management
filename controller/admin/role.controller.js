@@ -76,6 +76,7 @@ module.exports.permissionsPatch = async (req, res) => {
         }, {
           permissions: role.permissions
         });
+        console.log(role.permissions)
       }
     res.json({
         code : 200
