@@ -18,6 +18,9 @@ const productSchema = new mongoose.Schema({
   thumbnail: String,
   status: String,
   position: Number,
+  updatedBy : String,  // tài khoản update data
+  createdBy : String, // tài khoản tạo data
+  deletedBy : String,// tài khoản xóa data
   deleted: {
     type: Boolean,
     default: false

@@ -131,6 +131,7 @@ module.exports.changeMultiStatus = async (req, res) => {
                     _id : ids
                 },
                 {
+                    deletedBy : res.locals.account.id, // tài khoản xóa sản phẩm
                     deleted : true
                 });
                 // show alert
@@ -184,6 +185,7 @@ module.exports.deleteItem = async (req, res) => {
         await products.updateOne({
             _id : id
         },{
+            deletedBy : res.locals.account.id,  // cập nhật tài khoản xóa sp
             deleted : true,
         }
         );
@@ -228,6 +230,7 @@ module.exports.createPost = async (req, res) => {
         } else {
             req.body.position = countProduct + 1;
         }
+        req.body.createdBy = res.locals.account.id; // cập nhật tài khoản tạo sản phẩm
         const newProduct = new products(req.body);
         
         // newProduct.save().then(() => console.log('meow'));  // .then(function) tương tự :  await newProduct.save() + try catch
@@ -276,7 +279,7 @@ module.exports.editPatch = async (req, res) => {
             req.body.discountPercentage = parseInt(req.body.discountPercentage);
             req.body.stock = parseInt(req.body.stock);
             req.body.position = parseInt(req.body.position);
-            
+            req.body.updatedBy = res.locals.account.id; // cập nhật tài khoản update sản phẩm
             await products.updateOne({
                 _id : id,
                 deleted : false,

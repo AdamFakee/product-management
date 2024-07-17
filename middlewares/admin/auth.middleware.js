@@ -22,5 +22,6 @@ module.exports.requireAuth = async (req, res, next) => {
     }).select('permissions');
     res.locals.role = role;  // gán vào biến để truy vấn - tính năng phân quyền
     // end lấy quyền được cấp cho tài khoản 
+    res.locals.account = account;  // tài khoản đăng nhập vào web
     next();
 }
