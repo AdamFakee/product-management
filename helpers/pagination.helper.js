@@ -1,7 +1,6 @@
-const products = require('../models/product.model');
 
-module.exports = async (req, find) => {
-    const countProduct = await products.countDocuments(find);
+module.exports = async (req, find, modelName) => {
+    const countProduct = await modelName.countDocuments(find);
     const pagination = {
         limitProduct : 4,
         currentPage :  1,

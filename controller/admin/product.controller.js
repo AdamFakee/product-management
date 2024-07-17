@@ -47,7 +47,7 @@ module.exports.index = async (req, res) => {
         // end tính năng tìm kiếm
 
         // phan trang
-        const pagination = await paginationHelper(req, find); // dùng await để đợi async, đại khái là async ở đầu hàm thôi
+        const pagination = await paginationHelper(req, find, products); // dùng await để đợi async, đại khái là async ở đầu hàm thôi
         // end phân trang
 
         // sap xep

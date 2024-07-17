@@ -1,0 +1,84 @@
+extends ../../layouts/default.pug
+
+block main 
+    if(productCategory.length > 0)
+        .card.mb-3
+            .card-header Danh sách
+            if(role.permissions.includes('trash_delete'))
+                .card-body
+                    div(class="input-group" box-actions=`/${prefixAdmin}/trash/change-multi-status/product-category`)
+                        select(class="custom-select")
+                            option(value='restore') khôi phục
+                            option(value='delete') xóa vĩnh viễn
+                        .input-group-append
+                            button(
+                                class="btn btn-outline-secondary"
+                                type='button'
+                        ) Áp dụng
+            .card-body
+                table.table.table-hover.table-sm
+                    thead
+                        tr
+                            th
+                                input(name="checkAll" type="checkbox")
+                            th STT
+                            th Hình ảnh
+                            th Tiêu đề
+                            if(role.permissions.includes('product-category_edit'))
+                                th Vị trí
+                                th Trạng thái
+                            th Hành động
+
+                        tbody
+                            each item, index in productCategory
+                                tr
+                                    td 
+                                        input(name="checkItem" type="checkbox" id = item.id)
+                                    td #{index + 1}
+                                    td
+                                        img(
+                                        src=item.thumbnail
+                                        alt=item.title
+                                        width="100px"
+                                        height="auto"
+                                        )
+                                    td #{item.title}
+                                    if(role.permissions.includes('product-category_edit'))
+                                        td
+                                            input(
+                                                type="number"
+                                                value=item.position
+                                                style="width: 60px"
+                                                min="1"
+                                                name="position"
+                                            )
+                                        td
+                                            if(item.status == "active")
+                                                button(
+                                                link=`/${prefixAdmin}/products/change-status/inactive/${item.id}` 
+                                                class="badge badge-success"
+                                                button-status-change
+                                                ) Hoạt động
+                                            else
+                                                button(
+                                                link=`/${prefixAdmin}/products/change-status/active/${item.id}`
+                                                class="badge badge-danger"
+                                                button-status-change
+                                                ) Dừng hoạt động
+                                    td
+                                        a(
+                                            class="btn btn-secondary btn-sm"
+                                            href=`/${prefixAdmin}/products/detail/${item.id}`
+                                            ) Chi tiết
+                                        if(role.permissions.includes('trash_edit'))
+                                            button(
+                                                class="btn btn-warning btn-sm" 
+                                                button-restore = `/${prefixAdmin}/trash/restore-item/product-category/${item.id}`
+                                                ) khôi phục
+                                        if(role.permissions.includes('trash_delete'))
+                                            button(
+                                                class="btn btn-danger btn-sm ml-1" 
+                                                button-delete-permanently = `/${prefixAdmin}/trash/delete-permanently/product-category/${item.id}`   
+                                                ) xóa vĩnh viễn
+        if(pagination.totalPage > 1) 
+            +pagination(pagination)
