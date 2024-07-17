@@ -20,7 +20,7 @@ module.exports.index = async (req, res) => {
 
 // [GET] admin/roles/create
 module.exports.create = (req, res) => {
-    if(res.locals.role.permissions.includes('role_view')){
+    if(res.locals.role.permissions.includes('role_create')){
         res.render('admin/pages/roles/create.pug');
     } else {
         res.redirect(`/${systemConfig.prefixAdmin}/auth/login`)
@@ -31,6 +31,7 @@ module.exports.create = (req, res) => {
 // [POST] admin/roles/create
 module.exports.createPost = async (req, res) => {
     if(res.locals.role.permissions.includes('role_view')){
+        req.body.createdBy = res.locals.account.id; // cập nhật tài khoản tạo quyền
         const newRole = new Role(req.body);
         await newRole.save();
         req.flash('success', 'thêm mới quyền thành công');
@@ -44,7 +45,7 @@ module.exports.createPost = async (req, res) => {
 
 // [GET] admin/roles/edit/:id
 module.exports.edit = async (req, res) => {
-    if(res.locals.role.permissions.includes('role_view')){
+    if(res.locals.role.permissions.includes('role_edit')){
         try {
             const permision = await Role.findOne({
                 _id : req.params.id,
@@ -64,9 +65,9 @@ module.exports.edit = async (req, res) => {
 
 // [PATCH] admin/roles/edit/:id
 module.exports.editPatch = async (req, res) => {
-    if(res.locals.role.permissions.includes('role_view')){
+    if(res.locals.role.permissions.includes('role_edit')){
         try {
-            console.log(req.body)
+            req.body.updatedBy = res.locals.account.id; // cập nhật tài khoản update quyền
             await Role.updateOne({
                 _id : req.params.id,
             }, req.body);
@@ -99,12 +100,13 @@ module.exports.permissions = async (req, res) => {
 
 // [PATCH] admin/roles/permissions
 module.exports.permissionsPatch = async (req, res) => {
-    if(res.locals.role.permissions.includes('role_view')){
+    if(res.locals.role.permissions.includes('role_edit')){
         for (const role of req.body) {
             await Role.updateOne({
               _id: role.id,
               deleted: false
             }, {
+              updatedBy : res.locals.account.id, // cập nhật tài khoản update quyền
               permissions: role.permissions
             });
           }
@@ -121,12 +123,13 @@ module.exports.permissionsPatch = async (req, res) => {
 
 // [DELETE] admin/roles/delete-role/:id
 module.exports.deleteRole = async (req, res) => {
-    if(res.locals.role.permissions.includes('role_view')){
+    if(res.locals.role.permissions.includes('role_delete')){
         // xóa (mềm) quyền
         await Role.updateOne({
             _id : req.params.id,
             deleted : false,
         }, {
+            deletedBy : res.locals.account.id, // cập nhật tài khoản xóa quyền
             deleted : true,
         });
 

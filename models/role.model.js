@@ -7,6 +7,9 @@ const roleSchema = new mongoose.Schema({
     type: Array,
     default: []
   },
+  updatedBy : String,  // tài khoản update data
+  createdBy : String, // tài khoản tạo data
+  deletedBy : String,// tài khoản xóa data
   deleted: {
     type: Boolean,
     default: false
