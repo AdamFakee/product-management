@@ -41,6 +41,7 @@ module.exports.createPost = async (req, res) => {
       const countCagegory = await ProductCategory.countDocuments({});
       req.body.position = countCagegory + 1;
     }
+    req.body.createdBy = res.locals.account.id; // cập nhật tài khoản tạo danh mục
     const newCategory = new ProductCategory(req.body);
     await newCategory.save();
   
@@ -87,6 +88,7 @@ module.exports.editPatch = async (req, res) => {
         const count = await ProductCategory.countDocuments({});
         req.body.position = count + 1;
       }
+      req.body.updatedBy = res.locals.account.id; // cập nhật tài khoản chỉnh sửa danh mục
       await ProductCategory.updateOne({
         _id : req.params.id,
       }, req.body)
@@ -106,6 +108,7 @@ module.exports.deleteItem = async (req, res) => {
       _id : req.params.id,
       deleted : false,
     }, {
+      deletedBy : res.locals.account.id, // cập nhật tài khoản xóa danh mục
       deleted : true,
     })
     
