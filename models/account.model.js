@@ -12,7 +12,10 @@ const accounts = new mongoose.Schema({
   token : String,
   avatar : String, 
   role_id : String,   // các quyền được cấp ở chỗ phân quyền
-  status : String,    
+  status : String,   
+  updatedBy : String,  // tài khoản update data
+  createdBy : String, // tài khoản tạo data
+  deletedBy : String,// tài khoản xóa data 
   deleted : {
     type : Boolean,
     default : false,

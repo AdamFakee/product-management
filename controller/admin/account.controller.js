@@ -32,7 +32,7 @@ module.exports.index = async (req, res) => {
 
 // [GET] admin/accounts/create 
 module.exports.create = async (req, res) => {
-    if(res.locals.role.permissions.includes('account_view')){
+    if(res.locals.role.permissions.includes('account_create')){
         const roles = await Roles.find({
             deleted : false,
         }).select('title');
@@ -48,10 +48,11 @@ module.exports.create = async (req, res) => {
 
 // [POST] admin/accounts/create
 module.exports.createPost = async ( req, res) => {
-    if(res.locals.role.permissions.includes('account_view')){
+    if(res.locals.role.permissions.includes('account_create')){
         req.body.countLogin = 0;
         req.body.password = md5(req.body.password);
         req.body.token = generateHelper.generateRandomString(30);
+        req.body.createdBy = res.locals.account.id; // cập nhật tài khoản tạo acc
         const newAccount = new Accounts(req.body);
         await newAccount.save();
         req.flash('success', 'tạo tài khoản thành công');
@@ -64,7 +65,7 @@ module.exports.createPost = async ( req, res) => {
 
 // [GET] admin/accounts/edit/:id
 module.exports.edit = async (req, res) => {
-    if(res.locals.role.permissions.includes('account_view')){
+    if(res.locals.role.permissions.includes('account_edit')){
         const account = await Accounts.findOne({
             _id : req.params.id,
             deleted : false
@@ -85,7 +86,7 @@ module.exports.edit = async (req, res) => {
 
 // [PATCH] admin/accounts/edit/:id
 module.exports.editPatch = async (req, res) => {
-    if(res.locals.role.permissions.includes('account_view')){
+    if(res.locals.role.permissions.includes('account_edit')){
         const id = req.params.id;
 
         if(req.body.password == "") {
@@ -93,7 +94,7 @@ module.exports.editPatch = async (req, res) => {
         } else {
             req.body.password = md5(req.body.password);
         }
-    
+        req.body.updatedBy = res.locals.account.id; // cập nhật tài khoản update
         await Accounts.updateOne({
             _id: id,
             deleted: false
@@ -110,11 +111,12 @@ module.exports.editPatch = async (req, res) => {
 
 // [DELETE] admin/accounts/delete-account/:id
 module.exports.deleteAccount = async (req, res) => {
-    if(res.locals.role.permissions.includes('account_view')){
+    if(res.locals.role.permissions.includes('account_delete')){
         await Accounts.updateOne({
             _id : req.params.id,
             deleted : false,
         }, {
+            deletedBy : res.locals.account.id, // cập nhật tài khoản delete acc
             deleted : true,
         });
     
