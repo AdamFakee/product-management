@@ -1,0 +1,7 @@
+mixin sub-menu(productCategories)
+    ul
+        each item in productCategories 
+            li 
+                a(href=`/products/${item.slug}`) #{item.title}
+                if(item.child)
+                    +sub-menu(item.child)
