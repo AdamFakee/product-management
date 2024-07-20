@@ -1,3 +1,10 @@
 extends ../../layouts/default.pug
+include ../../mixins/listProduct.pug
+
+
 block main 
-    h1 trang chu
+    h1 sản phẩm nổi bật
+    +listProduct(featuredProducts)
+    
+    h1 sản phẩm mới nhất
+    +listProduct(newProducts)

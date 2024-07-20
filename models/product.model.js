@@ -18,6 +18,7 @@ const productSchema = new mongoose.Schema({
   thumbnail: String,
   status: String,
   position: Number,
+  featured:Boolean, // sản phẩm nổi bật
   updatedBy : String,  // tài khoản update data
   createdBy : String, // tài khoản tạo data
   deletedBy : String,// tài khoản xóa data

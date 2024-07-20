@@ -28,6 +28,25 @@ block main
         option(value="") -- Chọn danh mục --
         if(categories)
           +select-tree(categories)
+    div(class="form-group form-check form-check-inline")
+      input(
+        type="radio"
+        class="form-check-input"
+        id="featured_1"
+        name="featured"
+        value="true"
+      )
+      label(for="featured_1" class="form-check-label") Nổi bật
+    div(class="form-group form-check form-check-inline")
+      input(
+        type="radio"
+        class="form-check-input"
+        id="featured_0"
+        name="featured"
+        value="false"
+        checked=true
+      )
+      label(for="featured_0" class="form-check-label") Không nổi bật
     div(class="form-group")
       label(for="desc") Mô tả
       textarea(
