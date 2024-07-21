@@ -3,6 +3,7 @@
 
 const homeRouter = require('./home.router');
 const productRouter = require('./product.router');
+const searchRouter = require('./search.router');
 const categoryMiddleware = require('../../middlewares/client/category.middleware');
 
 
@@ -10,4 +11,5 @@ module.exports.index = (app) => {
     app.use(categoryMiddleware)
     app.use("/", homeRouter);
     app.use('/products', productRouter);
+    app.use('/search', searchRouter);
 }

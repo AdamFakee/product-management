@@ -1,20 +1,23 @@
-const products = require('../../models/product.model');
+const Products = require('../../models/product.model');
+const ProductCategory = require('../../models/product-category.model');
+
+// [GET] /products
 module.exports.index = async (req, res) => {
-  const productList = await products.find({});
+  const productList = await Products.find({});
   for (const item of productList) {
     item.newPrice = ((1 - item.discountPercentage/100) * item.price).toFixed(0);
   }
   res.render('client/pages/products/index', {
     pageTitle: 'trang danh sach san pham',
-    productList:productList
+    products : productList
   });
 }
 
-// [GET] /products/:slug
+// [GET] /products/detail/:slug
 module.exports.detail = async (req, res) => {
   const slug = req.params.slug;
 
-  const product = await products.findOne({
+  const product = await Products.findOne({
     slug: slug,
     deleted: false,
     status: "active"
@@ -28,4 +31,55 @@ module.exports.detail = async (req, res) => {
   } else {
     res.redirect("/");
   }
+}
+
+// [GET] /products/:slugCategory
+module.exports.category = async (req, res) => {
+  const slug = req.params.slugCategory;
+  const category = await ProductCategory.findOne({
+    slug : slug,
+    deleted : false,
+    status : 'active',
+  });
+
+  const allSubCategory = []; // chứa id danh mục hiện tại và tất cả id của các danh mục con - con của con
+
+  const getSubCategory = async (currentId) => { // tìm id của các danh mục con
+    const subCategory = await ProductCategory.find({
+      parent_id: currentId,
+      status: "active",
+      deleted: false
+    });
+    for (const sub of subCategory) {
+      allSubCategory.push(sub.id);
+      await getSubCategory(sub.id);
+    }
+  }
+
+  await getSubCategory(category.id);
+
+  const products = await Products.find({ // sản phẩm thuộc danh mục x
+    product_category_id : {
+      $in: [
+        category.id,
+        ...allSubCategory,
+      ]
+    },
+    status : 'active',
+    deleted : false,
+  }).sort({
+    position : 'desc',
+  });
+
+
+ // tính giá mới
+  for (const item of products) {
+    item.priceNew = ((1 - item.discountPercentage/100) * item.price).toFixed(0);
+  }
+  // edn tinh giá mới
+
+  res.render("client/pages/products/index", {
+    pageTitle: category.title,
+    products: products
+  });
 }
