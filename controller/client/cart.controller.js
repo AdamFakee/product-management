@@ -26,6 +26,7 @@ module.exports.index = async(req, res) => {
         cartDetail : cart,
     });
 }
+
 //  [GET] cart/add/:productId
 module.exports.addPost = async (req, res) => {
     const quantity = parseInt(req.body.quantity); // số lượng sản phẩm
@@ -68,3 +69,18 @@ module.exports.addPost = async (req, res) => {
     res.redirect('back');
 }
 
+// [GET] cart/delete/:productId
+module.exports.delete = async (req, res) => {
+    const productId = req.params.productId;
+    const cartId = req.cookies.cartId;
+    await Cart.updateOne({
+        _id : cartId,
+    }, {
+        $pull : {
+            "products" : {
+                'productId' : productId,
+            }
+        }
+    })
+    res.redirect('back');
+}
