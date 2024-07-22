@@ -84,3 +84,18 @@ module.exports.delete = async (req, res) => {
     })
     res.redirect('back');
 }
+
+// [GET] cart/update/:quantity
+module.exports.update = async (req, res) => {
+    const quantity = req.params.quantity;
+    const productId = req.params.productId;
+    await Cart.updateOne({
+        _id : req.cookies.cartId,
+        'products.productId' : `${productId}`,
+    }, {
+        $set: {
+            'products.$.quantity' : `${quantity}`,
+        }
+    })
+    res.redirect('back');
+}
