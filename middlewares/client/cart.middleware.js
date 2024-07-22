@@ -10,6 +10,11 @@ module.exports.cartId = async (req, res, next) => {
             'cartId', 
             newCart.id, 
             { expires: new Date(Date.now() + 365*24*60*60*1000)}); // đơn vị milisecond
+    } else {
+        const cart = await Cart.findOne({
+            _id: req.cookies.cartId
+          });
+        res.locals.cartTotal = cart.products.length || 0; // số sản phẩm trong đơn hàng
     }
     next()
 }

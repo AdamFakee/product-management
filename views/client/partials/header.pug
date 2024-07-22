@@ -37,3 +37,6 @@ header.header
               a(href="/products") Sản phẩm
               if(newCategoryProducts)
                 +sub-menu(newCategoryProducts)
+            li
+              a(href="/cart" class="fa-solid fa-cart-shopping") (#{cartTotal})
+

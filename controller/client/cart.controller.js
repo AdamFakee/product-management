@@ -1,5 +1,31 @@
 const Cart = require('../../models/cart.model');
+const Product = require('../../models/product.model');
 
+// [GET] /cart
+module.exports.index = async(req, res) => {
+    const cart = await Cart.findOne({
+        _id : req.cookies.cartId,
+    });
+
+    const total = cart.products; // sản phẩm trong giỏ hàng
+
+    cart.totalPrice = 0;  // tổng đơn hàng của toàn bộ sản phẩm trong giỏ 
+
+    for(const item of total){
+        const product = await Product.findOne({
+            _id : item.productId,
+        }).select('price title thumbnail slug discountPercentage');
+
+        item.priceNew = (1 - product.discountPercentage/100) * product.price;
+        item.total = item.quantity*item.priceNew; // tổng giá của loại sản phẩm này
+        cart.totalPrice += item.total; // tổng giá toàn giỏ hàng
+        item.title = product.title;
+        item.thumbnail = product.thumbnail;
+    }
+    res.render('client/pages/cart/index.pug', {
+        cartDetail : cart,
+    });
+}
 //  [GET] cart/add/:productId
 module.exports.addPost = async (req, res) => {
     const quantity = parseInt(req.body.quantity); // số lượng sản phẩm
@@ -41,3 +67,4 @@ module.exports.addPost = async (req, res) => {
     
     res.redirect('back');
 }
+
