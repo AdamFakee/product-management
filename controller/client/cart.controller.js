@@ -24,6 +24,7 @@ module.exports.index = async(req, res) => {
 
         item.total = item.quantity*productInfo.priceNew; // tổng giá của loại sản phẩm này
         if(item.inCart){ // sản phẩm được chọn 
+            checkAll++;
             cart.totalPrice += item.total; // tổng giá toàn giỏ hàng
         }
     }
