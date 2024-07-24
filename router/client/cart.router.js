@@ -7,6 +7,8 @@ router.post('/add/:productId', controller.addPost);
 
 router.get('/', controller.index);
 
+router.patch('/:amount', controller.indexPatch);
+
 router.get('/delete/:productId', controller.delete);
 
 router.get('/update/:productId/:quantity', controller.update);

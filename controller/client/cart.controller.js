@@ -11,6 +11,8 @@ module.exports.index = async(req, res) => {
 
     cart.totalPrice = 0;  // tổng đơn hàng của toàn bộ sản phẩm trong giỏ 
 
+    let checkAll = 0;
+
     for(const item of total){
         const product = await Product.findOne({
             _id : item.productId,
@@ -18,13 +20,68 @@ module.exports.index = async(req, res) => {
 
         item.priceNew = (1 - product.discountPercentage/100) * product.price;
         item.total = item.quantity*item.priceNew; // tổng giá của loại sản phẩm này
-        cart.totalPrice += item.total; // tổng giá toàn giỏ hàng
+        if(item.inCart){ // sản phẩm được chọn
+            cart.totalPrice += item.total; // tổng giá toàn giỏ hàng
+            checkAll++;
+        }
         item.title = product.title;
         item.thumbnail = product.thumbnail;
     }
+    checkAll = (checkAll == total.length ? true : false)
     res.render('client/pages/cart/index.pug', {
         cartDetail : cart,
+        checkAll : checkAll,
     });
+}
+
+// [PATCH] /cart/:amount
+module.exports.indexPatch = async (req, res) => {
+    const productId = req.body.productId;
+    const amount = req.params.amount;
+    switch(amount) {
+        case '1' : // chọn 1 sản phẩm trong giỏ hàng để mua
+            await Cart.updateOne({
+                _id : req.cookies.cartId,
+                'products.productId' : productId,
+            }, {
+                $set: {
+                    'products.$.inCart' : `true`,
+                }
+            });
+            break;
+        case '2' : // chọn tất cả
+            await Cart.updateOne({
+                _id : req.cookies.cartId,
+            }, {
+                $set: {
+                    'products.$[].inCart' : 'true',
+                }
+            });
+            
+            break;
+        case '0' : // hủy chọn 1 sản phẩm trong giỏ hàng
+            await Cart.updateOne({
+                _id : req.cookies.cartId,
+                'products.productId' : `${productId}`,
+            }, {
+                $set: {
+                    'products.$.inCart' : `false`,
+                }
+            });
+            break;
+        case '3' : // hủy tất cả
+            await Cart.updateOne({
+                _id : req.cookies.cartId,
+            }, {
+                $set: {
+                    'products.$[].inCart' : 'false',
+                }
+            });
+            break;
+    }
+    res.json({
+        code : 200,
+    })
 }
 
 //  [GET] cart/add/:productId

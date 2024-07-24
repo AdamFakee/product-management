@@ -4,7 +4,11 @@ const cartSchema = new mongoose.Schema({
   products: [
     {
       productId: String,
-      quantity: Number
+      quantity: Number,
+      inCart : {
+        type : Boolean,
+        default : 'false',
+      }, //sản phẩm được chọn để đặt hàng
     }
   ]
 }, {
