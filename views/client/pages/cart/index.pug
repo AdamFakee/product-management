@@ -30,15 +30,15 @@ block main
                             td #{index + 1}
                             td
                                 img(
-                                src=product.thumbnail
+                                src=product.productInfo.thumbnail
                                 alt=product.title
                                 width="80px"
                                 )
                             td
                                 a(
                                 href=`/products/detail/${product.slug}`
-                                ) #{product.title}
-                            td #{product.priceNew}$
+                                ) #{product.productInfo.title}
+                            td #{product.productInfo.priceNew}$
                             td
                                 input(
                                 type="number"

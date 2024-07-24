@@ -29,8 +29,8 @@ if(checkAllCart){
     checkAllCart.addEventListener('click', () => {
         const check = checkAllCart.checked;
         const checkItemCart = document.querySelectorAll('[check-item-cart]');
-        if(check){
-            const ids = [];
+        if(check){ // chọn tất cả sản phẩm ở trang cart
+            const ids = []; // mảng id sản phẩm trong cart
             checkItemCart.forEach(button => {
                 button.checked = check;
                 const id = button.getAttribute('item-id'); // id sản phẩm
@@ -51,7 +51,7 @@ if(checkAllCart){
                         window.location.reload();
                     }
                 });
-        } else {
+        } else { // hủy chọn tất cả sản phẩm ở trang cart
             const ids = [];
             checkItemCart.forEach(button => {
                 button.checked = check;
