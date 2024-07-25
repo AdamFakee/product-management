@@ -1,15 +1,26 @@
 const Products = require('../../models/product.model');
 const ProductCategory = require('../../models/product-category.model');
-
+const paginationHelper = require('../../helpers/pagination.helper');
 // [GET] /products
 module.exports.index = async (req, res) => {
-  const productList = await Products.find({});
+  const pagination = await paginationHelper(req, {
+    status : 'active',
+    delete : false,
+  }, Products, 6);;
+  const productList = await Products
+    .find({
+      status : 'active',
+      deleted : 'false',
+    })
+    .skip(pagination.skipProduct)
+    .limit(pagination.limitProduct);
   for (const item of productList) {
     item.priceNew = ((1 - item.discountPercentage/100) * item.price).toFixed(0);
   }
   res.render('client/pages/products/index', {
     pageTitle: 'trang danh sach san pham',
-    products : productList
+    products : productList,
+    pagination : pagination
   });
 }
 
@@ -38,6 +49,10 @@ module.exports.detail = async (req, res) => {
 // [GET] /products/:slugCategory
 module.exports.category = async (req, res) => {
   const slug = req.params.slugCategory;
+  const pagination = paginationHelper(req, {
+    status : 'active',
+    deleted : false,
+  }, Products, 6);
   const category = await ProductCategory.findOne({
     slug : slug,
     deleted : false,
@@ -82,6 +97,7 @@ module.exports.category = async (req, res) => {
 
   res.render("client/pages/products/index", {
     pageTitle: category.title,
-    products: products
+    products: products,
+    pagination : pagination
   });
 }

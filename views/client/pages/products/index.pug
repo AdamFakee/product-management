@@ -1,6 +1,7 @@
 extends ../../layouts/default.pug
 include ../../mixins/box-head.pug
 include ../../mixins/listProduct.pug
+include ../../mixins/pagination.pug
 
 block main
   .container.my-3
@@ -8,3 +9,5 @@ block main
       .col-12
         +box-head(pageTitle)
   +listProduct(products)
+  if(pagination.totalPage > 1)
+    +pagination(pagination)

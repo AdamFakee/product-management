@@ -84,22 +84,26 @@ module.exports.index = async (req, res) => {
 // tính nănng thay đổi trạng thái sản phẩm - phương thức patch
 
 module.exports.changeStatus = async (req, res) => {
-    if(res.locals.role.permissions.includes('product_edit')){
-        const {statusChange, id} = req.params;
-        await products.updateOne(
-            {_id : id},
-            {status : statusChange}
-        );
-        // show alert
-        req.flash('success', 'thanh cong');
-        // end show alert
-        res.json({
-            code : 200
-        });
-    } else {
-        res.json({
-            code : 300 // k có quyền
-        })
+    try {
+        if(res.locals.role.permissions.includes('product_edit')){
+            const {statusChange, id} = req.params;
+            await products.updateOne(
+                {_id : id},
+                {status : statusChange}
+            );
+            // show alert
+            req.flash('success', 'thanh cong');
+            // end show alert
+            res.json({
+                code : 200
+            });
+        } else {
+            res.json({
+                code : 300 // k có quyền
+            })
+        }
+    } catch (error) {
+        res.redirect('back')
     }
     
 }
@@ -180,26 +184,30 @@ module.exports.changeMultiStatus = async (req, res) => {
 
 // [DELETE] /admin/products/delete-item/:id
 module.exports.deleteItem = async (req, res) => {
-    if(res.locals.role.permissions.includes('product_delete')){
-        const id = req.params.id;
-        await products.updateOne({
-            _id : id
-        },{
-            deletedBy : res.locals.account.id,  // cập nhật tài khoản xóa sp
-            deleted : true,
+    try {
+        if(res.locals.role.permissions.includes('product_delete')){
+            const id = req.params.id;
+            await products.updateOne({
+                _id : id
+            },{
+                deletedBy : res.locals.account.id,  // cập nhật tài khoản xóa sp
+                deleted : true,
+            }
+            );
+            // show alert
+            req.flash('success', 'thanh cong');
+            // end show alert
+            res.json({
+                code : 200,
+            })
+        } else {
+            req.flash('error', 'tài khoản k được cấp quyền');
+            res.json({
+                code : 300 // k có quyền
+            });
         }
-        );
-        // show alert
-        req.flash('success', 'thanh cong');
-        // end show alert
-        res.json({
-            code : 200,
-        })
-    } else {
-        req.flash('error', 'tài khoản k được cấp quyền');
-        res.json({
-            code : 300 // k có quyền
-        });
+    } catch (error) {
+        res.redirect('back')
     }
     
 }

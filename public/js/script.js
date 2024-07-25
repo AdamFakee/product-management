@@ -128,3 +128,20 @@ if(checkItemCart.length){
 }
 // end check-item-cart
 
+// pagination
+const paginationButton = document.querySelectorAll('[button-pagination]');
+if(paginationButton.length){
+    const url = new URL(window.location.href);
+    paginationButton.forEach(button => {
+        button.addEventListener('click', () => {
+            const page = button.getAttribute('button-pagination');
+            if(page){
+                url.searchParams.set('page', page);
+            } else {
+                url.searchParams.delete('page');
+            }
+            window.location.href = url;
+        })
+    })
+}
+// end pagination

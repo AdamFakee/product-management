@@ -6,6 +6,7 @@ module.exports.index = async (req, res) => {
   if(res.locals.role.permissions.includes('product-category_view')){
     const records = await ProductCategory.find({
       deleted : false,
+      status : 'active'
     });
     res.render("admin/pages/products-category/index", {
       pageTitle: "Danh mục sản phẩm",
@@ -20,7 +21,8 @@ module.exports.index = async (req, res) => {
 module.exports.create = async (req, res) => {
   if(res.locals.role.permissions.includes('product-category_create')){
     const categories = await ProductCategory.find({
-      deleted: false
+      deleted: false,
+      status : 'active'
     });
     const newCategory = createTreeHelper(categories, '');
     res.render("admin/pages/products-category/create", {
@@ -59,9 +61,12 @@ module.exports.edit = async (req, res) => {
       const category = await ProductCategory.findOne({
         _id : id,
         deleted : false,
+        status : 'active'
       });
+
       const listcategories = await ProductCategory.find({
-        deleted : false
+        deleted : false,
+        status : 'active'
       });
   
       const newCategory = createTreeHelper(listcategories, "");
@@ -91,8 +96,12 @@ module.exports.editPatch = async (req, res) => {
       req.body.updatedBy = res.locals.account.id; // cập nhật tài khoản chỉnh sửa danh mục
       await ProductCategory.updateOne({
         _id : req.params.id,
+        status : 'active',
+        deleted : false,
       }, req.body)
+
       res.redirect('back');
+
     } catch (error) {
       res.redirect('/admin/products-category')
     }
@@ -103,41 +112,51 @@ module.exports.editPatch = async (req, res) => {
 
 // [DELETE] admin/product-category/delete-item/:id
 module.exports.deleteItem = async (req, res) => {
-  if(res.locals.role.permissions.includes('product-category_delete')){
-    await ProductCategory.updateOne({
-      _id : req.params.id,
-      deleted : false,
-    }, {
-      deletedBy : res.locals.account.id, // cập nhật tài khoản xóa danh mục
-      deleted : true,
-    })
-    
-    res.json({
-      code : 200,
-    })
-  } else {
-    res.json({
-      code : 300 // k co quyen
-    })
+  try {
+    if(res.locals.role.permissions.includes('product-category_delete')){
+      await ProductCategory.updateOne({
+        _id : req.params.id,
+        deleted : false,
+        status : 'active'
+      }, {
+        deletedBy : res.locals.account.id, // cập nhật tài khoản xóa danh mục
+        deleted : true,
+      })
+      
+      res.json({
+        code : 200,
+      })
+    } else {
+      res.json({
+        code : 300 // k co quyen
+      })
+    }
+  } catch (error) {
+    res.redirect('back');
   }
 }
 
 // [PATCH] admin/product-category/change-status/:status/:id
 module.exports.changeStatus = async (req, res) => {
-  if(res.locals.role.permissions.includes('product-category_delete')){
-    const {status, id} = req.params;
-    await ProductCategory.updateOne({
-      _id : id,
-      deleted : false,
-    }, {
-      status : status,
-    });
-    res.json({
-      code : 200
-    })
-  } else {
-    res.json({
-      code : 300 // k có quyền
-    })
+  try {
+    if(res.locals.role.permissions.includes('product-category_delete')){
+      const {status, id} = req.params;
+      await ProductCategory.updateOne({
+        _id : id,
+        deleted : false,
+        status : 'active'
+      }, {
+        status : status,
+      });
+      res.json({
+        code : 200
+      })
+    } else {
+      res.json({
+        code : 300 // k có quyền
+      })
+    }
+  } catch (error) {
+    res.redirect('back')
   }
 }

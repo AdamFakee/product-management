@@ -91,39 +91,43 @@ module.exports.productCategory = async (req, res) => {
 
 // [PATCH]  admin/trash/restore-item/:model/:id
 module.exports.restoreItem = async (req, res) => {
-    if(res.locals.role.permissions.includes('trash_delete')){
-        const {model, id} = req.params;
-        switch(model) {
-            case 'account':
-                await Accounts.updateOne({_id : id}, {deleted : false})
-                res.json({
-                    code : 200
-                })
-                break;
-            case 'product':
-                await products.updateOne({_id : id}, {deleted : false})
-                res.json({
-                    code : 200
-                })
-                break;
-            case 'role':
-                await Roles.updateOne({_id : id}, {deleted : false})
-                res.json({
-                    code : 200
-                })
-                break;
-            case 'product-category':
-                await productCategories.updateOne({_id : id}, {deleted : false})
-                res.json({
-                    code : 200
-                })
-                break;
+    try {
+        if(res.locals.role.permissions.includes('trash_delete')){
+            const {model, id} = req.params;
+            switch(model) {
+                case 'account':
+                    await Accounts.updateOne({_id : id}, {deleted : false})
+                    res.json({
+                        code : 200
+                    })
+                    break;
+                case 'product':
+                    await products.updateOne({_id : id}, {deleted : false})
+                    res.json({
+                        code : 200
+                    })
+                    break;
+                case 'role':
+                    await Roles.updateOne({_id : id}, {deleted : false})
+                    res.json({
+                        code : 200
+                    })
+                    break;
+                case 'product-category':
+                    await productCategories.updateOne({_id : id}, {deleted : false})
+                    res.json({
+                        code : 200
+                    })
+                    break;
+            }
+            
+        } else {
+            res.json({
+                code : 300
+            })
         }
-        
-    } else {
-        res.json({
-            code : 300
-        })
+    } catch (error) {
+        res.redirect('back')
     }
     
 }
