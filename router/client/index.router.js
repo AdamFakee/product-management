@@ -18,6 +18,6 @@ module.exports.index = (app) => {
     app.use('/products', productRouter);
     app.use('/search', searchRouter);
     app.use('/cart', cartRouter);
-    app.use('/checkout', checkoutRouter)
+    app.use('/checkout', cartMiddleware.checkout, checkoutRouter)
     app.use('/address', addressRouter);
 }

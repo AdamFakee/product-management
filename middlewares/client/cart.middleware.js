@@ -26,3 +26,19 @@ module.exports.cartId = async (req, res, next) => {
     }
     next()
 }
+
+// chọn sản phẩm mới được đặt hàng
+module.exports.checkout = async (req, res, next) => {
+    const cart = await Cart.findOne({
+        _id : req.cookies.cartId,
+    });
+    const checkInCart = cart.products.find(item => {
+        return item.inCart == true;
+    })
+    if(checkInCart){
+        next();
+    } else {
+        req.flash('error', 'vui lòng chọn sản phẩm');
+        res.redirect('back');
+    }
+}
