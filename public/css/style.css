@@ -197,3 +197,16 @@
   border-radius: 8px;
 }
 /* End product-detail */
+
+/* tạo comment cho phần địa chỉ*/
+.address-info {
+  background-color: yellow;
+  padding: 20px;
+  display: none;
+}
+.address:hover + .address-info {
+  display: block;
+}
+/* end tạo comment cho phần địa chỉ*/
+
+

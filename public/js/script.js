@@ -145,3 +145,30 @@ if(paginationButton.length){
     })
 }
 // end pagination
+
+// address default 
+const addressDefaultCheck = document.querySelectorAll('[address-default-checkbox]');
+if(addressDefaultCheck.length){
+    addressDefaultCheck.forEach(button => {
+        button.addEventListener('click', () => {
+            const id = button.getAttribute('id');
+            fetch('/address/default', {
+                method: 'PATCH',
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    id : id,
+                    default : button.checked,
+                }),
+            })
+                .then(res => res.json())
+                .then(data => {
+                    if(data.code == 200){
+                        window.location.reload();
+                    }
+                });
+        })
+    })
+}
+// end address default

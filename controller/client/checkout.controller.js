@@ -1,5 +1,6 @@
 const Oder = require('../../models/oder.model');
 const Cart = require('../../models/cart.model');
+const Address = require('../../models/address.model');
 const Product = require('../../models/product.model')
 //  [GET] /checkout
 module.exports.index = async (req, res) => {
@@ -19,8 +20,20 @@ module.exports.index = async (req, res) => {
         }
         item.productInfo = productInfo;
     }
+    // lấy địa chỉ mặc định
+    const address = await Address.findOne({
+        cartId : req.cookies.cartId,
+    })
+    let addressDefault; // địa chỉ mặc định
+    for(const element of address.info){
+        if(element.default){
+            addressDefault=element;
+        }
+    }
+    // end lấy địa chỉ mặc định
     res.render('client/pages/checkout/index', {
         cartDetail : cart,
+        addressDefault : addressDefault
     })
 }
 
@@ -31,7 +44,13 @@ module.exports.orderPost = async (req, res) => {
         phone : req.body.phone,
         address : req.body.address,
     };
-
+    await Address.updateOne({  // thêm mới địa chỉ vào collection Address
+        cartId : req.cookies.cartId,
+    }, {
+        $push : {
+            'info' : userInfo
+        }
+    })
     const cart = await Cart.findOne({
         _id : req.cookies.cartId,
     });
@@ -89,31 +108,35 @@ module.exports.orderPost = async (req, res) => {
 
 // [GET] /checkout/success/:orderId
 module.exports.success = async (req, res) => {
-    const orderId = req.params.orderId;
+    try {
+        const orderId = req.params.orderId;
   
-    const order = await Oder.findOne({
-        _id: orderId
-    });
-  
-    let totalPrice = 0;
-  
-    for (const item of order.products) {
-        const productInfo = await Product.findOne({
-            _id: item.productId,
-            status : 'active',
-            deleted : 'false',
+        const order = await Oder.findOne({
+            _id: orderId
         });
     
-        item.thumbnail = productInfo.thumbnail;
-        item.title = productInfo.title;
-        item.priceNew = (1 - item.discountPercentage/100) * item.price;
-        item.totalPrice = item.priceNew * item.quantity;
-        totalPrice += item.totalPrice;
+        let totalPrice = 0;
+    
+        for (const item of order.products) {
+            const productInfo = await Product.findOne({
+                _id: item.productId,
+                status : 'active',
+                deleted : 'false',
+            });
+        
+            item.thumbnail = productInfo.thumbnail;
+            item.title = productInfo.title;
+            item.priceNew = (1 - item.discountPercentage/100) * item.price;
+            item.totalPrice = item.priceNew * item.quantity;
+            totalPrice += item.totalPrice;
+        }
+    
+        res.render("client/pages/checkout/success", {
+            pageTitle: "Đặt hàng thành công",
+            order: order,
+            totalPrice: totalPrice
+        });
+    } catch (error) {
+        res.redirect('/')
     }
-  
-    res.render("client/pages/checkout/success", {
-        pageTitle: "Đặt hàng thành công",
-        order: order,
-        totalPrice: totalPrice
-    });
 };
