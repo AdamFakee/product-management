@@ -12,12 +12,12 @@ const cartMiddleware = require('../../middlewares/client/cart.middleware');
 
 
 module.exports.index = (app) => {
-    app.use(categoryMiddleware, cartMiddleware.cartId)
+    app.use(cartMiddleware.cartId)
 
     app.use("/", homeRouter);
     app.use('/products', productRouter);
     app.use('/search', searchRouter);
     app.use('/cart', cartRouter);
-    app.use('/checkout', cartMiddleware.checkout, checkoutRouter)
+    app.use('/checkout', checkoutRouter)
     app.use('/address', addressRouter);
 }

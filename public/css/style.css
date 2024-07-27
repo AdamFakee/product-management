@@ -209,4 +209,8 @@
 }
 /* end tạo comment cho phần địa chỉ*/
 
-
+/* hidden */
+.hidden {
+  display: none;
+}
+/* end hidden */

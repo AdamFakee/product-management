@@ -172,3 +172,13 @@ if(addressDefaultCheck.length){
     })
 }
 // end address default
+
+// show alert 
+const showAlert = document.querySelector('[show-alert]');
+if(showAlert){
+    const time = showAlert.getAttribute('show-alert') || 3000;
+    setTimeout(() => {
+        showAlert.classList.add('hidden');
+    }, time)
+}
+// end show alert 
