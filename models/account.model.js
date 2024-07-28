@@ -9,7 +9,10 @@ const accounts = new mongoose.Schema({
     type : String,
     default : '',
   },
-  token : String,
+  refreshToken :{
+    type : String,
+    default : null,
+  },
   avatar : String, 
   role_id : String,   // các quyền được cấp ở chỗ phân quyền
   status : String,   

@@ -1,9 +1,6 @@
 const Accounts = require('../../models/account.model');
 const Roles = require('../../models/role.model');
-const generateHelper = require('../../helpers/generate.helper');
 const md5 = require('md5');
-const { model } = require('mongoose');
-
 
 
 // [GET] /admin/accounts
@@ -51,7 +48,6 @@ module.exports.createPost = async ( req, res) => {
     if(res.locals.role.permissions.includes('account_create')){
         req.body.countLogin = 0;
         req.body.password = md5(req.body.password);
-        req.body.token = generateHelper.generateRandomString(30);
         req.body.createdBy = res.locals.account.id; // cập nhật tài khoản tạo acc
         const newAccount = new Accounts(req.body);
         await newAccount.save();
