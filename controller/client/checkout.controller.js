@@ -81,7 +81,9 @@ module.exports.orderPost = async (req, res) => {
         // thêm mới đơn hàng
         const newOrder = new Oder({
             userInfo : userInfo,
-            products : products
+            products : products,
+            status : 'pending',
+            cartId : req.cookies.cartId,
         });
         await newOrder.save();
     

@@ -13,8 +13,9 @@ const oderSchema = new mongoose.Schema({
             discountPercentage : Number,
             price : Number,
         }
-    ]
-    
+    ],
+    status : String,
+    cartId : String,
 }, {
   timestamps: true
 });

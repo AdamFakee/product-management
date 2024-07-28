@@ -1,0 +1,28 @@
+mixin order(order)
+    .card.mb-3
+        .card-header  
+        .card-body
+            .row
+                if(order.length)    
+                    table(
+                        class="table table-hover table-sm"
+                    )
+                        thead
+                            tr
+                                th STT
+                                th Mã đơn hàng
+                                th Trạng thái đơn hàng
+                                th Địa chỉ
+                                th Ngày đặt hàng
+                        tbody
+                            each item, index in order
+                                tr 
+                                    td #{index+1}
+                                    td #{item._id}
+                                    td #{item.status}
+                                    td #{item.userInfo.address}
+                                    td #{item.createdAtFormat}
+
+                                        
+                else 
+                    h3 bạn chưa tạo đơn hàng nào
