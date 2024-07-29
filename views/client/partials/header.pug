@@ -44,6 +44,12 @@ header.header
               div(class='address-info') cập nhật địa chỉ 
             li 
               a(href="/order") đơn hàng 
-            li 
-              a(href='/user/register') đăng ký
+            if(user)
+              li 
+                a(href="/user/logout") đăng xuất
+            else 
+              li 
+                a(href='/user/login') đăng nhập
+              li 
+                a(href='/user/register') đăng ký
 

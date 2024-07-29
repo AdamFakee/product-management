@@ -10,10 +10,10 @@ const addressRouter = require('./address.router');
 const orderRouter = require('./order.router');
 const userRouter = require('./user.router');
 const cartMiddleware = require('../../middlewares/client/cart.middleware');
-
+const userMiddleware = require('../../middlewares/client/user.middleware');
 
 module.exports.index = (app) => {
-    app.use(cartMiddleware.cartId)
+    app.use(cartMiddleware.cartId, userMiddleware.infoUser);
 
     app.use("/", homeRouter);
     app.use('/products', productRouter);
