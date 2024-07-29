@@ -6,6 +6,7 @@ const userSchema = new mongoose.Schema({
     phone: String,
     password: String,
     avatar: String,
+    cartId : String,
     status: {
         type: String,
         default: "active"
