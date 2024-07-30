@@ -5,18 +5,18 @@ block main
         header
             h1 Quản lý Đơn hàng
         nav.status-tabs
-            button(class='tab-button' onclick=`showTab('all')` button-order='all') Tất cả
-            button(class='tab-button' onclick="showTab('confirmed')" button-order='confirmed') Đã xác nhận
-            button(class='tab-button' onclick="showTab('pending')" button-order='pending') Chờ xác nhận
-            button(class='tab-button' onclick="showTab('shipping')" button-order='shipping') Đang vận chuyển
-            button(class='tab-button' onclick="showTab('delivered')" button-order='delivered') Đã giao
+            button(class='tab-button' onclick=`showTab('all')`) Tất cả
+            button(class='tab-button' onclick="showTab('confirmed')") Đã xác nhận
+            button(class='tab-button' onclick="showTab('pending')") Chờ xác nhận
+            button(class='tab-button' onclick="showTab('shipping')") Đang vận chuyển
+            button(class='tab-button' onclick="showTab('delivered')") Đã giao
 
             
         div(class='tab-content' id="all")
             +order(order)
         div(class='tab-content' id="confirmed")
             +order(listOrder.confirmed)
-        div(class='tab-content' id="pending")s
+        div(class='tab-content' id="pending")
             +order(listOrder.pending)
         div(class='tab-content' id="shipping")
             +order(listOrder.shipping)

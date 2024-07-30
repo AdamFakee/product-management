@@ -110,6 +110,7 @@ module.exports.permissionsPatch = async (req, res) => {
               permissions: role.permissions
             });
           }
+        req.flash('success', 'cập nhật thành công')
         res.json({
             code : 200
         })

@@ -314,7 +314,7 @@ if(tablePermissions){
             .then(res => res.json())
             .then(data => {
                 if(data.code == 200){
-                    console.log('ok');
+                    window.location.reload();
                 }
             })
     })
