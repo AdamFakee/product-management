@@ -1,4 +1,7 @@
 const User = require('../../models/user.model');
+const ForgotPassword = require('../../models/forgot-password.model');
+const generateHelper = require('../../helpers/generate.helper');
+const sendMailHelper = require('../../helpers/sendMail.helper');
 const jwt = require('jsonwebtoken');
 const md5 = require('md5');
 
@@ -52,4 +55,82 @@ module.exports.logout = (req, res) => {
     res.redirect('/user/login');
 }
 
+// [GET] /user/password/forgot
+module.exports.forgotPassword = (req, res) => {
+    res.render('client/pages/users/forgot-password', {
+        pageTitle : 'Nhập mail đăng ký tài khoản',
+    })
+}
 
+// [POST] /user/password/forgot
+module.exports.forgotPasswordPost = async (req, res) => {
+    const emailUser = req.body.email;
+    const acc = await User.findOne({
+        email : emailUser,
+    });
+
+    if(acc){
+        const OTP = generateHelper.OTP(4);  // độ dài mã OTP
+        sendMailHelper.sendMail(emailUser, 'mã otp khôi phục mật khẩu.', `mã OTP của bạn là ${OTP}`);
+        const newAcc = new ForgotPassword({
+            email : emailUser,
+            OTP : OTP,
+        });
+        await newAcc.save();
+        res.redirect(`/user/password/otp?email=${emailUser}`)
+    } else {
+        req.flash('error', 'email chưa đăng kí tài khoản');
+        res.redirect('back')
+    }
+}
+
+// [GET] /user/password/otp
+module.exports.otpPassword = (req, res) => {
+    const email = req.query.email;
+    res.render('client/pages/users/otp-password', {
+        pageTitle : 'Xác thực OTP',
+        email : email,
+    })
+}
+
+// [POST] /user/password/otp
+module.exports.otpPasswordPost = async (req, res) => {
+    const {email, otp} = req.body;
+    const accForgotPassword = await ForgotPassword.findOne({
+        email : email,
+        OTP : otp,
+    });
+    if(!accForgotPassword){
+        req.flash("error", "OTP không hợp lệ!");
+        res.redirect("back");
+        return;
+    }
+    const user = await User.findOne({
+        email: email,
+    })
+
+    const tokenUser = jwt.sign({id : user._id}, process.env.ACCESS_TOKEN_SECRET, { expiresIn: 3*60*60*24*1000 });
+    res.cookie('tokenUser',tokenUser);
+
+    res.redirect('/user/password/reset');
+}
+
+// [GET] /user/password/reset
+module.exports.resetPassword = async (req, res) => {
+    res.render("client/pages/users/reset-password", {
+      pageTitle: "Đổi mật khẩu mới"
+    });
+};
+
+// [POST] /user/password/reset
+module.exports.resetPasswordPost = async (req, res) => {
+    const newPassword = req.body.password;
+    const tokenUser = jwt.verify(req.cookies.tokenUser, process.env.ACCESS_TOKEN_SECRET);
+    const idUser = tokenUser.id;
+    const acc = await User.updateOne({
+        _id : idUser,
+    }, {
+        password : md5(newPassword),
+    })
+    res.redirect('/')
+}
