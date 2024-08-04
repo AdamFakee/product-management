@@ -42,6 +42,7 @@ module.exports.loginPost = async (req, res) => {
     if(!accUser){
         req.flash('error', 'sai mật khẩu hoặc email');
         res.redirect('back');
+        return;
     }
     const tokenUser = jwt.sign({id : accUser._id}, process.env.ACCESS_TOKEN_SECRET, { expiresIn: 3*60*60*24*1000 }); // 3d
     res.cookie('tokenUser', tokenUser);
@@ -77,10 +78,12 @@ module.exports.forgotPasswordPost = async (req, res) => {
             OTP : OTP,
         });
         await newAcc.save();
-        res.redirect(`/user/password/otp?email=${emailUser}`)
+        res.redirect(`/user/password/otp?email=${emailUser}`);
+        return;
     } else {
         req.flash('error', 'email chưa đăng kí tài khoản');
-        res.redirect('back')
+        res.redirect('back');
+        return;
     }
 }
 
