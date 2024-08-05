@@ -9,6 +9,7 @@ const checkoutRouter = require('./checkout.router');
 const addressRouter = require('./address.router');
 const orderRouter = require('./order.router');
 const userRouter = require('./user.router');
+const chatRouter = require('./chat.router');
 const cartMiddleware = require('../../middlewares/client/cart.middleware');
 const userMiddleware = require('../../middlewares/client/user.middleware');
 
@@ -23,4 +24,5 @@ module.exports.index = (app) => {
     app.use('/address', addressRouter);
     app.use('/order', orderRouter);
     app.use('/user', userRouter);
+    app.use('/chat', chatRouter);
 }
