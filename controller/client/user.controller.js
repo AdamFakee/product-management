@@ -137,3 +137,33 @@ module.exports.resetPasswordPost = async (req, res) => {
     })
     res.redirect('/')
 }
+
+// [GET] /user/auth/google/callback
+module.exports.authGoogle = async (req, res) => {
+    const profileJson = req.user._json;
+    const acc = await User.findOne({
+        email : profileJson.email,
+    });
+    const googleAcc = {
+        fullName : profileJson.name,
+        avatar : profileJson.picture,
+        email : profileJson.email,
+        googleId : profileJson.sub,
+    };
+    if(acc){
+        googleAcc.password = acc.password;
+        await User.updateOne({
+            email : profileJson.email,
+        }, googleAcc);
+        const tokenUser = jwt.sign({id : acc._id}, process.env.ACCESS_TOKEN_SECRET, { expiresIn: 3*60*60*24*1000 }); // 3d
+        res.cookie('tokenUser', tokenUser);
+    } else {
+        googleAcc.cartId = req.cookies.cartId;
+        const newAcc = new User(googleAcc);
+        await newAcc.save();
+        const tokenUser = jwt.sign({id : newAcc._id}, process.env.ACCESS_TOKEN_SECRET, { expiresIn: 3*60*60*24*1000 }); // 3d
+        res.cookie('tokenUser', tokenUser);
+    }
+    
+    res.redirect('/');
+}

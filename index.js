@@ -1,5 +1,6 @@
 const express = require('express');
 const app = express();
+const passport = require('passport');
 require('dotenv').config();
 const port = process.env.PORT;
 
@@ -22,6 +23,16 @@ app.use(flash());
 app.use(bodyParser.json())  // use for json
 app.use(bodyParser.urlencoded({ extended: false })) // use for form
 
+// Thiết lập session
+app.use(session({
+    secret: 'your_secret_key',
+    resave: false,
+    saveUninitialized: true
+}));
+
+// Thiết lập Passport.js
+app.use(passport.initialize());
+app.use(passport.session());
 
 // set link admin
 const systemConfig = require("./config/system");
