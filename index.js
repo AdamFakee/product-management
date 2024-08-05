@@ -3,6 +3,14 @@ const app = express();
 const passport = require('passport');
 require('dotenv').config();
 const port = process.env.PORT;
+const http = require('http');
+const { Server } = require("socket.io");
+
+// SocketIO
+const server = http.createServer(app);
+const io = new Server(server);
+global._io = io; // biến toàn cục dùng cho server
+// End SocketIO
 
 // set bodyParser
 var bodyParser = require('body-parser');
@@ -62,6 +70,6 @@ mongoose.connect();
 // set stactic file
 app.use(express.static(`${__dirname}/public`));
 
-app.listen(port, () => {
+server.listen(port, () => {
     console.log(`running ${port}`);
 })
