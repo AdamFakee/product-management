@@ -10,7 +10,6 @@ module.exports.infoUser = async (req, res, next) => {
                 _id : idAccount,
                 deleted: false
             });
-    
             if(user) {
             res.locals.user = user;
             }
