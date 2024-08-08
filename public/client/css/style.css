@@ -302,3 +302,15 @@
   cursor: pointer;
 }
 /* End chat */
+
+
+/* Tooltip */
+.tooltip {
+  visibility: hidden;
+}
+
+.tooltip.shown {
+  visibility: visible;
+  opacity: 1;
+}
+/* End Tooltip */
