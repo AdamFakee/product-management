@@ -1,0 +1,15 @@
+extends ../../layouts/default.pug
+
+block main 
+    .box-chat
+        each user in listUser
+            a.client(href=`/chat/${user.roomChatId}`)
+                img.avatar(src='https://th.bing.com/th/id/OIP.nzlth_VocmH3_qoVDbTiOQHaHa?w=191&h=192&c=7&r=0&o=5&dpr=1.3&pid=1.7' alt='avatar-chat')
+                .info
+                    .name #{user.fullName}
+                    .new-mess
+                        if(user.newMessage)
+                            .mess #{user.newMessage}
+                            .dot .
+                        if(user.timeSending)
+                            .time #{user.timeSending}

@@ -9,7 +9,7 @@ block main
 
         .row
             .col-12
-                .chat(my-id = user.id current-page=1 total-page = paginationMessage.totalPage)
+                .chat(my-id = user.id current-page=1 total-page = paginationMessage.totalPage room-chat-id=user.roomChatId)
                     .inner-body
                         each chat in chats
                             div(

@@ -43,9 +43,16 @@ header.header
               a(href='/address' class="fa-regular fa-address-book address" ) 
               div(class='address-info') cập nhật địa chỉ 
             li 
-              a(href="/order") đơn hàng 
-            li 
-              a(href='/chat') chat
+              a(href="/order") đơn hàng  
+            if(user)
+              //- khách hàng 
+              if(user.roomChatId)
+                li 
+                  a(href=`/chat/${user.roomChatId}`) chat
+              else 
+                //- admin
+                li 
+                  a(href='/chat/admin/list-room-chat') danh sách chat
             if(user)
               li 
                 a(href="/user/logout") đăng xuất
