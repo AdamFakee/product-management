@@ -1,0 +1,71 @@
+extends ../../layouts/default.pug
+
+block main
+    h1(class="mb-4") Danh sách tài khoản admin bên client
+
+    .card.mb-3
+        .card-header Danh sách
+        .card-body
+            if(role.permissions.includes('account_create'))
+                .row
+                    .col-8
+                    .col-4.text-right
+                        a(
+                            href=`/${prefixAdmin}/account-clients/create`
+                            class="btn btn-outline-success"
+                        ) + Thêm mới
+            table(
+                class="table table-hover table-sm"
+            )
+                thead
+                    tr
+                        th STT
+                        th Avatar
+                        th Họ tên
+                        th Email
+                        th Trạng thái
+                        th Hành động
+
+                tbody
+                    each item, index in accounts
+                        tr 
+                            td #{index+1}
+                            td
+                                img(
+                                src=item.avatar
+                                alt=item.fullName
+                                width="100px"
+                                height="auto"
+                                )
+                            td #{item.fullName}
+                            td #{item.email}
+                            td
+                                if (item.status === "active")
+                                    button(
+                                        link=`/${prefixAdmin}/account-clients/change-status/inactive/${item.id}`
+                                        class="badge badge-success"
+                                        button-status-change
+                                        data-status="active"
+                                    ) Hoạt động
+                                else
+                                    button(
+                                        link=`/${prefixAdmin}/account-clients/change-status/active/${item.id}`
+                                        class="badge badge-danger"
+                                        button-status-change
+                                        data-status="inactive"
+                                    ) Dừng hoạt động
+                            td
+                                a(
+                                    class="btn btn-secondary btn-sm"
+                                    href=`/${prefixAdmin}/account-clients/detail/${item.id}`
+                                ) Chi tiết
+                                if(role.permissions.includes('account_edit'))
+                                    a(
+                                        class="btn btn-warning btn-sm ml-1"
+                                        href=`/${prefixAdmin}/account-clients/edit/${item.id}`
+                                    ) Sửa
+                                if(role.permissions.includes('account_delete'))
+                                    button(
+                                        class="btn btn-danger btn-sm ml-1"
+                                        button-delete = `/${prefixAdmin}/account-clients/delete-account/${item.id}`
+                                    ) Xóa
