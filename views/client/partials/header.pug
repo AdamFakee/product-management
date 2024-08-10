@@ -44,9 +44,9 @@ header.header
               div(class='address-info') cập nhật địa chỉ 
             li 
               a(href="/order") đơn hàng  
+            //- khách hàng 
             if(user)
-              //- khách hàng 
-              if(user.roomChatId)
+              if(user.role=='client')
                 li 
                   a(href=`/chat/${user.roomChatId}`) chat
               else 

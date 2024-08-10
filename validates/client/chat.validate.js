@@ -1,3 +1,4 @@
+const User = require("../../models/user.model");
 
 // check admin account
 module.exports.checkAdmin = (req, res, next) => {
@@ -11,10 +12,19 @@ module.exports.checkAdmin = (req, res, next) => {
 }
 
 // check room-chat-id 
-module.exports.checkRoomChatId = (req, res, next) => {
+module.exports.checkRoomChatId = async (req, res, next) => {
     const user = res.locals.user; // room-chat-id trong database
     const roomChatId = req.params.roomChatId; // room-chat-id lấy trên router
-    if(user.roomChatId == roomChatId){
+    if(user.role=='admin'){   // check acc user
+        const checkAcc = await User.findOne({
+            roomChatId : roomChatId,
+        });
+        if(checkAcc){
+            next();
+            return;
+        } 
+    }
+    if(user.roomChatId == roomChatId){ // client chat với admin => client đc chỉ định vô duy nhất 1 phòng, vô sai cook
         next();
     } else {
         res.redirect('/');

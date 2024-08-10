@@ -16,8 +16,15 @@ module.exports.register = (req, res) => {
 module.exports.registerPost = async (req, res) => {
     req.body.password = md5(req.body.password);
     req.body.cartId = req.cookies.cartId;
+    req.body.role = 'client';
     const newUser = new User(req.body);
     await newUser.save();
+
+    await User.updateOne({
+        _id : newUser.id,
+    }, {
+        roomChatId : newUser.id,
+    })
     const tokenUser = jwt.sign({id : newUser._id}, process.env.ACCESS_TOKEN_SECRET, { expiresIn: 3*60*60*24*1000 });
     res.cookie('tokenUser',tokenUser);
     req.flash('success', 'đăng ký tài khoản thành công');
