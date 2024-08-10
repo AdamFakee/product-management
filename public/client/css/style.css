@@ -322,6 +322,10 @@
 a {
   text-decoration: none;
 }
+.box {
+  display: flex;
+  justify-content: center;
+}
 .box-chat {
   background-color: #222;
   display: flex;
@@ -330,6 +334,8 @@ a {
   width: 500px;
   border-radius: 20px;
   padding: 10px;
+  height: 400px;
+  overflow-y: auto;
 }
 .box-chat .client {
   display: flex;

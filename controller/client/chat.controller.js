@@ -90,9 +90,14 @@ module.exports.listRoomChat = async (req, res) => {
             const timeSending = moment(newMessage.creatAt).format("ddd, hA");  //thời gian gửi tin nhắn
             user.newMessage = newMessage.content;
             user.timeSending = timeSending;
+            user.originalTime = newMessage.createdAt; // thời gian gửi tin nhắn - chưa fomat
+        } else {
+            user.originalTime = 0;
         }
     }
-    // console.log(listUser)
+    listUser.sort((a, b) => {
+        return b.originalTime - a.originalTime;
+    })
     res.render('client/pages/chat/listChat', {
         listUser : listUser
     });
