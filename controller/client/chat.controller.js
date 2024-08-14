@@ -81,11 +81,12 @@ module.exports.index = async (req, res) => {
 module.exports.listRoomChat = async (req, res) => {
     const listUser = await User.find({ roomChatId: { $exists: true } }); // những ai có roomChatId
     for(const user of listUser){
-        const newMessage = await Chat.findOne({   // tin nhắn mới nhất
+        const newMess = await Chat.find({   // tin nhắn mới nhất
             roomChatId : user.roomChatId,
         }).sort({
-            creatAt : 'desc'
+            $natural : -1
         }).limit(1);
+        const newMessage = newMess[0];
         if(newMessage){
             const timeSending = moment(newMessage.creatAt).format("ddd, hA");  //thời gian gửi tin nhắn
             user.newMessage = newMessage.content;
@@ -96,7 +97,7 @@ module.exports.listRoomChat = async (req, res) => {
         }
     }
     listUser.sort((a, b) => {
-        return b.originalTime - a.originalTime;
+        return b.originalTime - a.originalTime; // nhắn sau hiển thị cao hơn 
     })
     res.render('client/pages/chat/listChat', {
         listUser : listUser
