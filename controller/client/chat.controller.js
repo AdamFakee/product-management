@@ -62,15 +62,15 @@ module.exports.index = async (req, res) => {
     }).sort({
         createdAt : 'desc',
     }).limit(limitMess);  // hiển thị số tin nhắn khi người dùng vô lần đầu
-    
-    for (const chat of chats) {
-        const infoUser = await User.findOne({
-            _id: chat.userId,
-        });
-    
-        chat.fullName = infoUser.fullName; // thêm tên - nếu là người khác gửi đến thì hiển thị thêm tên
-        }
-    chats.reverse(); // in ra xem vì sao cần đảo ngược
+    if(chats.length){
+        for (const chat of chats) {
+            const infoUser = await User.findOne({
+                _id: chat.userId,
+            });
+            chat.fullName = infoUser.fullName; // thêm tên - nếu là người khác gửi đến thì hiển thị thêm tên
+            }
+        chats.reverse(); // in ra xem vì sao cần đảo ngược
+    }
     res.render('client/pages/chat/index.pug', {
         chats : chats, 
         paginationMessage : paginationMessage

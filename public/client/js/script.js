@@ -184,16 +184,16 @@ if(showAlert){
 // end show alert 
 
 // // your order
-// function showTab(tabId) {
-//     const tabs = document.querySelectorAll('.tab-content');
-//     tabs.forEach(tab => {
-//         tab.style.display = 'none';
-//     });
-//     document.getElementById(tabId).style.display = 'block';
-// // }
+function showTab(tabId) {
+    const tabs = document.querySelectorAll('.tab-content');
+    tabs.forEach(tab => {
+        tab.style.display = 'none';
+    });
+    document.getElementById(tabId).style.display = 'block';
+}
 
-// // Hiển thị tab đầu tiên khi tải trang
-// document.addEventListener('DOMContentLoaded', () => {
-//     showTab('all');
-// });
+// Hiển thị tab đầu tiên khi tải trang
+document.addEventListener('DOMContentLoaded', () => {
+    showTab('all');
+});
 // // end your order
