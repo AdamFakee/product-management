@@ -12,7 +12,7 @@ const userChoosen = document.querySelectorAll('[user-chat-room]');
 if(userChoosen.length){
   userChoosen.forEach(user => {
     user.addEventListener('click', () => {
-      const userId = user.getAttribute('user-chat-room');
+      const userId = user.getAttribute('user-chat-room');  // id của người dùng được admin chọn để chat
       socket.emit('CLIENT_CHOOSE_USER', userId);
     })
   })
@@ -90,12 +90,14 @@ socket.on('SERVET_SEND_MESSAGE', chatData => {
 
 // load thêm tin nhắn cũ
 if(chatBox){
+  // CLIENT_LOAD_MORE_MESSAGE
   chatBox.addEventListener('scroll', ()=> { // lắng nghe scroll
     let currentPage = document.querySelector('[current-page]').getAttribute('current-page'); // trang hiển thị message hiện tại
     let totalPage = document.querySelector('[total-page]').getAttribute('total-page'); // lấy tổng số trang có thể load đc
     totalPage = parseInt(totalPage);
     currentPage = parseInt(currentPage);
     const scrollValue = chatBox.scrollTop;
+
     if(scrollValue == 0){  // scroll lên trên hết mức có thể
       if(currentPage < totalPage){
         socket.emit('CLIENT_LOAD_MORE_MESSAGE', currentPage); // phát ra yêu cầu cho sever
@@ -103,6 +105,10 @@ if(chatBox){
       }
     }
   })
+  // End CLIENT_LOAD_MORE_MESSAGE
+
+
+  // SERVER_SEND_MORE_MESS
   socket.on('SERVER_SEND_MORE_MESS', (data) => {
     const userId = document.querySelector('[my-id]').getAttribute('my-id'); // id người dùng
     data.forEach(mess => {
@@ -118,6 +124,7 @@ if(chatBox){
       chatBody.insertBefore(oldLine, chatBody.firstElementChild) // chèn lên đầu
     });
   })
+  // End SERVER_SEND_MORE_MESS
 }
 // end load thêm tin nhắn cũ
 

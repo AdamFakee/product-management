@@ -8,8 +8,12 @@ const chatSocketHelper = require('../../helpers/chat-socket.helper');
 module.exports.index = async (req, res) => {
     const roomChatId = req.params.roomChatId;
     const limitMess = 20; // chỉ hiển thị 20 tin nhắn
+
+    // socket-io
     await chatSocket(req, res, roomChatId);
-    const listMess = await chatSocketHelper.showMess(limitMess, roomChatId);
+    // End socket-io
+
+    const listMess = await chatSocketHelper.showMess(limitMess, roomChatId); // số tin nhắn hiển thị mặc định - lần đầu vào 
     const paginationMessage = await paginationHelper(req, {}, Chat, limitMess); // phân trang của mess
     res.render('client/pages/chat/index.pug', {
         user : res.locals.user,
@@ -41,11 +45,13 @@ module.exports.listRoomChat = async (req, res) => {
     listUser.sort((a, b) => {
         return b.originalTime - a.originalTime; // nhắn sau hiển thị cao hơn 
     })
-    const lastUser = listUser[0]; // nguời dùng nhắn tin gần nhất
+    const lastUser = listUser[0]; // nguời dùng nhắn tin gần nhất - hiển thị mặc định
 
+    // socket-io
     await chatSocket(req, res, lastUser.roomChatId);
+    // End socket-io
 
-    const listMess = await chatSocketHelper.showMess(limitMess, lastUser.roomChatId);
+    const listMess = await chatSocketHelper.showMess(limitMess, lastUser.roomChatId); // số tin nhắn hiển thị 
 
     const paginationMessage = await paginationHelper(req, {}, Chat, limitMess); // phân trang của mess
 

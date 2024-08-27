@@ -6,7 +6,7 @@ module.exports = async (req, res, roomChatId) => {
     const userId = res.locals.user.id;
     let limitMess = 20; // chỉ hiển thị 20 tin nhắn
     const paginationMessage = await paginationHelper(req, {}, Chat, limitMess); // phân trang của mess
-    let remainMess = paginationMessage.number;
+    let remainMess = paginationMessage.number; // số lượng tin nhắn còn lại chưa hiển thị 
     const totalMess = paginationMessage.number;  // tổng số trang có thể load 
     let newRoom = roomChatId; // id phòng chat
     // SocketIO
@@ -31,14 +31,15 @@ module.exports = async (req, res, roomChatId) => {
         })
         //CLIENT_LOAD_MORE_MESSAGE
         socket.on('CLIENT_LOAD_MORE_MESSAGE', async (currentPage) => {    // người dùng yêu cầu xem thêm tin nhắn lúc trước
-            let skipMess = totalMess - (currentPage + 1)*limitMess;
-            if(skipMess < 0){
+            let skipMess = totalMess - (currentPage + 1)*limitMess; // số tin nhắn cần bỏ qua
+
+            // trường hợp skipMess < 0 => có thể có tin nhắn bị bỏ qua - hay bị lỗi gì đó
+            if(skipMess < 0){ 
                 skipMess = 0;
                 limitMess = remainMess;
             } else {
-                remainMess -= totalMess - skipMess;
+                remainMess -= totalMess - skipMess; // cập nhật số tin nhắn còn lại chưa hiển thị
             }
-            console.log(skipMess, limitMess, remainMess)
             const chats = await Chat.find({
                 roomChatId : roomChatId,
             }).skip(skipMess).limit(limitMess);  // lấy ra số lượng tin nhắn - tạo sau lấy trước
@@ -54,14 +55,17 @@ module.exports = async (req, res, roomChatId) => {
             const user = await User.findOne({
                 _id : userId,
             });
-            const totalPage = paginationMessage.totalPage;
+            const totalPage = paginationMessage.totalPage; // tổng số trang 
             if(user){
+                // đổi người dùng mới => cập nhật lại
                 limitMess = 20;
                 remainMess = paginationMessage.number;
+
                 socket.leave(newRoom);  // rời phòng chat hiện tại
                 newRoom = user.roomChatId // làm mới id phòng chat
                 socket.join(newRoom); // vào phòng chat được chọn
-                const listMess = await chatSocketHelper.showMess(limitMess, newRoom);
+
+                const listMess = await chatSocketHelper.showMess(limitMess, newRoom); // số tin nhắn hiển thị cho trang tiếp theo
                 socket.emit('SERVER_RETURN_CHOOSE_USER', {
                     user : user,  // người được chọn
                     listMess : listMess, 
