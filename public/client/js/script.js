@@ -197,3 +197,8 @@ document.addEventListener('DOMContentLoaded', () => {
     showTab('all');
 });
 // // end your order
+
+const chatBox = document.querySelector('[body-box]');
+if(chatBox){
+  chatBox.scrollTop = chatBox.scrollHeight;
+}

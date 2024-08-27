@@ -3,9 +3,8 @@ import * as Popper from 'https://cdn.jsdelivr.net/npm/@popperjs/core@^2/dist/esm
 
 var socket = io();
 
-// Scroll Chat To Bottom
 const chatBox = document.querySelector('[body-box]');
-// End Scroll Chat To Bottom
+
 
 // CLIENT_CHOOSE_USER
 const userChoosen = document.querySelectorAll('[user-chat-room]');
@@ -87,6 +86,13 @@ socket.on('SERVET_SEND_MESSAGE', chatData => {
 })
 // End SERVER_SEND_MESSAGE
 
+// SERVER_RETURN_MAX_SCROLL
+if(chatBox){
+  socket.on('SERVER_RETURN_MAX_SCROLL', () => {
+    chatBox.scrollTop = chatBox.scrollHeight;
+  })
+}
+// End SERVER_RETURN_MAX_SCROLL
 
 // load thêm tin nhắn cũ
 if(chatBox){

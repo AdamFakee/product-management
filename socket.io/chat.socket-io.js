@@ -28,6 +28,9 @@ module.exports = async (req, res, roomChatId) => {
         
             // Trả tin nhắn realtime về cho mọi người 
             _io.to(newRoom).emit('SERVET_SEND_MESSAGE', chatData);
+
+            // nhắn xong thì scrollTop = scrollHeight
+            socket.emit('SERVER_RETURN_MAX_SCROLL');
         })
         //CLIENT_LOAD_MORE_MESSAGE
         socket.on('CLIENT_LOAD_MORE_MESSAGE', async (currentPage) => {    // người dùng yêu cầu xem thêm tin nhắn lúc trước
