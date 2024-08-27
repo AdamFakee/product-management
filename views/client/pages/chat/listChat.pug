@@ -1,16 +1,40 @@
 extends ../../layouts/default.pug
 
 block main 
-    .box
-        .box-chat
-            each user in listUser
-                a.client(href=`/chat/${user.roomChatId}`)
-                    img.avatar(src='https://th.bing.com/th/id/OIP.nzlth_VocmH3_qoVDbTiOQHaHa?w=191&h=192&c=7&r=0&o=5&dpr=1.3&pid=1.7' alt='avatar-chat')
-                    .info
-                        .name #{user.fullName}
-                        .new-mess
-                            if(user.newMessage)
-                                .mess #{user.newMessage}
-                                .dot .
-                            if(user.timeSending)
-                                .time #{user.timeSending}
+    .chat
+        .container
+            .inner-wrap
+                .inner-left
+                    .inner-title Đoạn chat
+                    form(class='inner-form')
+                        input(type='text' placeholder='Tìm kiếm trên đoạn chat')
+                        button
+                            i.fa-solid.fa-magnifying-glass
+                    .inner-list
+                        each user in listUser
+                            div(class='inner-user' user-chat-room = user.id)
+                                img.inner-avatar(src='https://th.bing.com/th/id/OIP.f1IszCjHtBlCEXYmy9hsQwHaHa?rs=1&pid=ImgDetMain')
+                                .inner-content
+                                    .inner-name #{user.fullName}
+                                    .inner-title
+                                        if(user.newMessage)
+                                            .inner-mess #{user.newMessage}
+                                            .inner-time #{user.timeSending}
+                .inner-right
+                    div(class='inner-head' head-box-chat )
+                        img.inner-avatar(src='https://th.bing.com/th/id/OIP.f1IszCjHtBlCEXYmy9hsQwHaHa?rs=1&pid=ImgDetMain')
+                        .inner-title
+                            .inner-name #{lastUser.fullName}
+                            .inner-active ho&#x1EA1;t &dstrok;&#x1ED9;ng 1 gi&#x1EDD; tr&#x1B0;&#x1EDB;c
+                    div(class='inner-body' body-box )
+                        div(class='inner-chat' box-chat my-id=user.id current-page=1 total-page = paginationMessage.totalPage)
+                            each mess in listMess
+                                if(mess.userId == user.id)
+                                    .inner-going #{mess.content}
+                                else
+                                    .inner-coming #{mess.content}
+                                
+                    form(action='' form-sent-message class='inner-form' )
+                        input(type='text' placeholder='Aa' name='content')
+                        button
+                            i.fa-solid.fa-paper-plane

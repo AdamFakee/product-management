@@ -6,6 +6,7 @@ module.exports = async (req, find, modelName, limitProduct=4) => {
         limitProduct : limitProduct,
         currentPage :  1,
         totalPage : Math.ceil(countProduct/limitProduct),
+        number : countProduct,
     };
     if(req.query.page) {
         pagination.currentPage = parseInt(req.query.page);

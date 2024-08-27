@@ -315,58 +315,205 @@
 }
 /* End Tooltip */
 
-/* list client chat to admin */
+@import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+
+
 *{
-  box-sizing: border-box;
+    box-sizing: border-box;
 }
+body {
+    margin: 0;
+    font-family: "Be Vietnam Pro", sans-serif;
+}
+
 a {
-  text-decoration: none;
+    text-decoration: none;
 }
-.box {
-  display: flex;
-  justify-content: center;
+
+/* container */
+.container {
+    width: 1200px;
+    margin: 0 auto;
 }
-.box-chat {
-  background-color: #222;
-  display: flex;
-  flex-direction: column;
-  -ms-text-justify: flex-start;
-  width: 500px;
-  border-radius: 20px;
-  padding: 10px;
-  height: 400px;
-  overflow-y: auto;
+/* End container */
+
+/* chat */
+.chat {
+    margin-top: 20px;
 }
-.box-chat .client {
-  display: flex;
-  justify-content: flex-start;
-  padding: 10px;
+.chat .inner-wrap {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    height: 700px;
 }
-.box-chat .client .avatar{
-  width: 50px;
-  height: 50px;
-  margin-right: 20px;
-  border-radius: 50%;
-  object-fit: contain;
+.chat .inner-wrap .inner-left {
+    padding: 15px 20px;
+    background-color: #222222;
+    border-radius: 15px;
+    width: 450px;
 }
-.box-chat .client .info .new-mess {
-  display: flex;
-  flex-direction: row;
-  padding-top: 5px;
-  justify-content: flex-start;
-  font-size: 15px;
-  color: #8A8A8A;
+.chat .inner-left .inner-title {
+    color: #ddd;
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 10px;
 }
-.box-chat .client .info .name {
-  color: #ddd;
-  font-size: 20px;
-  font-weight: 20px;
+.chat .inner-left .inner-form {
+    width: 350px;
+    background-color: #3A3B3C;
+    height: 45px;
+    border-radius: 30px;
+    display: inline-flex;
+    padding: 8px;
+    gap: 14px;
+    margin-bottom: 20px;
 }
-.box-chat .client .info .new-mess .mess {
-  margin-right: 5px;
+.chat .inner-left .inner-form input {
+    background-color: transparent;
+    height: 100%;
+    color: #9FA2A6;
+    font-weight: 700;
+    font-size: 14px;
+    border: 0;
+    outline: 0;
+    order: 1;
+    flex: 1;
 }
-.box-chat .client .info .new-mess .dot {
-  align-self: center;
-  margin-right: 5px;
+.chat .inner-left .inner-form button {
+    order: 0;
+    border: 0;
+    background-color: transparent;
+    font-size: 15px;
 }
-/* End list client chat to admin */
+.chat .inner-left .inner-list {
+    display: inline-flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    align-content: flex-start;
+    gap: 14px;
+}
+.chat .inner-left .inner-list .inner-user {
+    display: inline-flex;
+    gap: 15px;
+}
+.chat .inner-left .inner-list .inner-user img {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+.chat .inner-left .inner-list .inner-user .inner-content{
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 8px;
+}
+.chat .inner-left .inner-list .inner-user .inner-content .inner-name{
+    color: #ddd;
+    font-weight: 900;
+    font-size: 17px;
+}
+.chat .inner-left .inner-list .inner-user .inner-content .inner-title {
+    display: inline-flex;
+    flex-wrap: wrap;
+    font-size: 13px;
+    font-weight: 500;
+    gap: 14px;
+}
+.chat .inner-wrap .inner-right {
+    position: relative;
+    display: inline-flex;
+    width: 750px;
+    border-radius: 15px;
+    flex-direction: column;
+    background-color: #222222;
+}
+.chat .inner-wrap .inner-right .inner-head {
+    width: 100%;
+    padding: 8px 8px 8px 14px;
+    display: inline-flex;
+    border-bottom: 1px solid #ddd;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 14px;
+}
+.chat .inner-wrap .inner-right .inner-head .inner-avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+.chat .inner-wrap .inner-right .inner-head .inner-name {
+    font-size: 14px;
+    font-weight: 500;
+    color: #dddddd;
+}
+.chat .inner-wrap .inner-right .inner-head .inner-active {
+    font-size: 14px;
+    font-weight: 400;
+    color: #696363;
+}
+.chat .inner-wrap .inner-right .inner-body {
+    padding: 14px;
+    overflow-y: auto;
+    flex: 1;
+}
+.chat .inner-wrap .inner-right .inner-body .inner-chat {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+.chat .inner-wrap .inner-right .inner-body .inner-chat .inner-coming {
+    display: inline-flex;
+    justify-content: flex-start;
+    border: 1px solid #4C4C4C;
+    background-color: #4C4C4C;
+    max-width: 300px;
+    border-radius: 20px;
+    padding: 8px;
+    align-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+    margin-right: auto;
+}
+.chat .inner-wrap .inner-right .inner-body .inner-chat .inner-going {
+    display: inline-flex;
+    justify-content: flex-end;
+    border: 1px solid #3657FF;
+    background-color: #3657FF;
+    max-width: 300px;
+    border-radius: 20px;
+    padding: 8px;
+    align-content: center;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+    margin-left: auto;
+}
+.chat .inner-wrap .inner-right .inner-form {
+    display: inline-flex;
+    position: absolute;
+    bottom: 0;
+    border-radius: 30px;
+    background-color: #3A3B3C;
+    text-align: center;
+}
+.chat .inner-wrap .inner-right .inner-form input {
+    width: 500px;
+    height: 30px;
+    padding: 8px 8px 8px 14px;
+    margin-right: 8px;
+    outline: 0;
+    border: 0;
+    background-color: transparent;
+}
+.chat .inner-wrap .inner-right .inner-form button {
+    background-color: transparent;
+    border: 0;
+    position: relative;
+    text-align: center;
+    left: -10px;
+}
+/* End chat */
