@@ -10,6 +10,7 @@ module.exports = async (req, res, roomChatId) => {
     let remainMess = paginationMessage.number; // số lượng tin nhắn còn lại chưa hiển thị 
     const totalMess = paginationMessage.number;  // tổng số trang có thể load 
     let newRoom = roomChatId; // id phòng chat
+    console.log('remain : ', remainMess)
     // SocketIO
     _io.once("connection", (socket) => {  // người dùng kết nối đến 1 lần
         socket.join(newRoom)
@@ -42,15 +43,16 @@ module.exports = async (req, res, roomChatId) => {
         })
         //CLIENT_LOAD_MORE_MESSAGE
         socket.on('CLIENT_LOAD_MORE_MESSAGE', async (currentPage) => {    // người dùng yêu cầu xem thêm tin nhắn lúc trước
-            let skipMess = totalMess - (currentPage + 1)*limitMess; // số tin nhắn cần bỏ qua
+            let skipMess = totalMess - (currentPage+1)*limitMess; // số tin nhắn cần bỏ qua
 
             // trường hợp skipMess < 0 => có thể có tin nhắn bị bỏ qua - hay bị lỗi gì đó
             if(skipMess < 0){ 
                 skipMess = 0;
                 limitMess = remainMess;
             } else {
-                remainMess -= totalMess - skipMess; // cập nhật số tin nhắn còn lại chưa hiển thị
+                remainMess = skipMess; // cập nhật số tin nhắn còn lại chưa hiển thị
             }
+            console.log('remain : ', remainMess, '  skip : ', skipMess, '  limit : ', limitMess);
             const chats = await Chat.find({
                 roomChatId : roomChatId,
             }).skip(skipMess).limit(limitMess);  // lấy ra số lượng tin nhắn - tạo sau lấy trước
