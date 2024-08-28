@@ -5,6 +5,10 @@ const chatSchema = new mongoose.Schema({
   roomChatId: String,
   content: String,
   images: Array,
+  seen : {
+    type : Boolean,
+    default : false,
+  }
 }, {
   timestamps: true
 });

@@ -16,7 +16,7 @@ block main
                                 img.inner-avatar(src='https://th.bing.com/th/id/OIP.f1IszCjHtBlCEXYmy9hsQwHaHa?rs=1&pid=ImgDetMain')
                                 .inner-content
                                     .inner-name #{user.fullName}
-                                    .inner-title
+                                    div(class='inner-title'  class=(user.seen==false ? 'no-seen' : ''))
                                         if(user.newMessage)
                                             .inner-mess #{user.newMessage}
                                             .inner-time #{user.timeSending}

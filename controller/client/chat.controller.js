@@ -38,9 +38,11 @@ module.exports.listRoomChat = async (req, res) => {
             user.newMessage = newMessage.content;
             user.timeSending = timeSending;
             user.originalTime = newMessage.createdAt; // thời gian gửi tin nhắn - chưa fomat
+            user.seen = newMessage.seen;
         } else {
             user.originalTime = 0;
         }
+        console.log(user.seen)
     }
     listUser.sort((a, b) => {
         return b.originalTime - a.originalTime; // nhắn sau hiển thị cao hơn 
@@ -54,7 +56,6 @@ module.exports.listRoomChat = async (req, res) => {
     const listMess = await chatSocketHelper.showMess(limitMess, lastUser.roomChatId); // số tin nhắn hiển thị 
 
     const paginationMessage = await paginationHelper(req, {}, Chat, limitMess); // phân trang của mess
-
     res.render('client/pages/chat/listChat', {
         listUser : listUser,
         listMess : listMess,
