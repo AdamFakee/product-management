@@ -94,6 +94,26 @@ if(chatBox){
 }
 // End SERVER_RETURN_MAX_SCROLL
 
+// SERVER_RETURN_MESS_DEMO
+if(userChoosen){
+  userChoosen.forEach(user => {
+    const userId = user.getAttribute('user-chat-room');
+    socket.on('SERVER_RETURN_MESS_DEMO', (data) => {
+      if(userId == data.userId){
+        const demoMess = user.querySelector('.inner-mess');
+        const demoTimeSending = user.querySelector('.inner-time');
+        const title = user.querySelector('.inner-title');
+        demoMess.removeChild(demoMess.firstChild);
+        demoTimeSending.removeChild(demoTimeSending.firstChild);
+        title.classList.add('no-seen');
+        demoMess.innerHTML = data.content;
+        demoTimeSending.innerHTML = data.timeSending;
+      }
+    })
+  })
+}
+// End SERVER_RETURN_MESS_DEMO
+
 // load thêm tin nhắn cũ
 if(chatBox){
   // CLIENT_LOAD_MORE_MESSAGE

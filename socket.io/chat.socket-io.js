@@ -1,5 +1,6 @@
 const Chat = require("../models/chat.model");
 const User = require("../models/user.model");
+const moment = require('moment');
 const paginationHelper = require('../helpers/pagination.helper');
 const chatSocketHelper = require('../helpers/chat-socket.helper');
 module.exports = async (req, res, roomChatId) => {
@@ -25,12 +26,19 @@ module.exports = async (req, res, roomChatId) => {
                 content: data.content
             });
             await chat.save();
+
+            // fomat timeSending
+            chatData.timeSending = moment(chat.createdAt).fromNow();
+            // End fomat timeSending
         
             // Trả tin nhắn realtime về cho mọi người 
             _io.to(newRoom).emit('SERVET_SEND_MESSAGE', chatData);
 
             // nhắn xong thì scrollTop = scrollHeight
             socket.emit('SERVER_RETURN_MAX_SCROLL');
+
+            // hiển thị tin nhắn demo cho bên admin - bên client k cần
+            _io.emit('SERVER_RETURN_MESS_DEMO', chatData)
         })
         //CLIENT_LOAD_MORE_MESSAGE
         socket.on('CLIENT_LOAD_MORE_MESSAGE', async (currentPage) => {    // người dùng yêu cầu xem thêm tin nhắn lúc trước

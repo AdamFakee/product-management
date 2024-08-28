@@ -423,6 +423,14 @@ a {
     font-weight: 500;
     gap: 14px;
 }
+.chat .inner-left .inner-list .inner-user .inner-content .inner-title .inner-mess {
+    color: #959595;
+    font-size: 12px;
+}
+.chat .inner-left .inner-list .inner-user .inner-content .inner-title .inner-time {
+    color: #959595;
+    font-size: 12px;
+}
 .chat .inner-wrap .inner-right {
     position: relative;
     display: inline-flex;
@@ -515,5 +523,13 @@ a {
     position: relative;
     text-align: center;
     left: -10px;
+}
+.chat .inner-left .inner-list .inner-user .inner-content .no-seen .inner-mess, .inner-time{
+    color: #ffffff;
+    font-size: 16px;
+}
+.chat .inner-left .inner-list .inner-user .inner-content .no-seen .inner-time{
+    color: #ffffff;
+    font-size: 16px;
 }
 /* End chat */
