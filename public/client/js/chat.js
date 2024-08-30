@@ -54,6 +54,20 @@ socket.on('SERVER_RETURN_CHOOSE_USER', data => {
 })
 // End SERVER_RETURN_CHOOSE_USER
 
+// SERVER_RETURN_SEEN_MESS
+if(userChoosen){
+  userChoosen.forEach(user => {
+    const userId = user.getAttribute('user-chat-room');
+    socket.on('SERVER_RETURN_SEEN_MESS', data => {
+      if(userId == data){
+        const title = user.querySelector('.inner-title');
+        title.classList.remove('no-seen');
+      }
+    })
+  })
+}
+// End SERVER_RETURN_SEEN_MESS
+
 // CLIENT_SEND_MESSAGE
 const formChat = document.querySelector("[form-sent-message]");
 if(formChat) {
@@ -144,8 +158,11 @@ if(userChoosen){
         const demoMess = user.querySelector('.inner-mess');
         const demoTimeSending = user.querySelector('.inner-time');
         const title = user.querySelector('.inner-title');
-        demoMess.removeChild(demoMess.firstChild);
-        demoTimeSending.removeChild(demoTimeSending.firstChild);
+        if(demoMess.firstChild){
+          demoMess.removeChild(demoMess.firstChild);
+          demoTimeSending.removeChild(demoTimeSending.firstChild);
+        }
+        
         title.classList.add('no-seen');
         demoMess.innerHTML = data.content;
         demoTimeSending.innerHTML = data.timeSending;
