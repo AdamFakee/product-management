@@ -35,6 +35,7 @@ block main
                                     .inner-coming #{mess.content}
                                 
                     form(action='' form-sent-message class='inner-form' )
-                        input(type='text' placeholder='Aa' name='content')
+                        input(type='text' class='inner-write' placeholder='Aa' name='content')
+                        input(type='file' class='inner-image' name='image-in-message')
                         button
                             i.fa-solid.fa-paper-plane

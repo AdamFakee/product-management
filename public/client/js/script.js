@@ -198,7 +198,16 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 // // end your order
 
+// scroll mess
 const chatBox = document.querySelector('[body-box]');
 if(chatBox){
   chatBox.scrollTop = chatBox.scrollHeight;
 }
+// End scroll mess
+
+// typing 
+const typingBox = document.querySelector('[box-typing]');
+if(typingBox) {
+    console.log(ok)
+}
+// End typing

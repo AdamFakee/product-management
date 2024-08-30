@@ -3,6 +3,16 @@ const User = require("../models/user.model");
 const moment = require('moment');
 const paginationHelper = require('../helpers/pagination.helper');
 const chatSocketHelper = require('../helpers/chat-socket.helper');
+
+const cloudinary = require('cloudinary').v2
+const streamifier = require('streamifier')
+
+cloudinary.config({ 
+    cloud_name: process.env.CLOUD_NAME, 
+    api_key: process.env.CLOUD_API_KEY, 
+    api_secret: process.env.CLOUD_API_SECRET
+  });
+
 module.exports = async (req, res, roomChatId) => {
     const userId = res.locals.user.id;
     let limitMess = 20; // chỉ hiển thị 20 tin nhắn
@@ -10,12 +20,12 @@ module.exports = async (req, res, roomChatId) => {
     let remainMess = paginationMessage.number; // số lượng tin nhắn còn lại chưa hiển thị 
     const totalMess = paginationMessage.number;  // tổng số trang có thể load 
     let newRoom = roomChatId; // id phòng chat
-    console.log('remain : ', remainMess)
     // SocketIO
     _io.once("connection", (socket) => {  // người dùng kết nối đến 1 lần
         socket.join(newRoom)
         // CLIENT_SEND_MESSAGE
         socket.on("CLIENT_SEND_MESSAGE", async (data) => {
+            console.log(data)
             const chatData = {
                 userId: userId,
                 content: data.content,
@@ -41,6 +51,13 @@ module.exports = async (req, res, roomChatId) => {
             // hiển thị tin nhắn demo cho bên admin - bên client k cần
             _io.emit('SERVER_RETURN_MESS_DEMO', chatData)
         })
+
+        // CLIENT_WRITE_MESSAGE
+        socket.on('CLIENT_WRITE_MESSAGE', (status) => {
+            socket.broadcast.to(newRoom).emit('SERVER_RETURN_TYPING', status);
+        })
+        // End CLIENT_WRITE_MESSAGE
+
         //CLIENT_LOAD_MORE_MESSAGE
         socket.on('CLIENT_LOAD_MORE_MESSAGE', async (currentPage) => {    // người dùng yêu cầu xem thêm tin nhắn lúc trước
             let skipMess = totalMess - (currentPage+1)*limitMess; // số tin nhắn cần bỏ qua

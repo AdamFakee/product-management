@@ -60,6 +60,8 @@ if(formChat) {
   formChat.addEventListener("submit", (event) => {
     event.preventDefault();
     const content = event.target.content.value;
+    const img = event.target.content['image-in-message'];
+    console.log(img)
     if(content) {
       socket.emit("CLIENT_SEND_MESSAGE", {
         content: content
@@ -69,6 +71,45 @@ if(formChat) {
   })
 }
 // End CLIENT_SEND_MESSAGE
+
+// SERVER_RETURN_TYPING
+if(chatBox) {
+  socket.on('SERVER_RETURN_TYPING', (status) => {
+    const typingBox = chatBox.querySelector('[box-typing]');
+    if(status == 'show') {
+      if(!typingBox) {   // 1 người dùng hiển thị 1 typing
+        const boxTyping = document.createElement("div");
+        boxTyping.classList.add("box-typing");
+        boxTyping.setAttribute('box-typing', '');
+        boxTyping.innerHTML = `
+          <div class="inner-dots"><span></span><span></span><span></span></div>
+        `;
+        chatBox.appendChild(boxTyping)
+      }
+    } else {
+      if(typingBox) {
+        chatBox.removeChild(typingBox);
+      }
+    }
+  })
+}
+// End SERVER_RETURN_TYPING
+
+// CLIENT_WRITE_MESSAGE 
+let typingTimeOut;
+if(formChat) {
+  formChat.addEventListener('keyup' , () => {
+    socket.emit('CLIENT_WRITE_MESSAGE', 'show');
+
+    clearTimeout(typingTimeOut);
+    
+    typingTimeOut = setTimeout(() => {
+      socket.emit('CLIENT_WRITE_MESSAGE', 'hidden');
+    }, 3000);
+  })
+}
+// End CLIENT_WRITE_MESSAGE 
+
 
 // SERVER_SEND_MESSAGE
 socket.on('SERVET_SEND_MESSAGE', chatData => {
