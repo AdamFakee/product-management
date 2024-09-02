@@ -19,10 +19,19 @@ router.post('/password/otp', controller.otpPasswordPost);
 router.get("/password/reset", controller.resetPassword);
 router.post('/password/reset', controller.resetPasswordPost);
 
-// Định tuyến cho Google Authentication
+
+// đăng nhập bằng google auth2
+
+// cấu hình
 authGoogleHelper();
+
+// chuyển hướng sang bên link của gg để cho người dùng đăng nhập
 router.get('/auth/google',passport.authenticate('google', { scope: ['profile', 'email'] }));
 
-router.get('/auth/google/callback', passport.authenticate('google', { failureRedirect: '/' }), controller.authGoogle);
-
+// đăng nhập xong => chuyển hướng về link này 
+router.get('/auth/google/callback', 
+    passport.authenticate('google', {failureRedirect: '/user/login' }), 
+    controller.authGoogle
+);
+// End đăng nhập bằng google auth2
 module.exports = router;

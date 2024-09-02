@@ -31,16 +31,16 @@ app.use(flash());
 app.use(bodyParser.json())  // use for json
 app.use(bodyParser.urlencoded({ extended: false })) // use for form
 
-// Thiết lập session
+// set session : giao thức đảm bảo việc giữ kết nối giữa client's bowrse với serve khi chuyển trang, kiểu lưu thông tin tạm thời trong trình duyệt
 app.use(session({
-    secret: 'your_secret_key',
+    secret: process.env.SESSION_SECRET_KEY,
     resave: false,
     saveUninitialized: true
 }));
 
-// Thiết lập Passport.js
-app.use(passport.initialize());
-app.use(passport.session());
+// set Passport.js
+app.use(passport.initialize()); // để thực hiện được serializeUser và deserializeUser
+app.use(passport.session()); // initialize và session giống như middleware thôi
 
 // set link admin
 const systemConfig = require("./config/system");

@@ -148,6 +148,7 @@ module.exports.resetPasswordPost = async (req, res) => {
 // [GET] /user/auth/google/callback
 module.exports.authGoogle = async (req, res) => {
     const profileJson = req.user._json;
+    console.log(profileJson)
     const acc = await User.findOne({
         email : profileJson.email,
     });
