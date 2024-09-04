@@ -83,6 +83,7 @@ module.exports.forgotPasswordPost = async (req, res) => {
         const newAcc = new ForgotPassword({
             email : emailUser,
             OTP : OTP,
+            expireAt: Date.now() + 3*60*1000 // 3 minutes
         });
         await newAcc.save();
         res.redirect(`/user/password/otp?email=${emailUser}`);
