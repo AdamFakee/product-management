@@ -7,6 +7,7 @@ const accountRouter = require('./account.router');
 const authRouter = require('./auth.router');
 const profileRouter = require('./profile.router');
 const accoutnClientRouter = require('./account-client.router');
+const uploadMceRouter = require('./upload-tinymce.router');
 const systemConfig = require("../../config/system");
 const authMiddleware = require('../../middlewares/admin/auth.middleware');
 module.exports.index = (app) => {
@@ -50,6 +51,11 @@ module.exports.index = (app) => {
         `${path}/account-clients`, 
         authMiddleware.requireAuth,
         accoutnClientRouter
+    );
+    app.use(
+        `${path}/upload`, 
+        authMiddleware.requireAuth,
+        uploadMceRouter
     );
     app.use(path +'/auth', authRouter);
 }
