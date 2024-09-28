@@ -16,7 +16,36 @@ module.exports.register = (req, res) => {
 module.exports.registerPost = async (req, res) => {
     req.body.password = md5(req.body.password);
     req.body.cartId = req.cookies.cartId;
-    req.body.role = 'client';
+    req.body.loginWith = ['email'];
+    const existAcc = await User.findOne({
+        email: req.body.email,
+        loginWith : {
+            $in : ['email', 'google']
+        }
+    });
+    if(existAcc) {
+        if(!existAcc.loginWith.includes('email')) {
+            const {accessToken, refreshToken} = generateHelper.jwtToken({id : existAcc._id}); // generate token
+            await User.updateOne({
+                _id : existAcc._id
+            }, {
+                password : req.body.password,
+                loginWith : ['email'],
+                refreshToken : refreshToken
+            })
+            res.cookie("accessToken", accessToken, { expires: new Date(Date.now() + 300*1000)});
+            res.cookie("refreshToken", refreshToken, { expires: new Date(Date.now() + 20*24*60*60*1000)});
+            res.cookie('cartId', existAcc.cartId);
+            req.flash('success', 'đăng ký tài khoản thành công');
+            res.redirect('/');
+            return;
+        } else {
+            req.flash('error', 'email đã tồn tại');
+            res.redirect('back');
+            return;
+        }
+    }
+    
     const newUser = new User(req.body);
     await newUser.save();
 
@@ -33,6 +62,7 @@ module.exports.registerPost = async (req, res) => {
     })
     res.cookie("accessToken", accessToken, { expires: new Date(Date.now() + 300*1000)});
     res.cookie("refreshToken", refreshToken, { expires: new Date(Date.now() + 20*24*60*60*1000)});
+    res.cookie('cartId', newUser.cartId);
     req.flash('success', 'đăng ký tài khoản thành công');
     res.redirect('/');
 }
@@ -163,29 +193,50 @@ module.exports.resetPasswordPost = async (req, res) => {
 // [GET] /user/auth/google/callback
 module.exports.authGoogle = async (req, res) => {
     const profileJson = req.user._json;
-    console.log(profileJson)
     const acc = await User.findOne({
         email : profileJson.email,
+        loginWith : {
+            $in : ['email', 'google']
+        },
     });
     const googleAcc = {
         fullName : profileJson.name,
         avatar : profileJson.picture,
         email : profileJson.email,
-        googleId : profileJson.sub,
     };
     if(acc){
-        googleAcc.password = acc.password;
+        if(!acc.loginWith.includes('google')){
+            await User.updateOne({
+                email : profileJson.email,
+            }, {
+                $push : {
+                    loginWith : 'google'
+                }
+            });
+        }
+        const {accessToken, refreshToken} = generateHelper.jwtToken({id : acc._id}); // generate token
         await User.updateOne({
-            email : profileJson.email,
-        }, googleAcc);
-        const tokenUser = jwt.sign({id : acc._id}, process.env.ACCESS_TOKEN_SECRET, { expiresIn: 3*60*60*24*1000 }); // 3d
-        res.cookie('tokenUser', tokenUser);
+            _id : acc._id
+        }, {
+            refreshToken : refreshToken
+        })
+        res.cookie("accessToken", accessToken, { expires: new Date(Date.now() + 300*1000)});
+        res.cookie("refreshToken", refreshToken, { expires: new Date(Date.now() + 20*24*60*60*1000)});
+        res.cookie('cartId', acc.cartId)
     } else {
         googleAcc.cartId = req.cookies.cartId;
+        googleAcc.loginWith = ['google'];
         const newAcc = new User(googleAcc);
         await newAcc.save();
-        const tokenUser = jwt.sign({id : newAcc._id}, process.env.ACCESS_TOKEN_SECRET, { expiresIn: 3*60*60*24*1000 }); // 3d
-        res.cookie('tokenUser', tokenUser);
+        const {accessToken, refreshToken} = generateHelper.jwtToken({id : newAcc._id}); // generate token
+        await User.updateOne({
+            _id : newAcc._id
+        }, {
+            refreshToken : refreshToken
+        })
+        res.cookie("accessToken", accessToken, { expires: new Date(Date.now() + 300*1000)});
+        res.cookie("refreshToken", refreshToken, { expires: new Date(Date.now() + 20*24*60*60*1000)});
+        res.cookie('cartId', newAcc.cartId);
     }
     
     res.redirect('/');

@@ -8,7 +8,11 @@ const userSchema = new mongoose.Schema({
     avatar: String,
     cartId : String,
     roomChatId : String,
-    role:String,  // role : k có data => client, role=admin => tài khoản admin
+    loginWith : [String],
+    role:{
+        type: String,
+        default : 'client'
+    },  // role : k có data => client, role=admin => tài khoản admin
     status: {
         type: String,
         default: "active"
