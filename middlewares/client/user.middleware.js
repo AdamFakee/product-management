@@ -5,6 +5,7 @@ module.exports.infoUser = async (req, res, next) => {
     try {
         if(req.cookies.accessToken) {
             const accessToken = req.cookies.accessToken;
+            console.log(accessToken)
             const payload = jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET);
             const user = await User.findOne({
                 _id : payload.id,

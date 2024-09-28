@@ -3,6 +3,7 @@ const User = require("../../models/user.model");
 // check admin account
 module.exports.checkAdmin = (req, res, next) => {
     const user = res.locals.user;
+    console.log(user)
     if(user.role=='admin'){
         next();
     }else {

@@ -105,13 +105,15 @@ module.exports = async (req, res, roomChatId) => {
                 // đã xem tin nhắn
                 const lastMess = listMess[listMess.length-1]; // tin nhắn mới nhất
 
-                // cập nhật 1 cái để show cho đẹp thôi :))
-                await Chat.updateOne({ // cập nhật : đã xem
-                    _id : lastMess.id,
-                }, {
-                    seen : true,
-                })
-                socket.emit('SERVER_RETURN_SEEN_MESS', userId);
+                if(lastMess) {
+                    // cập nhật 1 cái để show cho đẹp thôi :))
+                    await Chat.updateOne({ // cập nhật : đã xem
+                        _id : lastMess.id,
+                    }, {
+                        seen : true,
+                    })
+                    socket.emit('SERVER_RETURN_SEEN_MESS', userId);
+                }
             }
         })
         // End CLIENT_CHOOSE_USER

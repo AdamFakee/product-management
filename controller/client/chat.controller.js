@@ -24,7 +24,12 @@ module.exports.index = async (req, res) => {
 
 // [GET] /chat/list-room-chat
 module.exports.listRoomChat = async (req, res) => {
-    const listUser = await User.find({ roomChatId: { $exists: true } }); // những ai có roomChatId
+    const listUser = await User.find({
+        $and : {
+            roomChatId: { $exists: true },
+            _id : {$ne : res.locals.user}
+        } 
+    }); // những ai có roomChatId
     const limitMess = 20; // chỉ hiển thị 20 tin nhắn
     for(const user of listUser){
         const newMess = await Chat.find({   // tin nhắn mới nhất
@@ -50,12 +55,15 @@ module.exports.listRoomChat = async (req, res) => {
     const lastUser = listUser[0]; // nguời dùng nhắn tin gần nhất - hiển thị mặc định
 
     // socket-io
-    await chatSocket(req, res, lastUser.roomChatId);
+    let listMess, paginationMessage;
+    if(lastUser) {
+        await chatSocket(req, res, lastUser.roomChatId);
+        listMess = await chatSocketHelper.showMess(limitMess, lastUser.roomChatId); // số tin nhắn hiển thị 
+        paginationMessage = await paginationHelper(req, {}, Chat, limitMess); // phân trang của mess
+    }
     // End socket-io
 
-    const listMess = await chatSocketHelper.showMess(limitMess, lastUser.roomChatId); // số tin nhắn hiển thị 
-
-    const paginationMessage = await paginationHelper(req, {}, Chat, limitMess); // phân trang của mess
+    
     res.render('client/pages/chat/listChat', {
         listUser : listUser,
         listMess : listMess,

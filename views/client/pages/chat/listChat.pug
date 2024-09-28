@@ -21,21 +21,23 @@ block main
                                             .inner-mess #{user.newMessage}
                                             .inner-time #{user.timeSending}
                 .inner-right
-                    div(class='inner-head' head-box-chat )
-                        img.inner-avatar(src='https://th.bing.com/th/id/OIP.f1IszCjHtBlCEXYmy9hsQwHaHa?rs=1&pid=ImgDetMain')
-                        .inner-title
-                            .inner-name #{lastUser.fullName}
-                            .inner-active ho&#x1EA1;t &dstrok;&#x1ED9;ng 1 gi&#x1EDD; tr&#x1B0;&#x1EDB;c
-                    div(class='inner-body' body-box )
-                        div(class='inner-chat' box-chat my-id=user.id current-page=1 total-page = paginationMessage.totalPage)
-                            each mess in listMess
-                                if(mess.userId == user.id)
-                                    .inner-going #{mess.content}
-                                else
-                                    .inner-coming #{mess.content}
+                    if(lastUser)
+                        div(class='inner-head' head-box-chat )
+                            img.inner-avatar(src='https://th.bing.com/th/id/OIP.f1IszCjHtBlCEXYmy9hsQwHaHa?rs=1&pid=ImgDetMain')
+                            .inner-title
+                                .inner-name #{lastUser.fullName}
+                                .inner-active ho&#x1EA1;t &dstrok;&#x1ED9;ng 1 gi&#x1EDD; tr&#x1B0;&#x1EDB;c
+                        div(class='inner-body' body-box )
+                            div(class='inner-chat' box-chat my-id=user.id current-page=1 total-page = paginationMessage.totalPage)
+                                each mess in listMess
+                                    if(mess.userId == user.id)
+                                        .inner-going #{mess.content}
+                                    else
+                                        .inner-coming #{mess.content}
+                                    
+                        form(action='' form-sent-message class='inner-form' )
+                            input(type='text' class='inner-write' placeholder='Aa' name='content')
+                            input(type='file' class='inner-image' name='image-in-message')
+                            button
+                                i.fa-solid.fa-paper-plane
                                 
-                    form(action='' form-sent-message class='inner-form' )
-                        input(type='text' class='inner-write' placeholder='Aa' name='content')
-                        input(type='file' class='inner-image' name='image-in-message')
-                        button
-                            i.fa-solid.fa-paper-plane
