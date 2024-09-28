@@ -25,8 +25,14 @@ module.exports.registerPost = async (req, res) => {
     }, {
         roomChatId : newUser.id,
     })
-    const tokenUser = jwt.sign({id : newUser._id}, process.env.ACCESS_TOKEN_SECRET, { expiresIn: 3*60*60*24*1000 });
-    res.cookie('tokenUser',tokenUser);
+    const {accessToken, refreshToken} = generateHelper.jwtToken({id : newUser._id}); // generate token
+    await User.updateOne({
+        _id : newUser._id
+    }, {
+        refreshToken : refreshToken
+    })
+    res.cookie("accessToken", accessToken, { expires: new Date(Date.now() + 300*1000)});
+    res.cookie("refreshToken", refreshToken, { expires: new Date(Date.now() + 20*24*60*60*1000)});
     req.flash('success', 'đăng ký tài khoản thành công');
     res.redirect('/');
 }
@@ -51,15 +57,23 @@ module.exports.loginPost = async (req, res) => {
         res.redirect('back');
         return;
     }
-    const tokenUser = jwt.sign({id : accUser._id}, process.env.ACCESS_TOKEN_SECRET, { expiresIn: 3*60*60*24*1000 }); // 3d
-    res.cookie('tokenUser', tokenUser);
+    const {accessToken, refreshToken} = generateHelper.jwtToken({id : accUser._id}); // generate token
+    await User.updateOne({
+        _id : accUser._id
+    }, {
+        refreshToken : refreshToken
+    })
+    res.cookie("accessToken", accessToken, { expires: new Date(Date.now() + 300*1000)});
+    res.cookie("refreshToken", refreshToken, { expires: new Date(Date.now() + 20*24*60*60*1000)});
     req.flash('success', 'đăng nhập thành công');
     res.redirect('/');
 }
 
 // [GET] /user/logout
 module.exports.logout = (req, res) => {
-    res.clearCookie('tokenUser');
+    res.clearCookie('accessToken');
+    res.clearCookie('refreshToken');
+    res.clearCookie('cartId');
     res.redirect('/user/login');
 }
 
@@ -175,4 +189,32 @@ module.exports.authGoogle = async (req, res) => {
     }
     
     res.redirect('/');
+}
+
+// [POST] /user/reset-token 
+module.exports.resetToken = async (req, res) => {
+    const bearer = req.headers.authorization;
+    const refreshTokenBear = bearer.split(' ')[1];
+    console.log(refreshTokenBear)
+    try {
+        const payload = jwt.verify(refreshTokenBear, process.env.REFRESH_TOKEN_SECRET);
+        const {accessToken, refreshToken} = generateHelper.jwtToken({id : payload.id});
+        await User.updateOne({
+            _id : payload.id,
+            refreshToken : refreshTokenBear
+        }, {
+            refreshToken : refreshToken
+        })
+        res.cookie("accessToken", accessToken, { expires: new Date(Date.now() + 30*60*1000)}); // 30m
+        res.cookie("refreshToken", refreshToken, { expires: new Date(Date.now() + 3*24*60*60*1000)});  // 3d
+        res.json({
+            code : 200
+        })
+    } catch (error) {
+        res.clearCookie('accessToken');
+        res.clearCookie('refreshToken');
+        res.json({
+            code : 401
+        })
+    }
 }

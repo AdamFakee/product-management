@@ -189,7 +189,10 @@ function showTab(tabId) {
     tabs.forEach(tab => {
         tab.style.display = 'none';
     });
-    document.getElementById(tabId).style.display = 'block';
+    const tabActive = document.getElementById(tabId);
+    if(tabActive) {
+        tabActive.style.display = 'block';
+    }
 }
 
 // Hiển thị tab đầu tiên khi tải trang
@@ -211,3 +214,52 @@ if(typingBox) {
     console.log(ok)
 }
 // End typing
+
+// jwt-decoded
+function isTokenExpired(token) {
+    const arrayToken = token.split('.');
+    const tokenPayload = JSON.parse(atob(arrayToken[1]));  // decode Token
+    return Math.floor(new Date().getTime()) >= tokenPayload.exp*1000;
+  }
+const getCookie = (cookiName) => {
+    let cookieValue = document.cookie.split("; ");
+    cookieValue = cookieValue.map(value => {
+        const arrValue = value.split("=");
+        return {
+            name: arrValue[0],
+            value: arrValue[1],
+        }
+    })
+    const cookie = cookieValue.find(value => {
+        return value.name == cookiName;
+    })
+    return cookie ? cookie.value : null;
+}
+setInterval(() => {
+    const accessToken = getCookie('accessToken');
+    const refreshToken = getCookie('refreshToken');
+    if(accessToken) {
+        const tokenExpired = isTokenExpired(accessToken);
+        if(tokenExpired) {
+            const bearer = 'Bearer ' + refreshToken;
+            
+            fetch('/user/reset-token', {
+                method : 'POST',
+                headers : {
+                    'Authorization': bearer,
+                    'X-FP-API-KEY': 'iphone', //it can be iPhone or your any other attribute
+                    'Content-Type': 'application/json'
+                },
+            })
+                .then (res => res.json())
+                .then (data => {
+                    if(data.code == 401) {
+                        const url = new URL(window.location.href);
+                        let pathName = url.pathname.split('/')[1];
+                        window.location.href = url.origin + `/${pathName}/login`;
+                    }
+                })
+        } 
+    }
+}, 20*60*1000) // 20 munites
+// End jwt-decoded
