@@ -54,13 +54,6 @@ app.set('view engine', 'pug'); // nhưng cũng k bt thư mục gốc là cái n�
 const path = require('path');
 app.use('/tinymce', express.static(path.join(__dirname, 'node_modules', 'tinymce')));
 
-
-// set router
-const routerAdmin = require("./router/admin/index.router");
-const routerClient = require("./router/client/index.router");
-routerClient.index(app);
-routerAdmin.index(app);
-
 //set mongoose
 const mongoose = require('./config/database.config');
 mongoose.connect();
@@ -69,6 +62,21 @@ mongoose.connect();
 
 // set stactic file
 app.use(express.static(`${__dirname}/public`));
+
+// set router
+const routerAdmin = require("./router/admin/index.router");
+const routerClient = require("./router/client/index.router");
+routerClient.index(app);
+routerAdmin.index(app);
+
+// 404 page
+app.get("*", (req, res) => {
+    res.render("client/pages/error/404", {
+      pageTitle: "404 Not Found"
+    });
+});
+
+
 
 server.listen(port, () => {
     console.log(`running ${port}`);

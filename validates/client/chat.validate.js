@@ -3,7 +3,10 @@ const User = require("../../models/user.model");
 // check admin account
 module.exports.checkAdmin = (req, res, next) => {
     const user = res.locals.user;
-    console.log(user)
+    if(!user) {
+        res.redirect('/');
+        return;
+    }
     if(user.role=='admin'){
         next();
     }else {
@@ -16,6 +19,10 @@ module.exports.checkAdmin = (req, res, next) => {
 module.exports.checkRoomChatId = async (req, res, next) => {
     const user = res.locals.user; // room-chat-id trong database
     const roomChatId = req.params.roomChatId; // room-chat-id lấy trên router
+    if(!user) {
+        res.redirect('/');
+        return;
+    }
     if(user.role=='admin'){   // check acc user
         const checkAcc = await User.findOne({
             roomChatId : roomChatId,
