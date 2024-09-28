@@ -8,10 +8,9 @@ module.exports.requireAuth = async (req, res, next) => {
         return;
     } 
     try {
-        const idAccount = jwt.verify(req.cookies.accessToken, process.env.ACCESS_TOKEN_SECRET);
-
+        const payload = jwt.verify(req.cookies.accessToken, process.env.ACCESS_TOKEN_SECRET);
         const account = await Accounts.findOne({
-            _id : idAccount.id,
+            _id : payload.id,
             deleted : false,
         });
 

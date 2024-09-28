@@ -21,3 +21,17 @@ module.exports.OTP = (length) => {
   };
   return result;
 }
+
+// jwt sign - accessToken, refreshToken
+const jwt = require('jsonwebtoken')
+
+module.exports.jwtToken = (payload) => {
+  const accessToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, {
+    expiresIn: '30m'
+  });
+  const refreshToken = jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET, {
+    expiresIn: '3d'
+  });
+
+  return {accessToken, refreshToken};
+}

@@ -1,8 +1,7 @@
 const Accounts = require('../../models/account.model');
 const md5 = require('md5');
-require('dotenv').config();
 const systemConfig = require('../../config/system');
-const jwt = require('jsonwebtoken')
+const generateHelper = require('../../helpers/generate.helper');
 // [GET] admin/auth/login
 module.exports.login = (req, res) => {
     res.render('admin/pages/auth/login.pug', {
@@ -64,36 +63,21 @@ module.exports.loginPost = async (req, res) => {
         res.redirect("back");
         return;
     }
-
-    const generateTokens = payload => {
-        const id = payload;
-        // Create JWT
-        const accessToken = jwt.sign(  
-            {id},
-            process.env.ACCESS_TOKEN_SECRET,
-            {
-                expiresIn: '3d'
-            }
-        )
+    const {accessToken, refreshToken} = generateHelper.jwtToken({id : account._id}); // generate token
+    await Accounts.updateOne({
+        _id : account._id
+    }, {
+        refreshToken : refreshToken
+    })
+    res.cookie("accessToken", accessToken, { expires: new Date(Date.now() + 300*1000)});
+    res.cookie("refreshToken", refreshToken, { expires: new Date(Date.now() + 20*24*60*60*1000)});
     
-        // const refreshToken = jwt.sign(    // LÀM MỚI TOKEN - CHƯA CÓ Ý TƯỞNG LÀM
-        //     {id},
-        //     process.env.REFRESH_TOKEN_SECRET,
-        //     {
-        //         expiresIn: '1h'
-        //     }
-        // )
-    
-        return { accessToken}
-    }
-    const token = generateTokens(account._id);
-    
-    res.cookie("accessToken", token.accessToken, { expires: new Date(Date.now() + 3*60*60*24*1000)});
     res.redirect(`/${systemConfig.prefixAdmin}/dashboard`);
 }
 
 // [GET]  admin/auth/logout
 module.exports.logout = (req, res) => {
     res.clearCookie('accessToken');
+    res.clearCookie('refreshToken')
     res.redirect(`/${systemConfig.prefixAdmin}/auth/login`);
 }
