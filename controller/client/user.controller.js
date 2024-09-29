@@ -93,7 +93,7 @@ module.exports.loginPost = async (req, res) => {
     }, {
         refreshToken : refreshToken
     })
-    res.cookie("accessToken", accessToken, { expires: new Date(Date.now() + 300*1000)});
+    res.cookie("accessToken", accessToken, { expires: new Date(Date.now() + 30*60*1000)});
     res.cookie("refreshToken", refreshToken, { expires: new Date(Date.now() + 20*24*60*60*1000)});
     req.flash('success', 'đăng nhập thành công');
     res.redirect('/');
@@ -182,11 +182,21 @@ module.exports.resetPasswordPost = async (req, res) => {
     const newPassword = req.body.password;
     const tokenUser = jwt.verify(req.cookies.tokenUser, process.env.ACCESS_TOKEN_SECRET);
     const idUser = tokenUser.id;
-    const acc = await User.updateOne({
+    await User.updateOne({
         _id : idUser,
     }, {
         password : md5(newPassword),
     })
+    res.clearCookie('tokenUser');
+    const {accessToken, refreshToken} = generateHelper.jwtToken({id : idUser}); // generate token
+    await User.updateOne({
+        _id : idUser
+    }, {
+        refreshToken : refreshToken
+    })
+    res.cookie("accessToken", accessToken, { expires: new Date(Date.now() + 30*60*1000)});
+    res.cookie("refreshToken", refreshToken, { expires: new Date(Date.now() + 20*24*60*60*1000)});
+    req.flash('success', 'đăng nhập thành công');
     res.redirect('/')
 }
 
