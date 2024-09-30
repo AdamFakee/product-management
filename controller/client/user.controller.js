@@ -1,6 +1,7 @@
 const User = require('../../models/user.model');
 const ForgotPassword = require('../../models/forgot-password.model');
 const generateHelper = require('../../helpers/generate.helper');
+const jwtHelper = require('../../helpers/jwt.helper.js');
 const sendMailHelper = require('../../helpers/sendMail.helper');
 const jwt = require('jsonwebtoken');
 const md5 = require('md5');
@@ -49,20 +50,9 @@ module.exports.registerPost = async (req, res) => {
     const newUser = new User(req.body);
     await newUser.save();
 
-    await User.updateOne({
-        _id : newUser.id,
-    }, {
+    await jwtHelper.jwtNomal(newUser, User, res, {
         roomChatId : newUser.id,
-    })
-    const {accessToken, refreshToken} = generateHelper.jwtToken({id : newUser._id}); // generate token
-    await User.updateOne({
-        _id : newUser._id
-    }, {
-        refreshToken : refreshToken
-    })
-    res.cookie("accessToken", accessToken, { expires: new Date(Date.now() + 30*60*1000)});
-    res.cookie("refreshToken", refreshToken, { expires: new Date(Date.now() + 20*24*60*60*1000)});
-    res.cookie('cartId', newUser.cartId);
+    });
     req.flash('success', 'đăng ký tài khoản thành công');
     res.redirect('/');
 }
@@ -87,14 +77,7 @@ module.exports.loginPost = async (req, res) => {
         res.redirect('back');
         return;
     }
-    const {accessToken, refreshToken} = generateHelper.jwtToken({id : accUser._id}); // generate token
-    await User.updateOne({
-        _id : accUser._id
-    }, {
-        refreshToken : refreshToken
-    })
-    res.cookie("accessToken", accessToken, { expires: new Date(Date.now() + 30*60*1000)});
-    res.cookie("refreshToken", refreshToken, { expires: new Date(Date.now() + 20*24*60*60*1000)});
+    await jwtHelper.jwtNomal(accUser, User, res);
     req.flash('success', 'đăng nhập thành công');
     res.redirect('/');
 }
@@ -188,14 +171,12 @@ module.exports.resetPasswordPost = async (req, res) => {
         password : md5(newPassword),
     })
     res.clearCookie('tokenUser');
-    const {accessToken, refreshToken} = generateHelper.jwtToken({id : idUser}); // generate token
-    await User.updateOne({
+    const accUser = await User.findOne({
         _id : idUser
-    }, {
-        refreshToken : refreshToken
-    })
-    res.cookie("accessToken", accessToken, { expires: new Date(Date.now() + 30*60*1000)});
-    res.cookie("refreshToken", refreshToken, { expires: new Date(Date.now() + 20*24*60*60*1000)});
+    });
+    await jwtHelper.jwtNomal(accUser, User, res);
+
+
     req.flash('success', 'đăng nhập thành công');
     res.redirect('/')
 }
@@ -224,29 +205,13 @@ module.exports.authGoogle = async (req, res) => {
                 }
             });
         }
-        const {accessToken, refreshToken} = generateHelper.jwtToken({id : acc._id}); // generate token
-        await User.updateOne({
-            _id : acc._id
-        }, {
-            refreshToken : refreshToken
-        })
-        res.cookie("accessToken", accessToken, { expires: new Date(Date.now() + 300*1000)});
-        res.cookie("refreshToken", refreshToken, { expires: new Date(Date.now() + 20*24*60*60*1000)});
-        res.cookie('cartId', acc.cartId)
+        await jwtHelper.jwtNomal(acc, User, res);
     } else {
         googleAcc.cartId = req.cookies.cartId;
         googleAcc.loginWith = ['google'];
         const newAcc = new User(googleAcc);
         await newAcc.save();
-        const {accessToken, refreshToken} = generateHelper.jwtToken({id : newAcc._id}); // generate token
-        await User.updateOne({
-            _id : newAcc._id
-        }, {
-            refreshToken : refreshToken
-        })
-        res.cookie("accessToken", accessToken, { expires: new Date(Date.now() + 300*1000)});
-        res.cookie("refreshToken", refreshToken, { expires: new Date(Date.now() + 20*24*60*60*1000)});
-        res.cookie('cartId', newAcc.cartId);
+        await jwtHelper.jwtNomal(newAcc, User, res);
     }
     
     res.redirect('/');
@@ -256,18 +221,12 @@ module.exports.authGoogle = async (req, res) => {
 module.exports.resetToken = async (req, res) => {
     const bearer = req.headers.authorization;
     const refreshTokenBear = bearer.split(' ')[1];
-    console.log(refreshTokenBear)
     try {
         const payload = jwt.verify(refreshTokenBear, process.env.REFRESH_TOKEN_SECRET);
-        const {accessToken, refreshToken} = generateHelper.jwtToken({id : payload.id});
-        await User.updateOne({
-            _id : payload.id,
-            refreshToken : refreshTokenBear
-        }, {
-            refreshToken : refreshToken
+        const accUser = await User.findOne({
+            _id : payload.id
         })
-        res.cookie("accessToken", accessToken, { expires: new Date(Date.now() + 30*60*1000)}); // 30m
-        res.cookie("refreshToken", refreshToken, { expires: new Date(Date.now() + 3*24*60*60*1000)});  // 3d
+        await jwtHelper.jwtNomal(accUser, User, res);
         res.json({
             code : 200
         })
