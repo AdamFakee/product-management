@@ -15,7 +15,7 @@ module.exports.resetToken = async (req, res) => {
         }, {
             refreshToken : refreshToken
         })
-        res.cookie("accessToken", accessToken, { expires: new Date(Date.now() + 30*60*1000)}); // 30m
+        res.cookie("accessToken", accessToken, { expires: new Date(Date.now() + 3*24*60*60*1000)}); // 3d
         res.cookie("refreshToken", refreshToken, { expires: new Date(Date.now() + 3*24*60*60*1000)}); // 3d
         res.json({
             code : 200
