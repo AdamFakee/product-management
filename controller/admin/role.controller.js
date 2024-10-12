@@ -124,30 +124,36 @@ module.exports.permissionsPatch = async (req, res) => {
 
 // [DELETE] admin/roles/delete-role/:id
 module.exports.deleteRole = async (req, res) => {
-    if(res.locals.role.permissions.includes('role_delete')){
-        // xóa (mềm) quyền
-        await Role.updateOne({
-            _id : req.params.id,
-            deleted : false,
-        }, {
-            deletedBy : res.locals.account.id, // cập nhật tài khoản xóa quyền
-            deleted : true,
-        });
-
-        // xóa (mềm) các account có quyền này
-        await Accounts.updateMany({
-            role_id : req.params.id,
-            deleted : false
-        }, {
-            deleted : true,
-        })
-
+    try {
+        if(res.locals.role.permissions.includes('role_delete')){
+            // xóa (mềm) quyền
+            await Role.updateOne({
+                _id : req.params.id,
+                deleted : false,
+            }, {
+                deletedBy : res.locals.account.id, // cập nhật tài khoản xóa quyền
+                deleted : true,
+            });
+    
+            // xóa (mềm) các account có quyền này
+            await Accounts.updateMany({
+                role_id : req.params.id,
+                deleted : false
+            }, {
+                deleted : true,
+            })
+    
+            res.json({
+                code : 200,
+            })
+        } else {
+            res.json({
+                code : 300 // k cos quyen
+            })
+        }
+    } catch (error) {
         res.json({
-            code : 200,
-        })
-    } else {
-        res.json({
-            code : 300 // k cos quyen
+            code : 400
         })
     }
     

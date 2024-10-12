@@ -132,41 +132,45 @@ module.exports.restoreItem = async (req, res) => {
     
 }
 
-// [DELETE]  admin/trash/delete-permanently
+// [DELETE]  admin/trash/delete-permanently/:model/:id
 module.exports.deleteItem = async (req, res) => {
-    if(res.locals.role.permissions.includes('trash_delete')){
-        const {model, id} = req.params;
-        switch(model) {
-            case 'account':
-                await Accounts.deleteOne({_id : id});
-                res.json({
-                    code : 200
-                })
-                break;
-            case 'product':
-                await products.deleteOne({_id : id});
-                res.json({
-                    code : 200
-                })
-                break;
-            case 'role':
-                await Roles.deleteOne({_id : id});
-                res.json({
-                    code : 200
-                })
-                break;
-            case 'product-category':
-                await productCategories.deleteOne({_id : id});
-                res.json({
-                    code : 200
-                })
-                break;
+    try {
+        if(res.locals.role.permissions.includes('trash_delete')){
+            const {model, id} = req.params;
+            switch(model) {
+                case 'account':
+                    await Accounts.deleteOne({_id : id});
+                    res.json({
+                        code : 200
+                    })
+                    break;
+                case 'product':
+                    await products.deleteOne({_id : id});
+                    res.json({
+                        code : 200
+                    })
+                    break;
+                case 'role':
+                    await Roles.deleteOne({_id : id});
+                    res.json({
+                        code : 200
+                    })
+                    break;
+                case 'product-category':
+                    await productCategories.deleteOne({_id : id});
+                    res.json({
+                        code : 200
+                    })
+                    break;
+            }
+            
+        } else {
+            res.json({
+                code : 300 // k có quyền
+            })
         }
-        
-    } else {
-        res.json({
-            code : 300 // k có quyền
-        })
+    } catch (error) {
+        res.json({code : 400})
     }
     
 }
