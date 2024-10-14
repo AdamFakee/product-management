@@ -9,18 +9,13 @@ module.exports.cartId = async (req, res, next) => {
     if(req.cookies.accessToken) {
         try {
             const payload = jwt.verify(req.cookies.accessToken, process.env.ACCESS_TOKEN_SECRET);
-            const user = await User.findOne({
-                status : 'active',
-                deleted : false,
-                _id : payload.id,
-            })
             res.cookie(
                 'cartId', 
-                user.cartId, 
+                payload.cartId, 
                 { expires: new Date(Date.now() + 365*24*60*60*1000)}); // đơn vị milisecond
 
             const cart = await Cart.findOne({
-                _id: user.cartId
+                _id: payload.cartId
                 });
             res.locals.cart = cart;
             res.locals.cartTotal = cart.products.length || 0; // số sản phẩm trong đơn hàng
@@ -43,19 +38,15 @@ module.exports.cartId = async (req, res, next) => {
 module.exports.checkout = async (req, res, next) => {
     try {
         const payload = jwt.verify(req.cookies.accessToken, process.env.ACCESS_TOKEN_SECRET);
-        const user = await User.findOne({
-            status : 'active',
-            deleted : false,
-            _id : payload.id,
-        })
         const cart = await Cart.findOne({
-            _id : user.cartId,
+            _id : payload.cartId,
         });
         const checkInCart = cart.products.find(item => {
             return item.inCart == true;
         })
         if(checkInCart){
             next();
+            return;
         } else {
             req.flash('error', 'vui lòng chọn sản phẩm');
             res.redirect('back');

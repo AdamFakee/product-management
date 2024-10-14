@@ -1,6 +1,7 @@
 const User = require('../../models/user.model');
 const ForgotPassword = require('../../models/forgot-password.model');
 const Cart = require('../../models/cart.model.js');
+const Address = require('../../models/address.model.js');
 const generateHelper = require('../../helpers/generate.helper');
 const jwtHelper = require('../../helpers/jwt.helper.js');
 const sendMailHelper = require('../../helpers/sendMail.helper');
@@ -50,6 +51,13 @@ module.exports.registerPost = async (req, res) => {
     // tạo cart mới cho tài khoản - nếu tài khoản chưa đc tạo lần nào
     const newCart = new Cart();
     await newCart.save();
+
+    // tạo địa chỉ mới cho cartId
+    const newAddress = new Address({
+        cartId : newCart.id,
+    })
+    await newAddress.save();
+
     req.body.cartId = newCart.id;
 
     const newUser = new User(req.body);
@@ -215,6 +223,13 @@ module.exports.authGoogle = async (req, res) => {
         // tạo cart mới cho tài khoản
         const newCart = new Cart();
         await newCart.save();
+
+        // tạo địa chỉ mới cho cartId
+        const newAddress = new Address({
+            cartId : newCart.id,
+        })
+        await newAddress.save();
+
         googleAcc.cartId = newCart.id;
         googleAcc.loginWith = ['google'];
         const newAcc = new User(googleAcc);

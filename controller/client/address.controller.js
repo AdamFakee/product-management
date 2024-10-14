@@ -3,7 +3,7 @@ const Address = require('../../models/address.model');
 // [GET] /address
 module.exports.index = async (req, res) => {
     const address = await Address.findOne({
-        cartId : req.cookies.cartId,
+        cartId : res.locals.cartId,
     });
     res.render('client/pages/address/index.pug', {
         address : address,
@@ -24,7 +24,7 @@ module.exports.createPost = async (req, res) => {
     }
     
     await Address.updateOne({
-        cartId : req.cookies.cartId,
+        cartId : res.locals.cartId,
     }, {
         $addToSet : {
             'info' : info,
@@ -41,7 +41,7 @@ module.exports.addressDefault = async (req, res) => {
     const defaultStatus = req.body.default;
     if(defaultStatus){ // đổi mặc định => default=false => set địa chỉ được chọn : default=true
         await Address.updateOne({
-            cartId : req.cookies.cartId,
+            cartId : res.locals.cartId,
         }, {
             $set : {
                 'info.$[].default' : false,
@@ -49,7 +49,7 @@ module.exports.addressDefault = async (req, res) => {
         });
       
         await Address.updateOne({
-            cartId : req.cookies.cartId,
+            cartId : res.locals.cartId,
             'info._id' : id,
         }, {
             $set : {
@@ -58,7 +58,7 @@ module.exports.addressDefault = async (req, res) => {
         });
     } else { // bỏ chọn mặc định
         await Address.updateOne({
-            cartId : req.cookies.cartId,
+            cartId : res.locals.cartId,
             'info._id' : id,
         }, {
             $set : {
