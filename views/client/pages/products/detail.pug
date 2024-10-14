@@ -24,24 +24,25 @@ block main
           if (product.discountPercentage)
             div(class="inner-percent") Giảm tới <span>#{product.discountPercentage}%</span>
 
-          if (product.stock)
-            div(class="inner-stock") Còn lại <span>#{product.stock}</span> sản phẩm 
-            form(
-              action=`/cart/add/${product.id}`
-              method="POST"
-            )
-              input(
-                class="form-control mb-2"
-                type="number"
-                name="quantity"
-                value="1"
-                min="1"
-                max=product.stock
+          if (product.stock )
+            if(user)
+              div(class="inner-stock") Còn lại <span>#{product.stock}</span> sản phẩm 
+              form(
+                action=`/cart/add/${product.id}`
+                method="POST"
               )
-              button(
-                type="submit"
-                class="btn btn-success btn-block"
-              ) Thêm vào giỏ hàng
+                input(
+                  class="form-control mb-2"
+                  type="number"
+                  name="quantity"
+                  value="1"
+                  min="1"
+                  max=product.stock
+                )
+                button(
+                  type="submit"
+                  class="btn btn-success btn-block"
+                ) Thêm vào giỏ hàng
           else 
             div(class="btn btn-danger mt-2") sản phẩm tạm thời hết hàng
 

@@ -1,5 +1,6 @@
 const User = require('../../models/user.model');
 const ForgotPassword = require('../../models/forgot-password.model');
+const Cart = require('../../models/cart.model.js');
 const generateHelper = require('../../helpers/generate.helper');
 const jwtHelper = require('../../helpers/jwt.helper.js');
 const sendMailHelper = require('../../helpers/sendMail.helper');
@@ -16,7 +17,8 @@ module.exports.register = (req, res) => {
 // [POST] /user/register
 module.exports.registerPost = async (req, res) => {
     req.body.password = md5(req.body.password);
-    req.body.cartId = req.cookies.cartId;
+
+    
     req.body.loginWith = ['email'];
     const existAcc = await User.findOne({
         email: req.body.email,
@@ -26,7 +28,7 @@ module.exports.registerPost = async (req, res) => {
     });
     if(existAcc) {
         if(!existAcc.loginWith.includes('email')) {
-            const {accessToken, refreshToken} = generateHelper.jwtToken({id : existAcc._id}); // generate token
+            const {accessToken, refreshToken} = generateHelper.jwtToken({id : existAcc._id, cartId : existAcc.cartId}); // generate token
             await User.updateOne({
                 _id : existAcc._id
             }, {
@@ -36,7 +38,6 @@ module.exports.registerPost = async (req, res) => {
             })
             res.cookie("accessToken", accessToken, { expires: new Date(Date.now() + 30*60*1000)});
             res.cookie("refreshToken", refreshToken, { expires: new Date(Date.now() + 20*24*60*60*1000)});
-            res.cookie('cartId', existAcc.cartId);
             req.flash('success', 'đăng ký tài khoản thành công');
             res.redirect('/');
             return;
@@ -46,7 +47,11 @@ module.exports.registerPost = async (req, res) => {
             return;
         }
     }
-    
+    // tạo cart mới cho tài khoản - nếu tài khoản chưa đc tạo lần nào
+    const newCart = new Cart();
+    await newCart.save();
+    req.body.cartId = newCart.id;
+
     const newUser = new User(req.body);
     await newUser.save();
 
@@ -207,7 +212,10 @@ module.exports.authGoogle = async (req, res) => {
         }
         await jwtHelper.jwtNomal(acc, User, res);
     } else {
-        googleAcc.cartId = req.cookies.cartId;
+        // tạo cart mới cho tài khoản
+        const newCart = new Cart();
+        await newCart.save();
+        googleAcc.cartId = newCart.id;
         googleAcc.loginWith = ['google'];
         const newAcc = new User(googleAcc);
         await newAcc.save();

@@ -16,14 +16,14 @@ const userMiddleware = require('../../middlewares/client/user.middleware');
 module.exports.index = (app) => {
     app.use('/user', userRouter); // dont run through middleware
 
-    app.use(cartMiddleware.cartId, userMiddleware.infoUser);
+    app.use(cartMiddleware.cartId);
 
-    app.use("/", homeRouter);
-    app.use('/products', productRouter);
-    app.use('/search', searchRouter);
-    app.use('/cart', cartRouter);
-    app.use('/checkout', checkoutRouter)
-    app.use('/address', addressRouter);
-    app.use('/order', orderRouter);
-    app.use('/chat', chatRouter);
+    app.use("/", userMiddleware.checkCustomer, homeRouter);
+    app.use('/products', userMiddleware.checkCustomer, productRouter);
+    app.use('/search', userMiddleware.checkCustomer, searchRouter);
+    app.use('/cart', userMiddleware.infoUser, cartRouter);
+    app.use('/checkout', userMiddleware.infoUser, checkoutRouter)
+    app.use('/address', userMiddleware.infoUser, addressRouter);
+    app.use('/order', userMiddleware.infoUser, orderRouter);
+    app.use('/chat', userMiddleware.infoUser, chatRouter);
 }

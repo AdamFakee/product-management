@@ -37,13 +37,14 @@ header.header
               a(href="/products") Sản phẩm
               if(newCategoryProducts)
                 +sub-menu(newCategoryProducts)
-            li
-              a(href="/cart" class="fa-solid fa-cart-shopping") (#{cartTotal})
-            li
-              a(href='/address' class="fa-regular fa-address-book address" ) 
-              div(class='address-info') cập nhật địa chỉ 
-            li 
-              a(href="/order") đơn hàng  
+            if(user)
+              li
+                a(href="/cart" class="fa-solid fa-cart-shopping") (#{cartTotal})
+              li
+                a(href='/address' class="fa-regular fa-address-book address" ) 
+                div(class='address-info') cập nhật địa chỉ 
+              li 
+                a(href="/order") đơn hàng  
             //- khách hàng 
             if(user)
               if(user.role=='client')

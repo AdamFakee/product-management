@@ -3,9 +3,7 @@ const Product = require('../../models/product.model');
 
 // [GET] /cart
 module.exports.index = async(req, res) => {
-    const cart = await Cart.findOne({
-        _id : req.cookies.cartId,
-    });
+    const cart = res.locals.cart;
 
     const total = cart.products; // sản phẩm trong giỏ hàng
 
