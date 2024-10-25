@@ -327,7 +327,12 @@ function isTokenExpired(token) {
     const arrayToken = token.split('.');
     const tokenPayload = JSON.parse(atob(arrayToken[1]));  // decode Token
     return Math.floor(new Date().getTime()) >= tokenPayload.exp*1000;
-  }
+}
+function isTokenExpiredGreaterTime(token) {  // load lại web => check xem thời gian hiện tại = thời gian tạo token + 20p chưa
+    const arrayToken = token.split('.');     // ok thì reset token  -- đại khái là vậy
+    const tokenPayload = JSON.parse(atob(arrayToken[1]));  // decode Token
+    return Math.floor(new Date().getTime()) >= tokenPayload.exp*1000 - 10*60*1000; // đến phút thứ 20 + 1s là reset token
+}
 const getCookie = (cookiName) => {
     let cookieValue = document.cookie.split("; ");
     cookieValue = cookieValue.map(value => {
@@ -342,6 +347,39 @@ const getCookie = (cookiName) => {
     })
     return cookie ? cookie.value : null;
 }
+
+// người dùng load web thì check xem đã qua 20p tính từ thời gian tạo mới token chưa, qua rồi thì reset luôn
+setTimeout(() => {
+    const accessToken = getCookie('accessToken');
+    const refreshToken = getCookie('refreshToken');
+    if(refreshToken && accessToken) {
+        const tokenExpired = isTokenExpired(refreshToken);
+        const tokenExpiredGreaterTime = isTokenExpiredGreaterTime(accessToken);
+        if(tokenExpired == false && tokenExpiredGreaterTime) {
+            console.log('ok')
+            const bearer = 'Bearer ' + refreshToken;
+            
+            fetch('/user/reset-token', {
+                method : 'POST',
+                headers : {
+                    'Authorization': bearer,
+                    // 'X-FP-API-KEY': 'iphone', //it can be iPhone or your any other attribute
+                    'Content-Type': 'application/json'
+                },
+            })
+                .then (res => res.json())
+                .then (data => {
+                    if(data.code == 401) {
+                        const url = new URL(window.location.href);
+                        let pathName = url.pathname.split('/')[1];
+                        window.location.href = url.origin + `/${pathName}/login`;
+                    }
+                })
+        }
+    }
+}, 0);
+
+// người dùng đứng yên k load trang => duy trì đăng nhập cho họ 20p reset 1 lần
 setInterval(() => {
     const accessToken = getCookie('accessToken');
     const refreshToken = getCookie('refreshToken');
