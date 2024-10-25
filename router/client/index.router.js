@@ -12,18 +12,18 @@ const userRouter = require('./user.router');
 const chatRouter = require('./chat.router');
 const cartMiddleware = require('../../middlewares/client/cart.middleware');
 const userMiddleware = require('../../middlewares/client/user.middleware');
-
+const categoryMiddleware = require('../../middlewares/client/category.middleware');
 module.exports.index = (app) => {
     app.use('/user', userRouter); // dont run through middleware
 
-    app.use(cartMiddleware.cartId);
+    // app.use();
 
-    app.use("/", userMiddleware.checkCustomer, homeRouter);
-    app.use('/products', userMiddleware.checkCustomer, productRouter);
-    app.use('/search', userMiddleware.checkCustomer, searchRouter);
-    app.use('/cart', userMiddleware.infoUser, cartRouter);
-    app.use('/checkout', userMiddleware.infoUser, checkoutRouter)
-    app.use('/address', userMiddleware.infoUser, addressRouter);
-    app.use('/order', userMiddleware.infoUser, orderRouter);
-    app.use('/chat', userMiddleware.infoUser, chatRouter);
+    app.use("/",userMiddleware.checkCustomer, homeRouter);
+    app.use('/products', cartMiddleware.cartId, categoryMiddleware, userMiddleware.checkCustomer, productRouter);
+    app.use('/search', cartMiddleware.cartId, categoryMiddleware, userMiddleware.checkCustomer, searchRouter);
+    app.use('/cart', cartMiddleware.cartId, categoryMiddleware, userMiddleware.infoUser, cartRouter);
+    app.use('/checkout', cartMiddleware.cartId, categoryMiddleware, userMiddleware.infoUser, checkoutRouter)
+    app.use('/address', cartMiddleware.cartId, categoryMiddleware, userMiddleware.infoUser, addressRouter);
+    app.use('/order', cartMiddleware.cartId, categoryMiddleware, userMiddleware.infoUser, orderRouter);
+    app.use('/chat', cartMiddleware.cartId, categoryMiddleware, userMiddleware.infoUser, chatRouter);
 }

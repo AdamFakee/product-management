@@ -5,7 +5,6 @@ const products = require('../../models/product.model');
 const productCategory = require('../../models/product-category.model');
 const paginationHelper =  require('../../helpers/pagination.helper');
 const createTree =  require('../../helpers/createTree.helper');
-const Role = require('../../models/role.model');
 
 // [GET] admin/products
 module.exports.index = async (req, res) => {
@@ -87,10 +86,14 @@ module.exports.changeStatus = async (req, res) => {
     try {
         if(res.locals.role.permissions.includes('product_edit')){
             const {statusChange, id} = req.params;
-            await products.updateOne(
+            const product = await products.findOneAndUpdate(
                 {_id : id},
                 {status : statusChange}
             );
+            
+            // update cache
+            myCache.del(`productDetail:${product.slug}`)
+
             // show alert
             req.flash('success', 'thanh cong');
             // end show alert

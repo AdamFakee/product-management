@@ -100,6 +100,7 @@ module.exports.editPatch = async (req, res) => {
         deleted : false,
       }, req.body)
 
+      myCache.del('category'); // xóa cái cũ trong cache
       res.redirect('back');
 
     } catch (error) {

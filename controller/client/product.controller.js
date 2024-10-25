@@ -28,6 +28,18 @@ module.exports.index = async (req, res) => {
 module.exports.detail = async (req, res) => {
   const slug = req.params.slug;
 
+  // query in cache
+  let productInCache = myCache.get(`productDetail:${slug}`); 
+
+  if(productInCache != null) {
+    res.render("client/pages/products/detail", {
+      pageTitle: "Chi tiết sản phẩm",
+      product: productInCache
+    });
+    return;
+  }
+  // End query in cache
+
   const product = await Products.findOne({
     slug: slug,
     deleted: false,
@@ -35,6 +47,7 @@ module.exports.detail = async (req, res) => {
   });
 
   product.priceNew = ((1 - product.discountPercentage/100) * product.price).toFixed(0);
+  myCache.set(`productDetail:${slug}`, product, 3600);  // add to cache
 
   if(product) {
     res.render("client/pages/products/detail", {
@@ -58,6 +71,12 @@ module.exports.category = async (req, res) => {
     deleted : false,
     status : 'active',
   });
+
+  if(!category) {
+    req.flash('error', 'đường link không còn tồn tại');
+    res.redirect('/');
+    return;
+  }
 
   const allSubCategory = []; // chứa id danh mục hiện tại và tất cả id của các danh mục con - con của con
 

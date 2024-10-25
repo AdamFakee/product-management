@@ -6,6 +6,11 @@ const port = process.env.PORT;
 const http = require('http');
 const { Server } = require("socket.io");
 
+// node-cache
+const NodeCache = require( "node-cache" );
+const myCache = new NodeCache();
+global.myCache = myCache;
+
 // SocketIO
 const server = http.createServer(app);
 const io = new Server(server);

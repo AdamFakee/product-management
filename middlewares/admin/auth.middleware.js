@@ -3,6 +3,7 @@ const Accounts = require('../../models/account.model');
 const Roles = require('../../models/role.model');
 const jwt = require('jsonwebtoken');
 module.exports.requireAuth = async (req, res, next) => {
+    console.log('ok')
     if(!req.cookies.accessToken){
         res.redirect(`/${systemConfig.prefixAdmin}/auth/login`);
         return;
@@ -15,7 +16,7 @@ module.exports.requireAuth = async (req, res, next) => {
         });
 
         if(!account){
-            res.redirect(`/${systemConfig}/auth/login`);
+            res.redirect(`/${systemConfig.prefixAdmin}/auth/login`);
             return;
         };
         // lấy quyền được cấp cho tài khoản 

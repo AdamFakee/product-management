@@ -85,7 +85,7 @@ module.exports.indexPatch = async (req, res) => {
     })
 }
 
-//  [GET] cart/add/:productId
+//  [POST] cart/add/:productId
 module.exports.addPost = async (req, res) => {
     try {
         const quantity = parseInt(req.body.quantity); // số lượng sản phẩm
