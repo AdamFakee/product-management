@@ -9,7 +9,7 @@ const limiter = (windowMs, limitHit, message) => rateLimit({
     message : message,
     handler: (req, res, next, options) => {
         req.flash('error', options.message);
-        res.redirect('/user/login')
+        res.redirect('/user/login');
         return;
     }
 })
