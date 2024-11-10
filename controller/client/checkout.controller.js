@@ -110,8 +110,9 @@ module.exports.orderPost = async (req, res) => {
             })
 
             // cập nhật lại cache
+            
             myCache.del(`productDetail:${item.slug}`);
-            myCache.set(`productDetail:${slug}`, product, 3600);  // add to cache
+            myCache.set(`productDetail:${item.slug}`, JSON.stringify(item), 3600);  // add to cache
         }
         res.redirect(`/checkout/success/${newOrder.id}`);
     }
