@@ -324,15 +324,14 @@ if(tablePermissions){
 
 // jwt-decoded
 function isTokenExpired(token) {
+    if(!token){
+        return;
+    }
     const arrayToken = token.split('.');
     const tokenPayload = JSON.parse(atob(arrayToken[1]));  // decode Token
     return Math.floor(new Date().getTime()) >= tokenPayload.exp*1000;
 }
-function isTokenExpiredGreaterTime(token) {  // load lại web => check xem thời gian hiện tại = thời gian tạo token + 20p chưa
-    const arrayToken = token.split('.');     // ok thì reset token  -- đại khái là vậy
-    const tokenPayload = JSON.parse(atob(arrayToken[1]));  // decode Token
-    return Math.floor(new Date().getTime()) >= tokenPayload.exp*1000 - 10*60*1000; // đến phút thứ 20 + 1s là reset token
-}
+
 const getCookie = (cookiName) => {
     let cookieValue = document.cookie.split("; ");
     cookieValue = cookieValue.map(value => {
@@ -353,10 +352,9 @@ setTimeout(() => {
     const accessToken = getCookie('accessToken');
     const refreshToken = getCookie('refreshToken');
     if(refreshToken && accessToken) {
-        const tokenExpired = isTokenExpired(refreshToken);
-        const tokenExpiredGreaterTime = isTokenExpiredGreaterTime(accessToken);
-        if(tokenExpired == false && tokenExpiredGreaterTime) {
-            console.log('ok')
+        const refreshTokenExpired = isTokenExpired(refreshToken);
+        const accessTokenExpired = isTokenExpired(accessToken);
+        if(refreshTokenExpired == false && accessTokenExpired == true) {
             const bearer = 'Bearer ' + refreshToken;
             
             fetch('/user/reset-token', {
@@ -379,33 +377,5 @@ setTimeout(() => {
     }
 }, 0);
 
-// người dùng đứng yên k load trang => duy trì đăng nhập cho họ 20p reset 1 lần
-setInterval(() => {
-    const accessToken = getCookie('accessToken');
-    const refreshToken = getCookie('refreshToken');
-    if(accessToken) {
-        const tokenExpired = isTokenExpired(accessToken);
-        if(tokenExpired) {
-            console.log('expire')
-            const bearer = 'Bearer ' + refreshToken;
-            
-            fetch('/admin/reset-token', {
-                method : 'POST',
-                headers : {
-                    'Authorization': bearer,
-                    'X-FP-API-KEY': 'iphone', //it can be iPhone or your any other attribute
-                    'Content-Type': 'application/json'
-                },
-            })
-                .then (res => res.json())
-                .then (data => {
-                    if(data.code == 401) {
-                        const url = new URL(window.location.href);
-                        let pathName = url.pathname.split('/')[1];
-                        window.location.href = url.origin + `/${pathName}/auth/login`;
-                    }
-                })
-        } 
-    }
-}, 20*60*1000) // 20 munites
+
 // End jwt-decoded

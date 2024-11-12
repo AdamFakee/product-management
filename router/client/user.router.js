@@ -3,7 +3,6 @@ const router = express.Router();
 const passport = require('passport');
 const authGoogleHelper = require('../../helpers/authGoogle.helper');
 const controller = require('../../controller/client/user.controller');
-const validate = require('../../validates/client/auth.validate');
 const { limiter } = require('../../helpers/rateLimitTraffic.helper');
 
 router.get('/register', controller.register);
