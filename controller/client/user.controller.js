@@ -7,7 +7,7 @@ const jwtHelper = require('../../helpers/jwt.helper.js');
 const sendMailHelper = require('../../helpers/sendMail.helper');
 const jwt = require('jsonwebtoken');
 const md5 = require('md5');
-const { addToWhiteListToken, removeInWhiteListToken } = require('../../helpers/whiteListToken.helper.js');
+const { addToken_WhenRegister, removeToken_WhenLogout } = require('../../helpers/whiteListToken.helper.js');
 
 // [GET] /user/register
 module.exports.register = (req, res) => {
@@ -40,16 +40,12 @@ module.exports.registerPost = async (req, res) => {
             });
 
 
-            // keyName in white list
-            const RT_keyName = "refeshToken";
-            const AT_keyName = "accessToken";
+            // add token to white list
+            await addToken_WhenRegister(res, accessToken, refreshToken);
 
-            // add to white list
-            await addToWhiteListToken(accessToken, AT_keyName, res);
-            await addToWhiteListToken(refreshToken, RT_keyName, res);
 
             // assign to cookies
-            res.cookie("accessToken", accessToken, { expires: new Date(Date.now() + 30*60*1000)});
+            res.cookie("accessToken", accessToken, { expires: new Date(Date.now() + 7*24*60*60*1000)});
             res.cookie("refreshToken", refreshToken, { expires: new Date(Date.now() + 20*24*60*60*1000)});
             req.flash('success', 'đăng ký tài khoản thành công');
             res.redirect('/');
@@ -133,13 +129,9 @@ module.exports.logout = async (req, res) => {
         if(!user) {
             return res.redirect("back");
         }
-        // keyName in white list
-        const RT_keyName = "refreshToken";
-        const AT_keyName = "accessToken";
-
-        // remove token 
-        await removeInWhiteListToken(AT_payload, AT_keyName);
-        await removeInWhiteListToken(RT_payload, RT_keyName);
+        
+        // remove token in white list
+        await removeToken_WhenLogout(AT_payload, RT_payload);
 
 
         res.clearCookie('accessToken');
@@ -298,11 +290,9 @@ module.exports.resetToken = async (req, res) => {
     const refreshTokenBear = bearer.split(' ')[1];
     try {
         const payload = jwt.verify(refreshTokenBear, process.env.REFRESH_TOKEN_SECRET);
-        
+
         // remove token in whitelist
         const RT_keyName = "refreshToken";
-        const AT_keyName = "accessToken";
-        await removeInWhiteListToken(payload, AT_keyName);
         await removeInWhiteListToken(payload, RT_keyName);
 
         // generate new token
