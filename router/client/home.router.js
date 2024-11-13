@@ -3,5 +3,8 @@ const router = express.Router();
 const cartMiddleware = require('../../middlewares/client/cart.middleware');
 const categoryMiddleware = require('../../middlewares/client/category.middleware');
 const controller = require('../../controller/client/home.controller');
-router.get('/', cartMiddleware.cartId, categoryMiddleware, controller.index);
+const userMiddleware = require('../../middlewares/client/user.middleware');
+
+
+router.get('/' ,userMiddleware.checkCustomer , cartMiddleware.cartId, categoryMiddleware, controller.index);
 module.exports = router;

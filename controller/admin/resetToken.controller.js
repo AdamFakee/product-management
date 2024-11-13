@@ -1,6 +1,7 @@
 const Account = require('../../models/account.model');
 const jwt = require('jsonwebtoken');
 const generateHelper = require('../../helpers/generate.helper');
+const { removeInWhiteListToken, addToken_WhenRegister } = require('../../helpers/whiteListToken.helper');
 
 // [POST] /admin/reset-token
 module.exports.resetToken = async (req, res) => {
@@ -9,6 +10,14 @@ module.exports.resetToken = async (req, res) => {
     try {
         const payload = jwt.verify(refreshTokenBear, process.env.REFRESH_TOKEN_SECRET);
         const {accessToken, refreshToken} = generateHelper.jwtToken({id : payload.id});
+
+        // remove token in whitelist
+        const RT_keyName = "refreshToken";
+        await removeInWhiteListToken(payload, RT_keyName);
+
+        // add token in whiteList
+        await addToken_WhenRegister(res, accessToken, refreshToken)
+
         await Account.updateOne({
             _id : payload.id,
             refreshToken : refreshTokenBear

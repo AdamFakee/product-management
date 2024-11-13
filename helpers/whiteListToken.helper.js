@@ -27,10 +27,10 @@ module.exports.addToWhiteListToken = async (jwtToken, keyName, res) => {
 module.exports.checkExistInWhiteListToken = async (payload, keyName) => {
     const score = payload.exp * 1000;
     const blackListToken = await redis.zrangebyscore(keyName, score, score);
-    if(blackListToken.length > 1) {
-        return false;
+    if(blackListToken.length == 1) {
+        return true;
     } 
-    return true;
+    return false;
 }
 
 module.exports.removeInWhiteListToken = async (payload, keyName) => {

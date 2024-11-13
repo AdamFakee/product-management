@@ -18,7 +18,7 @@ module.exports.index = (app) => {
 
     // app.use();
 
-    app.use("/",userMiddleware.checkCustomer, homeRouter);
+    app.use("/", homeRouter);
     app.use('/products', cartMiddleware.cartId, categoryMiddleware, userMiddleware.checkCustomer, productRouter);
     app.use('/search', cartMiddleware.cartId, categoryMiddleware, userMiddleware.checkCustomer, searchRouter);
     app.use('/cart', cartMiddleware.cartId, categoryMiddleware, userMiddleware.infoUser, cartRouter);

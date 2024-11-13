@@ -357,7 +357,7 @@ setTimeout(() => {
         if(refreshTokenExpired == false && accessTokenExpired == true) {
             const bearer = 'Bearer ' + refreshToken;
             
-            fetch('/user/reset-token', {
+            fetch('/admin/reset-token', {
                 method : 'POST',
                 headers : {
                     'Authorization': bearer,
