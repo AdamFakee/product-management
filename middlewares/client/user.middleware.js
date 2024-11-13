@@ -1,3 +1,4 @@
+const { checkExistInWhiteListToken } = require("../../helpers/whiteListToken.helper");
 const User = require("../../models/user.model");
 const jwt = require('jsonwebtoken');
 
@@ -7,6 +8,16 @@ module.exports.infoUser = async (req, res, next) => {
         if(req.cookies.accessToken) {
             const accessToken = req.cookies.accessToken;
             const payload = jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET);
+
+            // check accessToken in whitelist
+            const AT_keyName = "accessToken";
+            const tokenInWhiteList = await checkExistInWhiteListToken(payload, AT_keyName);
+
+            if(!tokenInWhiteList) {
+                return res.redirect('/user/logout');
+            }
+
+
             const userInCache = myCache.get(`user:${payload.id}`); // lưu thông tin người dùng theo dạng : user:${userId}
             if(userInCache != null) { // tồn tại người dùng trong cache
                 res.locals.cartId = payload.cartId;
@@ -42,6 +53,16 @@ module.exports.checkCustomer = async (req, res, next) => {
         if(req.cookies.accessToken) {
             const accessToken = req.cookies.accessToken;
             const payload = jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET);
+
+            // check accessToken in whitelist
+            const AT_keyName = "accessToken";
+            const tokenInWhiteList = await checkExistInWhiteListToken(payload, AT_keyName);
+
+            console.log(tokenInWhiteList)
+            if(!tokenInWhiteList) {
+                return res.redirect('/user/logout');
+            }
+
             const userInCache = myCache.get(`user:${payload.id}`); // lưu thông tin người dùng theo dạng : user:${userId}
             if(userInCache!=null) { // tồn tại người dùng trong cache
                 res.locals.cartId = payload.cartId;

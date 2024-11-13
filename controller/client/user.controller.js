@@ -7,6 +7,7 @@ const jwtHelper = require('../../helpers/jwt.helper.js');
 const sendMailHelper = require('../../helpers/sendMail.helper');
 const jwt = require('jsonwebtoken');
 const md5 = require('md5');
+const { addToWhiteListToken, removeInWhiteListToken } = require('../../helpers/whiteListToken.helper.js');
 
 // [GET] /user/register
 module.exports.register = (req, res) => {
@@ -36,7 +37,18 @@ module.exports.registerPost = async (req, res) => {
                 password : req.body.password,
                 loginWith : ['email'],
                 refreshToken : refreshToken
-            })
+            });
+
+
+            // keyName in white list
+            const RT_keyName = "refeshToken";
+            const AT_keyName = "accessToken";
+
+            // add to white list
+            await addToWhiteListToken(accessToken, AT_keyName, res);
+            await addToWhiteListToken(refreshToken, RT_keyName, res);
+
+            // assign to cookies
             res.cookie("accessToken", accessToken, { expires: new Date(Date.now() + 30*60*1000)});
             res.cookie("refreshToken", refreshToken, { expires: new Date(Date.now() + 20*24*60*60*1000)});
             req.flash('success', 'đăng ký tài khoản thành công');
@@ -91,16 +103,56 @@ module.exports.loginPost = async (req, res) => {
         return;
     }
     await jwtHelper.jwtNomal(accUser, User, res);
+    
     req.flash('success', 'đăng nhập thành công');
+
     res.redirect('/');
 }
 
-// [GET] /user/logout
-module.exports.logout = (req, res) => {
-    res.clearCookie('accessToken');
-    res.clearCookie('refreshToken');
-    res.clearCookie('cartId');
-    res.redirect('/user/login');
+// [] /user/logout
+module.exports.logout = async (req, res) => {
+    const accessToken = req.cookies.accessToken;
+    const refreshToken = req.cookies.refreshToken;
+
+    // if not exist token
+    if(!accessToken || !refreshToken) {
+        return res.redirect('back');
+    }
+    // verify token
+    try {
+        const AT_payload = jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET);
+        const RT_payload = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
+
+        if(AT_payload.id != RT_payload.id) {
+            return res.redirect('back');
+        }
+        const user = await User.findOne({
+            _id : AT_payload.id,
+        })
+
+        if(!user) {
+            return res.redirect("back");
+        }
+        // keyName in white list
+        const RT_keyName = "refreshToken";
+        const AT_keyName = "accessToken";
+
+        // remove token 
+        await removeInWhiteListToken(AT_payload, AT_keyName);
+        await removeInWhiteListToken(RT_payload, RT_keyName);
+
+
+        res.clearCookie('accessToken');
+        res.clearCookie('refreshToken');
+        res.clearCookie('cartId');
+        res.redirect('/user/login');
+    } catch (error) {
+        res.clearCookie('accessToken');
+        res.clearCookie('refreshToken');
+        res.clearCookie('cartId');
+        res.redirect('/user/login');
+    }
+    
 }
 
 // [GET] /user/password/forgot
@@ -246,9 +298,24 @@ module.exports.resetToken = async (req, res) => {
     const refreshTokenBear = bearer.split(' ')[1];
     try {
         const payload = jwt.verify(refreshTokenBear, process.env.REFRESH_TOKEN_SECRET);
+        
+        // remove token in whitelist
+        const RT_keyName = "refreshToken";
+        const AT_keyName = "accessToken";
+        await removeInWhiteListToken(payload, AT_keyName);
+        await removeInWhiteListToken(payload, RT_keyName);
+
+        // generate new token
         const accUser = await User.findOne({
             _id : payload.id
         })
+
+        if(!accUser) {
+            return res.json({
+                code : 401
+            })
+        }
+
         await jwtHelper.jwtNomal(accUser, User, res);
         res.json({
             code : 200
