@@ -5,7 +5,7 @@ require('dotenv').config();
 const port = process.env.PORT;
 const http = require('http');
 const { Server } = require("socket.io");
-
+const {CspConfig} = require('./config/CSP.config');
 // node-cache
 const NodeCache = require( "node-cache" );
 const myCache = new NodeCache();
@@ -20,6 +20,10 @@ global._io = io; // biến toàn cục dùng cho server
 // set bodyParser
 var bodyParser = require('body-parser');
 var flash = require('express-flash');
+
+// CSP config 
+CspConfig(app);
+// End CSP config
 
 // set method-overide
 var methodOverride = require('method-override')

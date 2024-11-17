@@ -8,8 +8,9 @@ module.exports = async (req, find, modelName, limitProduct=4) => {
         totalPage : Math.ceil(countProduct/limitProduct),
         number : countProduct,
     };
-    if(req.query.page) {
-        pagination.currentPage = parseInt(req.query.page);
+    const page = parseInt(req.query.page);
+    if(page) {
+        pagination.currentPage = (page > pagination.totalPage) ? 1 : page; // greater than totalPage => showing data is like page = 1 
     }
     pagination.skipProduct = (pagination.currentPage-1) * pagination.limitProduct;
 
