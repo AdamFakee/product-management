@@ -30,9 +30,15 @@ module.exports.infoUser = async (req, res, next) => {
                 deleted: false
             });
             res.locals.cartId = payload.cartId;
+            // add user in cache
             if(user) {
                 myCache.set(`user:${payload.id}`, user, 3600);
                 res.locals.user = user;
+            } else {
+                res.clearCookie('accessToken');
+                res.clearCookie('refreshToken');
+                res.redirect('/user/login');
+                return;
             }
         } else {
             res.redirect('/user/login');
@@ -78,6 +84,11 @@ module.exports.checkCustomer = async (req, res, next) => {
             if(user) {
                 myCache.set(`user:${payload.id}`, user, 3600);
                 res.locals.user = user;
+            } else {
+                res.clearCookie('accessToken');
+                res.clearCookie('refreshToken');
+                res.redirect('/user/login');
+                return;
             }
         }
         next();

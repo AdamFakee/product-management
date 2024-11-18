@@ -1,4 +1,0 @@
-step 1 : git clone https://github.com/AdamFakee/product-management.git
-step 2 : npm install
-step 3 : npm start 
-step 4 : turn on brower, go to "localhost:3000" 
