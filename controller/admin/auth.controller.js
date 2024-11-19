@@ -67,7 +67,7 @@ module.exports.loginPost = async (req, res) => {
     const {accessToken, refreshToken} = generateHelper.jwtToken({id : account._id}); // generate token
 
     // add token to white list 
-    await addToken_WhenRegister(res, accessToken, refreshToken);
+    await addToken_WhenRegister(req, accessToken, refreshToken);
 
     await Accounts.updateOne({
         _id : account._id

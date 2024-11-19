@@ -7,7 +7,7 @@ const jwtHelper = require('../../helpers/jwt.helper.js');
 const sendMailHelper = require('../../helpers/sendMail.helper');
 const jwt = require('jsonwebtoken');
 const md5 = require('md5');
-const { addToken_WhenRegister, removeToken_WhenLogout } = require('../../helpers/whiteListToken.helper.js');
+const { addToken_WhenRegister, removeToken_WhenLogout, removeInWhiteListToken } = require('../../helpers/whiteListToken.helper.js');
 
 // [GET] /user/register
 module.exports.register = (req, res) => {
@@ -41,7 +41,7 @@ module.exports.registerPost = async (req, res) => {
 
 
             // add token to white list
-            await addToken_WhenRegister(res, accessToken, refreshToken);
+            await addToken_WhenRegister(req, accessToken, refreshToken);
 
 
             // assign to cookies
@@ -71,7 +71,7 @@ module.exports.registerPost = async (req, res) => {
     const newUser = new User(req.body);
     await newUser.save();
 
-    await jwtHelper.jwtNomal(newUser, User, res, {
+    await jwtHelper.jwtNomal(newUser, User, res, req, {
         roomChatId : newUser.id,
     });
     req.flash('success', 'đăng ký tài khoản thành công');
@@ -98,7 +98,7 @@ module.exports.loginPost = async (req, res) => {
         res.redirect('back');
         return;
     }
-    await jwtHelper.jwtNomal(accUser, User, res);
+    await jwtHelper.jwtNomal(accUser, User, res, req);
     
     req.flash('success', 'đăng nhập thành công');
 
@@ -231,7 +231,7 @@ module.exports.resetPasswordPost = async (req, res) => {
     const accUser = await User.findOne({
         _id : idUser
     });
-    await jwtHelper.jwtNomal(accUser, User, res);
+    await jwtHelper.jwtNomal(accUser, User, res, req);
 
 
     req.flash('success', 'đăng nhập thành công');
@@ -262,7 +262,7 @@ module.exports.authGoogle = async (req, res) => {
                 }
             });
         }
-        await jwtHelper.jwtNomal(acc, User, res);
+        await jwtHelper.jwtNomal(acc, User, res, req);
     } else {
         // tạo cart mới cho tài khoản
         const newCart = new Cart();
@@ -278,7 +278,7 @@ module.exports.authGoogle = async (req, res) => {
         googleAcc.loginWith = ['google'];
         const newAcc = new User(googleAcc);
         await newAcc.save();
-        await jwtHelper.jwtNomal(newAcc, User, res);
+        await jwtHelper.jwtNomal(newAcc, User, res, req);
     }
     
     res.redirect('/');
@@ -299,18 +299,18 @@ module.exports.resetToken = async (req, res) => {
         const accUser = await User.findOne({
             _id : payload.id
         })
-
         if(!accUser) {
             return res.json({
                 code : 401
             })
         }
 
-        await jwtHelper.jwtNomal(accUser, User, res);
+        await jwtHelper.jwtNomal(accUser, User, res, req);
         res.json({
             code : 200
         })
     } catch (error) {
+        console.log(error)
         res.clearCookie('accessToken');
         res.clearCookie('refreshToken');
         res.json({

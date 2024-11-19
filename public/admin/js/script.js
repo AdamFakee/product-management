@@ -369,8 +369,7 @@ setTimeout(() => {
                 .then (data => {
                     if(data.code == 401) {
                         const url = new URL(window.location.href);
-                        let pathName = url.pathname.split('/')[1];
-                        window.location.href = url.origin + `/${pathName}/login`;
+                        window.location.href = url.origin + `/admin/auth/login`;
                     }
                 })
         }

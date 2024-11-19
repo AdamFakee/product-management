@@ -11,7 +11,7 @@ module.exports.infoUser = async (req, res, next) => {
 
             // check accessToken in whitelist
             const AT_keyName = "accessToken";
-            const tokenInWhiteList = await checkExistInWhiteListToken(payload, AT_keyName);
+            const tokenInWhiteList = await checkExistInWhiteListToken(payload, AT_keyName, accessToken, req);
 
             if(!tokenInWhiteList) {
                 return res.redirect('/user/logout');
@@ -62,9 +62,8 @@ module.exports.checkCustomer = async (req, res, next) => {
 
             // check accessToken in whitelist
             const AT_keyName = "accessToken";
-            const tokenInWhiteList = await checkExistInWhiteListToken(payload, AT_keyName);
+            const tokenInWhiteList = await checkExistInWhiteListToken(payload, AT_keyName, accessToken, req);
 
-            console.log(tokenInWhiteList)
             if(!tokenInWhiteList) {
                 return res.redirect('/user/logout');
             }

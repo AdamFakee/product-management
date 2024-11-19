@@ -16,7 +16,7 @@ module.exports.resetToken = async (req, res) => {
         await removeInWhiteListToken(payload, RT_keyName);
 
         // add token in whiteList
-        await addToken_WhenRegister(res, accessToken, refreshToken)
+        await addToken_WhenRegister(req, accessToken, refreshToken)
 
         await Account.updateOne({
             _id : payload.id,

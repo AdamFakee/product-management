@@ -5,16 +5,17 @@ const jwt = require('jsonwebtoken');
 const { checkExistInWhiteListToken } = require("../../helpers/whiteListToken.helper");
 
 module.exports.requireAuth = async (req, res, next) => {
-    if(!req.cookies.accessToken){
+    const accessToken = req.cookies.accessToken;
+    if(!accessToken){
         res.redirect(`/${systemConfig.prefixAdmin}/auth/login`);
         return;
     } 
     try {
-        const payload = jwt.verify(req.cookies.accessToken, process.env.ACCESS_TOKEN_SECRET);
+        const payload = jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET);
 
         // check accessToken in whitelist
         const AT_keyName = "accessToken";
-        const tokenInWhiteList = await checkExistInWhiteListToken(payload, AT_keyName);
+        const tokenInWhiteList = await checkExistInWhiteListToken(payload, AT_keyName, accessToken, req);
         // if not exist token in white list
         if(!tokenInWhiteList) {
             return res.redirect(`/${systemConfig.prefixAdmin}/auth/logout`);
