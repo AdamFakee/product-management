@@ -11,7 +11,7 @@ module.exports.CspConfig = (app) => {
         const nonce = crypto.randomUUID();
             res.setHeader(
                 'Content-Security-Policy',
-                `default-src 'self'; font-src 'self' https://cdnjs.cloudflare.com https://ka-f.fontawesome.com https://fontawesome.com; img-src 'self' http://res.cloudinary.com https://lh3.googleusercontent.com; script-src 'self' 'nonce-${nonce}' https://cdn.jsdelivr.net https://kit.fontawesome.com/6e59f23f40.js; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css; frame-src 'self'; connect-src 'self' https://ka-f.fontawesome.com`
+                `default-src 'self'; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com  https://ka-f.fontawesome.com https://fontawesome.com; img-src 'self' http://res.cloudinary.com https://res-console.cloudinary.com https://lh3.googleusercontent.com; script-src 'self' 'nonce-${nonce}' https://cdn.jsdelivr.net https://kit.fontawesome.com/6e59f23f40.js; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css; frame-src 'self'; connect-src 'self' https://ka-f.fontawesome.com`
             );
             app.locals.nonceValue = nonce;
             next();

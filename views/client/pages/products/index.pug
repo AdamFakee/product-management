@@ -4,10 +4,7 @@ include ../../mixins/listProduct.pug
 include ../../mixins/pagination.pug
 
 block main
-  .container.my-3
-    .row
-      .col-12
-        +box-head(pageTitle)
+  +box-head(pageTitle)
   +listProduct(products)
   if(pagination.totalPage > 1)
     +pagination(pagination)

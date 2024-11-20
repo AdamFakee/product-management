@@ -29,7 +29,7 @@ module.exports.listRoomChat = async (req, res) => {
             roomChatId: { $exists: true },
             _id : {$ne : res.locals.user}
         } 
-    }); // những ai có roomChatId
+    }).select('-email -password -password -cartId -loginWith -role -refreshToken'); // những ai có roomChatId
     const limitMess = 20; // chỉ hiển thị 20 tin nhắn
     for(const user of listUser){
         const newMess = await Chat.find({   // tin nhắn mới nhất
@@ -47,7 +47,6 @@ module.exports.listRoomChat = async (req, res) => {
         } else {
             user.originalTime = 0;
         }
-        console.log(user.seen)
     }
     listUser.sort((a, b) => {
         return b.originalTime - a.originalTime; // nhắn sau hiển thị cao hơn 
@@ -63,7 +62,6 @@ module.exports.listRoomChat = async (req, res) => {
     }
     // End socket-io
 
-    
     res.render('client/pages/chat/listChat', {
         listUser : listUser,
         listMess : listMess,
