@@ -1,4 +1,7 @@
-
+# chú ý : thêm đuôi "/admin/dashboard" để vào trang admin
+# tài khoản admin : 
+* email : buidinhtuan04@gmail.com
+* password : tuan1234
 # Cài đặt project
 **1.** git clone https://github.com/AdamFakee/product-management.git <br>
 **2.** npm install <br>
