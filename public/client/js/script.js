@@ -270,3 +270,16 @@ setTimeout(() => {
 
 
 // End jwt-decoded
+
+
+// hidden pop-up 
+const exitButtonPopup = document.querySelector('.pop-up .inner-exit');
+if(exitButtonPopup) {
+    exitButtonPopup.addEventListener('click', () => {
+        const popUp = exitButtonPopup.parentNode;
+        if(popUp) {
+            popUp.setAttribute('hidden', '');
+        }
+    })
+}
+// End hiddent pop-up

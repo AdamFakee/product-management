@@ -3,6 +3,18 @@ include ../../mixins/listProduct.pug
 
 
 block main 
+    .pop-up
+        div(class='inner-exit')  x
+        .inner-wrap
+            .inner-link
+                |Click vào đây để vào trang admin: 
+                a(href="/admin/dashboard") here
+            .inner-info
+                .inner-title  đây là tài khoản trang admin
+                .inner-account
+                    div  email : buidinhtuan04@gmail.com
+                    div  password : tuan1234
+                .inner-title xin lỗi vì sự bất tiện này
     h1 sản phẩm nổi bật
     +listProduct(featuredProducts)
     h1 sản phẩm mới nhất

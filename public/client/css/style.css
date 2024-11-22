@@ -685,3 +685,39 @@ a {
  }
 }
 /* End box-typing */
+
+/* pop-up */
+.pop-up {
+    border: 1px solid black;
+    position: relative;
+    padding: 15px 20px;
+    background: beige
+}
+.pop-up .inner-exit {
+  font-size: 24px;
+  color: black;
+  cursor: pointer;
+  position: absolute;
+  top: -6px;
+  right: 4px;
+}
+.pop-up .inner-wrap .inner-link{
+  color: #472424;
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+.pop-up .inner-wrap .inner-link a {
+  text-decoration: none;
+  color: #a33434
+}
+.pop-up .inner-info .inner-title{
+  color: #472424;
+  font-size: 16px;
+  font-weight: 600;
+  margin: 20px 0;
+}
+.pop-up [hidden] {
+  display: none;
+}
+/* End pop-up */
